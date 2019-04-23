@@ -66,7 +66,7 @@ Observable<Map<String, dynamic>> profile;
              loading.add(false);
              
               Navigator.push(context, MaterialPageRoute(
-              builder: (context) => HomePageUsu())); 
+              builder: (context) => HomePageUsu(user:user))); 
 
                isLogIn = true;
      }

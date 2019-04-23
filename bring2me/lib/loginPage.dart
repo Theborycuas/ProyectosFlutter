@@ -19,7 +19,9 @@ class _LoginPageState extends State<LoginPage> {
      ),
      body: Container(    
        padding: EdgeInsets.all(30.0),
-       child: Row(
+       child: ListView(
+         children: <Widget>[
+           Row(
          children: <Widget>[    
            //Columna basia espacio       
           Column(
@@ -109,6 +111,8 @@ class _LoginPageState extends State<LoginPage> {
        )
          ],
        ),
+         ],
+       )
        
      ),  
    );
