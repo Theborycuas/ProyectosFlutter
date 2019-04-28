@@ -169,7 +169,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () {
                     if(_passwordCOntroller.text == _passwordControllerconfir.text){
                         _register();
-                        _registerInfo();
                         showToast("Registrado Correctamente", 
                         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                         Navigator.push(context, MaterialPageRoute(
@@ -211,23 +210,23 @@ class _RegisterPageState extends State<RegisterPage> {
     _direccion.dispose();
     super.dispose();
   }
-void _registerInfo(){
-    /* CloudFunctions.instance.call(
+/* void _registerInfo(){
+     CloudFunctions.instance.call(
           functionName: "agregarUsuario",
           parameters: {
-            'uid': null,
+            'uid': _userEmail.,
             'nombres' : _nombres.text,
             'telefono': _telefono.text,
             'direccion':_direccion.text,
-            'ubicacion': null,
+            'ubicacion': "",
             'correo' : _emailController.text,
             'clave' : _passwordCOntroller.text,  
             'foto' : null,
             'ultimoacceso' :DateTime.now().toString(),  
                     }
-                  );    */         
+                  );             
 
-}
+} */
   void _register() async {
     final FirebaseUser user =await _auth.createUserWithEmailAndPassword(
       email: _emailController.text,
@@ -238,7 +237,22 @@ void _registerInfo(){
       setState(() {
        _success =true;
        _userEmail =user.email; 
-      });
+       CloudFunctions.instance.call(
+          functionName: "actualizarUsuarioBring",
+          parameters: {
+            "doc_id": user.uid,
+            'uid': user.uid,
+            'nombres' : _nombres.text,
+            'telefono': _telefono.text,
+            'direccion':_direccion.text,
+            'ubicacion': "",
+            'correo' : _emailController.text,
+            'clave' : _passwordCOntroller.text,  
+            'foto' : "",
+            'ultimoacceso' :DateTime.now().toString(),  
+                    }
+                  ); 
+    });
       
     }else{
       _success = false;

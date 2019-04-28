@@ -1,3 +1,4 @@
+import 'package:bring2me/adminUI/Categoria/crearCategoria_Admin.dart';
 import 'package:bring2me/login/signin_google_perfil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -5,42 +6,36 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class ListViewProductUsu extends StatefulWidget {
-  const ListViewProductUsu({Key key, @required this.cat , this.user}) : super(key: key);  
-  final DocumentSnapshot cat;
-  final FirebaseUser user;
+class ListViewProveedoresParaCat extends StatefulWidget {
+  const ListViewProveedoresParaCat({Key key, @required this.ciu }) : super(key: key);  
+  final DocumentSnapshot ciu;
 
   @override
-  _ListViewProductUsuState createState() => new _ListViewProductUsuState();
+  _ListViewProveedoresParaCatState createState() => new _ListViewProveedoresParaCatState();
  }
  
-class _ListViewProductUsuState extends State<ListViewProductUsu> {
+class _ListViewProveedoresParaCatState extends State<ListViewProveedoresParaCat> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
 
-        title: Text('PRODUCTOS'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.menu),
-          onPressed: (){
-            
-          },)
-        ],
+        title: Text('SELECCIONE UN PROVEEDOR'),
+        
       ),
       body: Center(
-        child: _recuperarProductos(),
+        child: _recuperarProveedores(),
       ),
     );
   }
 
-   StreamBuilder<QuerySnapshot> _recuperarProductos() {
+   StreamBuilder<QuerySnapshot> _recuperarProveedores() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('categoria').document(widget.cat.documentID).collection('producto').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print("No existen Productos creados.");
+            print("No existen Proveedores creados.");
             //print(logger);
             return Container();
           }
@@ -48,30 +43,30 @@ class _ListViewProductUsuState extends State<ListViewProductUsu> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
 
-                  final productDoc = snapshot.data.documents[index];
+                  final provDoc = snapshot.data.documents[index];
                   return Dismissible( // <--------------------------NEW CODE-----------------
                     key: new Key(snapshot.data.documents[index].documentID),
                     
                     child: InkWell(
-                       onTap:() { _verProductoDialog(context, productDoc); },
+                       onTap:() { 
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => CrearCategoria(prov: provDoc, ciu: widget.ciu,)
+                                      ));
+                       },
                        child: Column(
                          children: <Widget>[
                            Row(
                              children: <Widget>[
                                Expanded(
                                  child: ListTile(
-                                      title: new Text(productDoc['nombre_pro']),
-                                      subtitle: new Text(productDoc['descripcion_pro']),
-                                      leading: Column(
-                                      children: <Widget>[
-                                        Image.network('${productDoc['imagen_pro']}', width: 40),
-                                      ],
-                                    ),
+                                      title: new Text(provDoc['nombre_prov']),
+                                      subtitle: new Text(provDoc['direccion_prov']),
+                                      
                                  ),
                                ),   
                                 IconButton(
-                                icon: Icon(Icons.add_shopping_cart),
-                                onPressed: () { _verProductoDialog(context, productDoc); }
+                                icon: Icon(Icons.arrow_forward),
+                                onPressed: () { /* _verProductoDialog(context, productDoc); */ }
                                 )                            
                              ],
                              
@@ -91,7 +86,7 @@ class _ListViewProductUsuState extends State<ListViewProductUsu> {
 
   }
   
-
+/* 
   Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot productDoc) {
      Firestore.instance.collection('usuarios')
         .document(widget.user.uid).get().then((DocumentSnapshot userDoc) {
@@ -166,5 +161,5 @@ class _ListViewProductUsuState extends State<ListViewProductUsu> {
         });
         
 
-  } 
+  }  */
 }

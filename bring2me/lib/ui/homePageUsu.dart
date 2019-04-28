@@ -8,8 +8,9 @@ import 'dart:async';
 
 
 class HomePageUsu extends StatefulWidget {
-  const HomePageUsu({Key key, @required this.user}):super(key:key);
+  const HomePageUsu({Key key, @required this.user, this.usuDoc}):super(key:key);
   final FirebaseUser user;
+  final DocumentSnapshot usuDoc;
   @override
   _HomePageUsuState createState() => new _HomePageUsuState();
  }
@@ -23,18 +24,57 @@ class _HomePageUsuState extends State<HomePageUsu> {
         title: Text('CATEGORIAS'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.menu),
+            icon: Icon(Icons.shopping_cart),
             onPressed: (){
               
             },
           )
         ],
       ),
+       drawer: Drawer(
+        elevation: 20.0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text(widget.usuDoc.data["nombres"]),
+              accountEmail: Text(widget.usuDoc.data["correo"]),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+              ),
+              
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                /* image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: NetworkImage("${widget.user.photoUrl}"),
+                ) */),
+                otherAccountsPictures: <Widget>[
+                  GestureDetector(
+                    child: CircleAvatar(
+                      backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg") , 
+                    ),
+                  )
+                ],
+
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text("Hola"),
+              trailing: Icon(Icons.settings),
+              onTap: (){
+
+              },
+            )
+          ],
+        )
+      ), 
       body: Center(
         child: _recuperarCategorias(),
       ),
     );
   }
+  
   
 StreamBuilder<QuerySnapshot> _recuperarCategorias() {
 
@@ -53,12 +93,7 @@ StreamBuilder<QuerySnapshot> _recuperarCategorias() {
                   final categoriaDoc = snapshot.data.documents[index];
                   return Dismissible( // <--------------------------NEW CODE-----------------
                     key: new Key(snapshot.data.documents[index].documentID),
-                    /* direction: DismissDirection.horizontal,
-                    onDismissed: (DismissDirection direction) {
-                      if (direction != DismissDirection.horizontal) {
-                          Firestore.instance.collection('categoria').document(categoriaDoc.documentID).delete();
-                      }
-                    }, */
+                   
                     child: InkWell(
                        onTap:() {
                          Navigator.push(context, MaterialPageRoute(
@@ -81,19 +116,7 @@ StreamBuilder<QuerySnapshot> _recuperarCategorias() {
                                     ),
                                  ),
                                ),
-                              /*  IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red,),
-                                  onPressed: (){
-                                    Firestore.instance.collection('categoria').document(categoriaDoc.documentID).delete();
-                                  },
-                                 ),
-                               IconButton(
-                                 icon: Icon(Icons.edit, color: Colors.blue,),
-                                     onPressed: (){
-                                       _actualizarCategoriaDialog(context, categoriaDoc);
-                                     },
-                                  ) */
-                               
+                                                            
                              ],
                              
                            )
@@ -209,8 +232,8 @@ StreamBuilder<QuerySnapshot> _recuperarCategorias() {
       }
     );
   }
+ 
 }
-
 
 
 /* import 'package:bring2me/loginPage.dart';

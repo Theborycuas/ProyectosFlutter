@@ -1,4 +1,5 @@
 import 'package:bring2me/ui/homePageUsu.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,8 +76,10 @@ class _SignInEmailState extends State<SignInEmail> {
                  password: _paswordcontroller.text,
                ).then((FirebaseUser user){
  
+              Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => HomePageUsu())); 
+                       builder: (context) => HomePageUsu(user:null, usuDoc: usuarioDoc,))); 
+              });
                }).catchError((e){
                  print(e);
                });

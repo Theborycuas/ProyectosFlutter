@@ -60,14 +60,14 @@ Observable<Map<String, dynamic>> profile;
     assert(user.uid ==currentUser.uid);
     
      if(user != null) {
-       _success = true;
-       _userID = user.uid;
+              _success = true;
+              _userID = user.uid;
              updateUserDatabase(user, context);
              loading.add(false);
-             
-              Navigator.push(context, MaterialPageRoute(
-              builder: (context) => HomePageUsu(user:user))); 
-
+             Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
+                  Navigator.push(context, MaterialPageRoute(
+                       builder: (context) => HomePageUsu(user:user, usuDoc: usuarioDoc,))); 
+              });
                isLogIn = true;
      }
      return isLogIn;
@@ -76,8 +76,8 @@ Observable<Map<String, dynamic>> profile;
 
    void updateUserDatabase(FirebaseUser user, BuildContext context)async{
 
-            /*  CloudFunctions.instance.call(
-              functionName: "actualizarUsuario",
+            CloudFunctions.instance.call(
+              functionName: "actualizarUsuarioBring",
               parameters: {
                                 "doc_id": user.uid,
                                 'uid' : user.uid,
@@ -91,7 +91,7 @@ Observable<Map<String, dynamic>> profile;
                                 'ultimoacceso' :DateTime.now().toString(),                         
 
                     }
-                  );   */ 
+                  );   
   }
 //Cerrar sesion
   Future<void> signOut(BuildContext context) async{

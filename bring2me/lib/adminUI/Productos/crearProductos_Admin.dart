@@ -2,28 +2,42 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:dropdown_menu/dropdown_menu.dart';
 
-class ProductScreenPizzas extends StatefulWidget {
+class CrearProducto extends StatefulWidget {
+  const CrearProducto({Key key, this.ciu, this.prove, this.cat}) : super(key:key);
+  final DocumentSnapshot ciu;
+  final DocumentSnapshot prove;
+  final DocumentSnapshot cat;
   @override
-  _ProductScreenPizzasState createState() => new _ProductScreenPizzasState();
+  _CrearProductoState createState() => new _CrearProductoState();
  }
  //imagen
   File image = null;
   String filename = null; //image
-class _ProductScreenPizzasState extends State<ProductScreenPizzas> {
+class _CrearProductoState extends State<CrearProducto> {
 
+    TextEditingController _nombreCiudad = TextEditingController();
+    TextEditingController _nombreProveedor = TextEditingController();
+    TextEditingController _nombreCategoria = TextEditingController();
     TextEditingController _nombreController = new TextEditingController();
     TextEditingController _descripcionController = new TextEditingController();
     TextEditingController _precioControlles = new TextEditingController();
     TextEditingController _imagen = new TextEditingController();
 
   String shopId;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _nombreCiudad = TextEditingController(text: widget.ciu.data["nombre_ciu"]);
+    _nombreProveedor = TextEditingController(text: widget.prove.data["nombre_prov"]);
+    _nombreCategoria = TextEditingController(text: widget.cat.data["nombre_cat"]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +101,8 @@ Future<String> uploadImage ()async{
         child: Card(
           child: Center(
             child: ListView(
-              children: <Widget>[
-                SizedBox(height: 30.0,),
-                DropdownButton(
+              children: <Widget>[                  
+                    /* DropdownButton(
                         value: shopId,
                         isDense: true,
                         onChanged: (valueSelectedByUser) {
@@ -106,13 +119,44 @@ Future<String> uploadImage ()async{
                           
 
                         }).toList(),
-                      ),
-                      SizedBox(height: 10.0,),                      
+                      ), */
+                SizedBox(height: 5.0,),                      
+                       TextField(
+                         enabled: false,
+                          controller: _nombreCiudad,
+                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.location_city),
+                            labelText: 'Ciudad:'
+                          ),
+                        ),
+                        Divider(),                                        
+                       TextField(
+                         enabled: false,
+                          controller: _nombreProveedor,
+                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.camera_front),
+                            labelText: 'Proveedor:'
+                          ),
+                        ),
+                       
+                        Divider(),                     
+                       TextField(
+                         enabled: false,
+                          controller: _nombreCategoria,
+                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.content_paste),
+                            labelText: 'Categoria:'
+                          ),
+                        ),                        
+                        Divider(),
                        TextField(
                           controller: _nombreController,
                           style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                           decoration: InputDecoration(
-                            icon: Icon(Icons.create),
+                            icon: Icon(Icons.select_all),
                             labelText: 'Nombre:'
                           ),
                         ),
@@ -167,7 +211,9 @@ Future<String> uploadImage ()async{
                             CloudFunctions.instance.call(
                               functionName: "crearProducto",
                               parameters: {
-                                "doc_id": shopId,
+                                "doc_ciu": widget.ciu.documentID,
+                                "doc_prov": widget.prove.documentID,
+                                "doc_cat": widget.cat.documentID,
                                 "nombre_pro": _nombreController.text,
                                 "descripcion_pro": _descripcionController.text,
                                 "precio_pro": _precioControlles.text,
@@ -192,5 +238,3 @@ void _onShopDropItemSelected(String newValueSelected) {
     });
   }
 }
-
-

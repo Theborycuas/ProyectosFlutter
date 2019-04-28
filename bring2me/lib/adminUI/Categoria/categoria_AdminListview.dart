@@ -1,5 +1,4 @@
-
-import 'package:bring2me/adminUI/AdminCrearCategoria.dart';
+import 'package:bring2me/adminUI/Categoria/crearCategoria_Admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class _ListViewCategoriaState extends State<ListViewCategoria> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearCategoria())),
+          builder: (context)=>CrearCategoria(ciu: null, prov: null,))),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -274,9 +273,4 @@ Future<Null> _recuperarPedidos(DocumentSnapshot categoriaDoc) {
     );
   }
 }
-
-
-
-
-
 

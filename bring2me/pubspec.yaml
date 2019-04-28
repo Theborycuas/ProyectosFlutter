@@ -31,6 +31,9 @@ dependencies:
   cloud_functions: ^0.1.2+1
   circle_wheel_scroll: ^0.0.1+1
   dropdown_menu: ^1.1.1
+  google_maps_flutter: ^0.5.7
+  google_maps_webservice: ^0.0.13
+  flutter_screenutil: ^0.5.2
 
 dev_dependencies:
   flutter_test:
@@ -56,3 +59,19 @@ flutter:
       - assets/images/regalo.png
       - assets/images/snacks.png
       - assets/images/supermercado.png
+      - assets/images/image_01.png
+      - assets/images/image_02.png
+      - assets/images/logo1.png     
+
+  fonts:
+    - family: CustomIcons
+      fonts:
+        - asset: assets/CustomIcons.ttf
+
+    - family: Poppins-Bold
+      fonts:
+        - asset: assets/Poppins-Bold.ttf
+
+    - family: Poppins-Medium
+      fonts:
+        - asset: assets/Poppins-Medium.ttf  
