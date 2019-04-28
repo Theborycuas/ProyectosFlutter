@@ -1,4 +1,3 @@
-import 'package:bring2me/LoginPageTest.dart';
 import 'package:bring2me/googleMaps/maps.dart';
 import 'package:bring2me/loginPage.dart';
 import 'package:bring2me/ui/homePageUsu.dart';
@@ -34,7 +33,7 @@ class _FirstPageState extends State<FirstPage> {
              child: Text('Iniciar Sesion'),
              onPressed: (){
                Navigator.push(context, MaterialPageRoute(
-                 builder: (context) => MyAppLoginPage()
+                 builder: (context) => MyHomePageMap()
                ));
                
              },
