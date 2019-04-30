@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'package:bring2me/ui/homePageUsu.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/homePageUsu.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,7 +67,7 @@ Observable<Map<String, dynamic>> profile;
              loading.add(false);
              Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                   Navigator.push(context, MaterialPageRoute(
-                       builder: (context) => HomePageUsu(user:user, usuDoc: usuarioDoc,))); 
+                       builder: (context) => ListCategoriaPrincipal(user:user, usuDoc: usuarioDoc,))); 
               });
                isLogIn = true;
      }

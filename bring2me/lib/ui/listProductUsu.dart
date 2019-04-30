@@ -37,7 +37,10 @@ class _ListViewProductUsuState extends State<ListViewProductUsu> {
    StreamBuilder<QuerySnapshot> _recuperarProductos() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('categoria').document(widget.cat.documentID).collection('producto').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document('ORYrQioVN7Pny0KZ6Mg7')
+      .collection('proveedor').document('27xbICfN52yat7hdcokl')
+      .collection('categoria').document('MiN56Y40KwRMYytFGg08')
+      .collection('producto').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             print("No existen Productos creados.");

@@ -1,6 +1,7 @@
 import 'package:bring2me/googleMaps/maps.dart';
+import 'package:bring2me/googleMaps/mapsTest.dart';
 import 'package:bring2me/loginPage.dart';
-import 'package:bring2me/ui/homePageUsu.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,9 +32,9 @@ class _FirstPageState extends State<FirstPage> {
            ),
            RaisedButton(
              child: Text('Iniciar Sesion'),
-             onPressed: (){
+             onPressed: (){ 
                Navigator.push(context, MaterialPageRoute(
-                 builder: (context) => MyHomePageMap()
+                 builder: (context) => MyAppLoginPage()
                ));
                
              },

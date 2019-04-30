@@ -3,7 +3,8 @@ import 'package:bring2me/LoginPage/FormCard.dart';
 import 'package:bring2me/LoginPage/SocialIcons.dart';
 import 'package:bring2me/login/register_page.dart';
 import 'package:bring2me/login/signin_google_perfil.dart';
-import 'package:bring2me/ui/homePageUsu.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/homePageUsu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -356,7 +357,7 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
        ).then((FirebaseUser user){
             Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => HomePageUsu(user:null, usuDoc: usuarioDoc,))); 
+                  builder: (context) => ListCategoriaPrincipal(user:null, usuDoc: usuarioDoc,))); 
        });
          }).catchError((e){
                print(e);
