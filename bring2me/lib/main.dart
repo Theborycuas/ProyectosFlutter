@@ -1,3 +1,6 @@
+import 'package:bring2me/adminUI/completeCrud/ciudades_ListView.dart';
+import 'package:bring2me/adminUI/loginAdmin.dart';
+import 'package:bring2me/adminUI/menu_Admin.dart';
 import 'package:bring2me/googleMaps/maps.dart';
 import 'package:bring2me/googleMaps/mapsTest.dart';
 import 'package:bring2me/loginPage.dart';
@@ -38,7 +41,19 @@ class _FirstPageState extends State<FirstPage> {
                ));
                
              },
+           ),
+            RaisedButton(
+             child: Text('Iniciar Sesion Admin'),
+             onPressed: (){ 
+               Navigator.push(context, MaterialPageRoute(
+                 builder: (context) => Menu()
+                 /* builder: (context) => InicioAdmin() */
+               ));
+               
+             },
            )
+
+
          ],
        ),
      ),

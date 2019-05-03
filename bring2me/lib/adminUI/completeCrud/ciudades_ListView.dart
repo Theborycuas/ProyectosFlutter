@@ -1,40 +1,57 @@
-import 'package:bring2me/adminUI/Ciudades/crearCiudad_Admin.dart';
-import 'package:bring2me/adminUI/Proveedores/crearProveedores_Admin.dart';
+import 'package:bring2me/adminUI/completeCrud/crearCiudad_Admin.dart';
+import 'package:bring2me/adminUI/completeCrud/proveedores_ListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 
-class ListViewProveedor extends StatefulWidget {
+class ListViewCiudades extends StatefulWidget {
   @override
-  _ListViewProveedorState createState() => new _ListViewProveedorState();
+  _ListViewCiudadesState createState() => new _ListViewCiudadesState();
  }
-class _ListViewProveedorState extends State<ListViewProveedor> {
+class _ListViewCiudadesState extends State<ListViewCiudades> {
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
 
-        title: Text('CREAR UN PROVEEDOR EN:'),
+        title: Text('CIUDADES:'),
       ),
       body: Center(
         
-        child: _recuperarCiudadesParaProve(),
+        child: _recuperarCiudades(),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed:() => Navigator.push(context, MaterialPageRoute(
+          builder: (context)=>CrearCiudad())),
+        tooltip: 'Crear Ciudad',
+        child: Icon(Icons.add),
+      ),      
     );
   }
   
-StreamBuilder<QuerySnapshot> _recuperarCiudadesParaProve() {
+StreamBuilder<QuerySnapshot> _recuperarCiudades() {
 
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('ciudad').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print("No existen Ciudades creadas.");
             //print(logger);
-            return Container();
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 285.0,),
+                  Text('Cargando Ciudades...'),
+                  SizedBox(height: 15.0,),
+                  CupertinoActivityIndicator(            
+                        ),
+                ],
+              ),
+                
+             );
           }
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
@@ -45,7 +62,7 @@ StreamBuilder<QuerySnapshot> _recuperarCiudadesParaProve() {
                   return InkWell(
                        onTap:() {
                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CrearProveedor(prove: ciudadDoc)
+                              builder: (context) => ListViewProveedores(ciu: ciudadDoc)
                                       ));
                          },
                        child: Column(                         

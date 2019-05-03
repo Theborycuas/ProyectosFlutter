@@ -1,10 +1,4 @@
-
-import 'package:bring2me/adminUI/Categoria/categoria_AdminListview.dart';
-import 'package:bring2me/adminUI/Categoria/ciudad_CatListView.dart';
-import 'package:bring2me/adminUI/Ciudades/ciudad_AdminListview.dart';
-import 'package:bring2me/adminUI/Productos/ciudad_ProdListView.dart';
-import 'package:bring2me/adminUI/Productos/product_AdminListview.dart';
-import 'package:bring2me/adminUI/Proveedores/ciudad_ProvListView.dart';
+import 'package:bring2me/adminUI/completeCrud/ciudades_ListView.dart';
 import 'package:bring2me/adminUI/listPedidos_Admin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
@@ -28,46 +22,20 @@ class _MenuState extends State<Menu> {
              SizedBox(height: 5,),
              Image.asset("assets/images/logo.png", width:300.0,), 
              SizedBox(height: 10,),
-             Text('Crear:', style: TextStyle(fontSize: 30.0,)),
-             SizedBox(height: 15,),
+             Text('Crear:', style: TextStyle(fontSize: 20.0,)),
+           
+            SizedBox(height: 25,),           
              FlatButton(
-             child: Text("CIUDAD"),             
-             onPressed: (){ 
-                   Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => ListViewCiudad()));
-                   showToast("Bienvenido al Panel de Ciudad", duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-             }
-             ),     
-             SizedBox(height: 10,),
-             FlatButton(
-             child: Text("PROVEEDORES"),             
-             onPressed: (){ 
-                   Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => ListViewProveedor()));
-                   showToast("Bienvenido al Panel de Proveedor", duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-             }
-             ),              
-             SizedBox(height: 10,),
-             FlatButton(
-             child: Text("CATEGORIAS"),             
+             child: Text("CIUDADES, PROVEEDORES, CATEGORIAS Y PRODUCTOS", style: TextStyle(fontSize: 12.0),),             
              onPressed: (){  
                Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => ListViewProveedorCat()));
-                   showToast("Bienvenido al Panel de Categoria", duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-               
+                   MaterialPageRoute(builder: (context) => ListViewCiudades()));
+                   showToast("Bienvenido al Panel de Administrador", 
+                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);   
              },
            ),
-             SizedBox(height: 10,),
-             FlatButton(
-             child: Text("PRODUCTOS"),             
-             onPressed: (){ 
-                   Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => ListViewProveedorProd()));
-                   showToast("Bienvenido al Panel de Productos", duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-             }
-             ),           
-             SizedBox(height: 10,),           
-             FlatButton(
+           SizedBox(height: 20,), 
+          FlatButton(
              child: Text("PEDIDOS"),             
              onPressed: (){  
                Navigator.push(context, 
@@ -77,7 +45,6 @@ class _MenuState extends State<Menu> {
                
              },
            ),
-
            ],
          ),
        ),

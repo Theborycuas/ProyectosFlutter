@@ -91,7 +91,7 @@ Future<String> uploadImage ()async{
     stream: Firestore.instance.collection('categoria').snapshots(), 
     
     builder: (context, snapshot) {
-      if (!snapshot.hasData)
+      if (!snapshot.hasData && !snapshot.hasError)
         return Center(
           child: CupertinoActivityIndicator(),
         );

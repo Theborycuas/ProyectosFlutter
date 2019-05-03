@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'data.dart';
 import 'dart:math';
+import 'package:bring2me/ui/userProfile/userProfile.dart';
 
 
 
@@ -51,7 +52,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text('Search'),
+          title: Text('Buscar'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add_shopping_cart),
@@ -69,8 +70,17 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                 UserAccountsDrawerHeader(
                   accountName: Text(widget.usuDoc.data["nombres"]),
                   accountEmail: Text(widget.usuDoc.data["correo"]),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+                  currentAccountPicture: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => UserProfile(
+                                          )
+                                        ));
+                    },
+                    child: CircleAvatar(                    
+                    backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) 
+                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+                  ),
                   ),
                   
                   decoration: BoxDecoration(
@@ -102,24 +112,23 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 40,),
-              
+              SizedBox(height: 40,),              
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    
-                    Text("CATEGORIA",
+                  children: <Widget>[                    
+                    Text("HAS TU PEDIDO",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 46.0,
+                          fontSize: 40.0,
                           fontFamily: "Calibre-Semibold",
                           letterSpacing: 1.0,
                         )),
                   ],
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Row(
@@ -139,14 +148,14 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                       ),
                     ),
                     SizedBox(
-                      width: 15.0,
+                      width: 20.0,
                     ),/* 
                     Text("25+ Stories",
                         style: TextStyle(color: Colors.blueAccent)) */
                   ],
                 ),
               ),
-              
+              SizedBox(height: 40,),
               Stack(
                 children: <Widget>[  
                   AspectRatio(
@@ -163,7 +172,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
 
                           var primaryCardLeft = safeWidth - widthOfPrimaryCard;
                           var horizontalInset = primaryCardLeft / 2;
-
+                          
                           List<Widget> cardList = new List();
 
                           for ( i = 0; i < images.length; i++) {
@@ -182,7 +191,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                               start: start,
                               textDirection: TextDirection.rtl,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
+                                borderRadius: BorderRadius.circular(40.0),
                                 child: Container(
                                   decoration: BoxDecoration(color: Colors.blueAccent, boxShadow: [
                                     BoxShadow(
@@ -223,7 +232,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                                                   decoration: BoxDecoration(
                                                       color: Colors.blueAccent,
                                                       borderRadius: BorderRadius.circular(20.0)),
-                                                  child: Text("Read Later",
+                                                  child: Text("Leer más",
                                                       style: TextStyle(color: Colors.white)),
                                                 ),
                                               )

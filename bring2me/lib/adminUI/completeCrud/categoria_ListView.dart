@@ -1,38 +1,56 @@
-import 'package:bring2me/adminUI/Productos/crearProductos_Admin.dart';
+import 'package:bring2me/adminUI/completeCrud/crearCategoria_Admin.dart';
+import 'package:bring2me/adminUI/completeCrud/productos_ListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ListViewCategoriaParaProd extends StatefulWidget {
-  const ListViewCategoriaParaProd({Key key, @required this.ciu, this.prove }) : super(key: key);  
+class ListViewCategorias extends StatefulWidget {
+  const ListViewCategorias({Key key, @required this.ciu, this.prove }) : super(key: key);  
   final DocumentSnapshot ciu;
   final DocumentSnapshot prove;
 
   @override
-  _ListViewCategoriaParaProdState createState() => new _ListViewCategoriaParaProdState();
+  _ListViewCategoriasState createState() => new _ListViewCategoriasState();
  }
  
-class _ListViewCategoriaParaProdState extends State<ListViewCategoriaParaProd> {
+class _ListViewCategoriasState extends State<ListViewCategorias> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
-        title: Text('SELECCIONE UNA CATEGORIA'),       
+        title: Text('CATEGORIAS:'),       
       ),
       body: Center(
-        child: _recuperarCategoriaParaProductos(),
+        child: _recuperarCategoriaS(),
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed:() => Navigator.push(context, MaterialPageRoute(
+          builder: (context)=>CrearCategoria(ciu: widget.ciu, prov: widget.prove,))),
+        tooltip: 'Crear Ciudad',
+        child: Icon(Icons.add),
+      ),      
     );
   }
 
-   StreamBuilder<QuerySnapshot> _recuperarCategoriaParaProductos() {
+   StreamBuilder<QuerySnapshot> _recuperarCategoriaS() {
      
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print("No existen Proveedores creados.");
             //print(logger);
-            return Container();
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 285.0,),
+                  Text('Cargando Categorias...'),
+                  SizedBox(height: 15.0,),
+                  CupertinoActivityIndicator(            
+                        ),
+                ],
+              ),
+                
+             );
           }
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
@@ -44,8 +62,8 @@ class _ListViewCategoriaParaProdState extends State<ListViewCategoriaParaProd> {
                     
                     child: InkWell(
                        onTap:() { 
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CrearProducto(cat:catDoc, prove: widget.prove, ciu: widget.ciu,)
+                         Navigator.push(context, MaterialPageRoute(
+                                       builder: (context) => ListViewProductos(ciu: widget.ciu, prove: widget.prove, cat: catDoc,)
                                       ));
                        },
                        child: Column(
@@ -65,7 +83,9 @@ class _ListViewCategoriaParaProdState extends State<ListViewCategoriaParaProd> {
                                ),      
                                 IconButton(
                                 icon: Icon(Icons.arrow_forward),
-                                onPressed: () { /* _verProductoDialog(context, productDoc); */ }
+                                onPressed: () {
+                                  
+                                }
                                 )                            
                              ],
                              

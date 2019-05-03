@@ -1,31 +1,38 @@
-import 'package:bring2me/adminUI/Categoria/crearCategoria_Admin.dart';
-import 'package:bring2me/login/signin_google_perfil.dart';
+
+import 'package:bring2me/adminUI/completeCrud/categoria_ListView.dart';
+import 'package:bring2me/adminUI/completeCrud/crearProveedores_Admin.dart';
+import 'package:bring2me/adminUI/menu_Admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class ListViewProveedoresParaCat extends StatefulWidget {
-  const ListViewProveedoresParaCat({Key key, @required this.ciu }) : super(key: key);  
+class ListViewProveedores extends StatefulWidget {
+  const ListViewProveedores({Key key, @required this.ciu }) : super(key: key);  
   final DocumentSnapshot ciu;
 
   @override
-  _ListViewProveedoresParaCatState createState() => new _ListViewProveedoresParaCatState();
+  _ListViewProveedoresState createState() => new _ListViewProveedoresState();
  }
  
-class _ListViewProveedoresParaCatState extends State<ListViewProveedoresParaCat> {
+class _ListViewProveedoresState extends State<ListViewProveedores> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
 
-        title: Text('SELECCIONE UN PROVEEDOR'),
+        title: Text('PROVEEDORES:'),
         
       ),
       body: Center(
         child: _recuperarProveedores(),
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed:() => Navigator.push(context, MaterialPageRoute(
+          builder: (context)=>CrearProveedor(prove: widget.ciu))),
+        tooltip: 'Crear Ciudad',
+        child: Icon(Icons.add),
+      ),      
     );
   }
 
@@ -35,9 +42,19 @@ class _ListViewProveedoresParaCatState extends State<ListViewProveedoresParaCat>
       stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print("No existen Proveedores creados.");
             //print(logger);
-            return Container();
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 285.0,),
+                  Text('Cargando Proveedores...'),
+                  SizedBox(height: 15.0,),
+                  CupertinoActivityIndicator(            
+                        ),
+                ],
+              ),
+                
+             );
           }
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
@@ -49,9 +66,9 @@ class _ListViewProveedoresParaCatState extends State<ListViewProveedoresParaCat>
                     
                     child: InkWell(
                        onTap:() { 
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CrearCategoria(prov: provDoc, ciu: widget.ciu,)
-                                      ));
+                         Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => ListViewCategorias(ciu: widget.ciu, prove: provDoc,)
+                                      ));                       
                        },
                        child: Column(
                          children: <Widget>[
