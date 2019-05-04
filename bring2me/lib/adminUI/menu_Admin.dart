@@ -1,3 +1,4 @@
+import 'package:bring2me/adminUI/categoriasGeneales/categoriasGenerales_ListView.dart';
 import 'package:bring2me/adminUI/completeCrud/ciudades_ListView.dart';
 import 'package:bring2me/adminUI/listPedidos_Admin.dart';
 import 'package:flutter/material.dart';
@@ -34,17 +35,28 @@ class _MenuState extends State<Menu> {
                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);   
              },
            ),
-           SizedBox(height: 20,), 
-          FlatButton(
-             child: Text("PEDIDOS"),             
-             onPressed: (){  
-               Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => AdminPedidos()));
-                   showToast("Bienvenido al Panel de Pedidos", 
-                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
-               
-             },
-           ),
+             SizedBox(height: 20,), 
+              FlatButton(
+                child: Text("CATEGORIAS GENERALES"),             
+                onPressed: (){  
+                  Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => ListViewCategoriasGeneales()));
+                      showToast("Bienvenido al Panel de Categorias Generales", 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
+                  
+                },
+              ),           
+             SizedBox(height: 20,), 
+              FlatButton(
+                child: Text("PEDIDOS"),             
+                onPressed: (){  
+                  Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => AdminPedidos()));
+                      showToast("Bienvenido al Panel de Pedidos", 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
+                  
+                },
+              ),
            ],
          ),
        ),

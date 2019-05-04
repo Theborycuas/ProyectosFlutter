@@ -1,18 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class UserProfile extends StatelessWidget {
-  final color = Color(0xFF11E8161);
+class UserProfile extends StatefulWidget {
+  const UserProfile({Key key, @required this.user, this.usuDoc}):super(key:key);
+  final FirebaseUser user;
+  final DocumentSnapshot usuDoc;
 
   @override
+  _UserProfileState createState() => new _UserProfileState();
+ }
+class _UserProfileState extends State<UserProfile> {
+  final color = Color(0xFF11E8161);
+  @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height / 1.8;
+     final height = MediaQuery.of(context).size.height / 1.8;
     final width = MediaQuery.of(context).size.width;
-
-    return Scaffold(
+   return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: color,
-        title: Text('Profile'),
+        title: Text('Perfil'),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -106,14 +114,14 @@ class UserProfile extends StatelessWidget {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: new NetworkImage(
-                                "http://www.usanetwork.com/sites/usanetwork/files/styles/629x720/public/suits_cast_harvey.jpg?itok=fpTOeeBb"),
+                            image: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) 
+                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"),
                           ),
                         ),
                       ),
                       SizedBox(height: 15.0),
                       Text(
-                        'ID: 142563225',
+                        'Telefono: ${widget.usuDoc["telefono"]}',
                         style: TextStyle(color: Colors.white70),
                       )
                     ],
@@ -147,7 +155,7 @@ class UserProfile extends StatelessWidget {
             alignment: Alignment.center,
             padding: EdgeInsets.all(16.0),
             child: Text(
-              "Javier González Rodríguez",
+              widget.usuDoc["nombres"],
               style: TextStyle(
                 fontSize: 25.0,
                 color: Colors.white,

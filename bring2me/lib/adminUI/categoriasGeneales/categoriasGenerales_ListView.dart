@@ -1,41 +1,37 @@
-import 'package:bring2me/adminUI/completeCrud/crearCategoria_Admin.dart';
-import 'package:bring2me/adminUI/completeCrud/productos_ListView.dart';
+import 'package:bring2me/adminUI/categoriasGeneales/crearCategorias_generales.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ListViewCategorias extends StatefulWidget {
-  const ListViewCategorias({Key key, @required this.ciu, this.prove }) : super(key: key);  
-  final DocumentSnapshot ciu;
-  final DocumentSnapshot prove;
+class ListViewCategoriasGeneales extends StatefulWidget {
 
   @override
-  _ListViewCategoriasState createState() => new _ListViewCategoriasState();
+  _ListViewCategoriasGenealesState createState() => new _ListViewCategoriasGenealesState();
  }
  
-class _ListViewCategoriasState extends State<ListViewCategorias> {
+class _ListViewCategoriasGenealesState extends State<ListViewCategoriasGeneales> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
-        title: Text('CATEGORIAS:'),       
+        title: Text('CATEGORIAS GENERALES:'),       
       ),
       body: Center(
-        child: _recuperarCategoriaS(),
+        child: _recuperarCategoriasGenerales(),
       ),
        floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearCategoria(ciu: widget.ciu, prov: widget.prove,))),
-        tooltip: 'Crear Ciudad',
+          builder: (context)=>CrearCategoriasGenerales())),
+        tooltip: 'Crear Productos',
         child: Icon(Icons.add),
       ),      
     );
   }
 
-   StreamBuilder<QuerySnapshot> _recuperarCategoriaS() {
+   StreamBuilder<QuerySnapshot> _recuperarCategoriasGenerales() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').snapshots(),      
+      stream: Firestore.instance.collection('categoriaGeneral').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -56,7 +52,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
 
-                  final catDoc = snapshot.data.documents[index];
+                  final catGenDoc = snapshot.data.documents[index];
                   return Dismissible( // <--------------------------NEW CODE-----------------
                     key: new Key(snapshot.data.documents[index].documentID),
                     direction: DismissDirection.horizontal,
@@ -67,8 +63,8 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                             context: context,
                             builder: (BuildContext context){
                               return AlertDialog(
-                                title: new Text("ELIMINAR LA CATEGORIA"),
-                                content: new Text("¿Realmente desea eliminar la categoria  ${catDoc.data['nombre_cat']}?"),
+                                title: new Text("ELIMINAR PRODUCTO"),
+                                content: new Text("¿Realmente desea eliminar el prodcuto ${catGenDoc.data['nombre_cat_gen']}?"),
                                 actions: <Widget>[
                                   // usually buttons at the bottom of the dialog
                                   new FlatButton(
@@ -80,7 +76,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                   FlatButton(
                                     child: Text("ACEPTAR"),
                                     onPressed: (){
-                                           Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(catDoc.documentID).delete();        
+                                           Firestore.instance.collection('categoriaGeneral').document(catGenDoc.documentID).delete();        
                                            Navigator.of(context).pop();
                                     },
                                   )
@@ -90,12 +86,13 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                           );
                          
                       }
-                    },                      
+                    },                    
+                    
                     child: InkWell(
                        onTap:() { 
-                         Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => ListViewProductos(ciu: widget.ciu, prove: widget.prove, cat: catDoc,)
-                                      ));
+                           /* Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => CrearProducto(cat:widget.cat, prove: widget.prove, ciu: widget.ciu,)
+                                      ));  */
                        },
                        child: Column(
                          children: <Widget>[
@@ -103,11 +100,11 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                              children: <Widget>[
                                Expanded(
                                  child: ListTile(
-                                      title: new Text(catDoc['nombre_cat']),
-                                      subtitle: new Text(catDoc['descripcion_cat']),
+                                      title: new Text(catGenDoc['nombre_cat_gen']),
+                                      subtitle: new Text(catGenDoc['descripcion_cat_gen']),
                                       leading: Column(
                                       children: <Widget>[
-                                        Image.network('${catDoc['imagen_cat']}', width: 40),
+                                        Image.network('${catGenDoc['imagen_cat_gen']}', width: 40),
                                       ],
                                     ),
                                  ),
@@ -115,13 +112,13 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                 IconButton(
                                 icon: Icon(Icons.delete),
                                 color: Colors.red,
-                                onPressed: () {
-                                  showDialog(
+                                onPressed: () { 
+                                        showDialog(
                                           context: context,
                                           builder: (BuildContext context){
                                             return AlertDialog(
-                                              title: new Text("ELIMINAR LA CATEGORIA"),
-                                              content: new Text("¿Realmente desea eliminar la categoria  ${catDoc.data['nombre_cat']}?"),
+                                              title: new Text("ELIMINAR PRODUCTO"),
+                                              content: new Text("¿Realmente desea eliminar el prodcuto ${catGenDoc.data['nombre_cat_gen']}?"),
                                               actions: <Widget>[
                                                 // usually buttons at the bottom of the dialog
                                                 new FlatButton(
@@ -133,7 +130,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(catDoc.documentID).delete();        
+                                                        Firestore.instance.collection('categoriaGeneral').document(catGenDoc.documentID).delete();        
                                                         Navigator.of(context).pop();
                                                   },
                                                 )
@@ -141,8 +138,8 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                             );
                                           }
                                         );
-                                }
-                                ),                          
+                                 }
+                                )                            
                              ],
                              
                              

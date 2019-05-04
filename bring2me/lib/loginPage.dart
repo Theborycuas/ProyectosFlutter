@@ -1,10 +1,8 @@
 import 'package:bring2me/LoginPage/CustomIcons.dart';
-import 'package:bring2me/LoginPage/FormCard.dart';
 import 'package:bring2me/LoginPage/SocialIcons.dart';
 import 'package:bring2me/login/register_page.dart';
 import 'package:bring2me/login/signin_google_perfil.dart';
 import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
-import 'package:bring2me/ui/HomePage-CategoriasPrin/homePageUsu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

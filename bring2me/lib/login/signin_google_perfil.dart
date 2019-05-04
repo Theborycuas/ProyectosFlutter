@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
-import 'package:bring2me/ui/HomePage-CategoriasPrin/homePageUsu.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';

@@ -60,12 +60,44 @@ class _ListViewProductosState extends State<ListViewProductos> {
                   final prodDoc = snapshot.data.documents[index];
                   return Dismissible( // <--------------------------NEW CODE-----------------
                     key: new Key(snapshot.data.documents[index].documentID),
+                    direction: DismissDirection.horizontal,
+                    onDismissed: (DismissDirection direction) {
+                      if (direction != DismissDirection.horizontal) {
+                          
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context){
+                              return AlertDialog(
+                                title: new Text("ELIMINAR PRODUCTO"),
+                                content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new FlatButton(
+                                    child: new Text("CANCELAR"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("ACEPTAR"),
+                                    onPressed: (){
+                                           Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
+                                           Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            }
+                          );
+                         
+                      }
+                    },                    
                     
                     child: InkWell(
                        onTap:() { 
-                           Navigator.push(context, MaterialPageRoute(
+                           /* Navigator.push(context, MaterialPageRoute(
                               builder: (context) => CrearProducto(cat:widget.cat, prove: widget.prove, ciu: widget.ciu,)
-                                      )); 
+                                      ));  */
                        },
                        child: Column(
                          children: <Widget>[
@@ -83,8 +115,35 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                  ),
                                ),      
                                 IconButton(
-                                icon: Icon(Icons.arrow_forward),
-                                onPressed: () { /* _verProductoDialog(context, productDoc); */ }
+                                icon: Icon(Icons.delete),
+                                color: Colors.red,
+                                onPressed: () { 
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context){
+                                            return AlertDialog(
+                                              title: new Text("ELIMINAR PRODUCTO"),
+                                              content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
+                                              actions: <Widget>[
+                                                // usually buttons at the bottom of the dialog
+                                                new FlatButton(
+                                                  child: new Text("CANCELAR"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: Text("ACEPTAR"),
+                                                  onPressed: (){
+                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
+                                                        Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          }
+                                        );
+                                 }
                                 )                            
                              ],
                              

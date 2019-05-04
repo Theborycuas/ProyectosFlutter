@@ -8,38 +8,23 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:toast/toast.dart';
 
-class CrearProducto extends StatefulWidget {
-  const CrearProducto({Key key, this.ciu, this.prove, this.cat}) : super(key:key);
-  final DocumentSnapshot ciu;
-  final DocumentSnapshot prove;
-  final DocumentSnapshot cat;
+class CrearCategoriasGenerales extends StatefulWidget {
+
   @override
-  _CrearProductoState createState() => new _CrearProductoState();
+  _CrearCategoriasGeneralesState createState() => new _CrearCategoriasGeneralesState();
  }
  //imagen
   File image = null;
   String filename = null; //image
-class _CrearProductoState extends State<CrearProducto> {
+class _CrearCategoriasGeneralesState extends State<CrearCategoriasGenerales> {
 
-    TextEditingController _nombreCiudad = TextEditingController();
-    TextEditingController _nombreProveedor = TextEditingController();
-    TextEditingController _nombreCategoria = TextEditingController();
-    TextEditingController _nombreController = new TextEditingController();
+    TextEditingController _nombreCategoriaController = TextEditingController();
     TextEditingController _descripcionController = new TextEditingController();
-    TextEditingController _precioControlles = new TextEditingController();
-    TextEditingController _imagen = new TextEditingController();
+    TextEditingController _imagenController = new TextEditingController();
     bool imagensubida = false;
 
   String shopId;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    _nombreCiudad = TextEditingController(text: widget.ciu.data["nombre_ciu"]);
-    _nombreProveedor = TextEditingController(text: widget.prove.data["nombre_prov"]);
-    _nombreCategoria = TextEditingController(text: widget.cat.data["nombre_cat"]);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +65,7 @@ Future<String> uploadImage ()async{
   
   var url = downUrl.toString(); 
     setState(() { 
-        _imagen = TextEditingController(text: url);
+        _imagenController = TextEditingController(text: url);
         imagensubida = true;
 
     });
@@ -127,69 +112,28 @@ Future<String> uploadImage ()async{
                       ), */
                 SizedBox(height: 5.0,),                      
                        TextField(
-                         enabled: false,
-                          controller: _nombreCiudad,
+                          controller: _nombreCategoriaController,
                           style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                           decoration: InputDecoration(
-                            icon: Icon(Icons.location_city),
-                            labelText: 'Ciudad:'
+                            icon: Icon(Icons.drag_handle),
+                            labelText: 'Nombre Caregoria:'
                           ),
                         ),
                         Divider(),                                        
                        TextField(
-                         enabled: false,
-                          controller: _nombreProveedor,
-                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.camera_front),
-                            labelText: 'Proveedor:'
-                          ),
-                        ),
-                       
-                        Divider(),                     
-                       TextField(
-                         enabled: false,
-                          controller: _nombreCategoria,
-                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.content_paste),
-                            labelText: 'Categoria:'
-                          ),
-                        ),                        
-                        Divider(),
-                       TextField(
-                          controller: _nombreController,
-                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.select_all),
-                            labelText: 'Nombre:'
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 8.0),),
-                        Divider(),
-                        TextField(
                           controller: _descripcionController,
                           style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                           decoration: InputDecoration(
-                            icon: Icon(Icons.list),
-                            labelText: 'Descripcion:'
+                            icon: Icon(Icons.description),
+                            labelText: 'Descripcion Categoria:'
                           ),
                         ),
-                         Padding(padding: EdgeInsets.only(top: 8.0),),
-                          Divider(),
-                          TextField(
-                            controller: _precioControlles,
-                            style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.monetization_on),
-                              labelText: 'Precio'
-                            ),
-                          ),
+                       
                         Padding(padding: EdgeInsets.only(top: 8.0),),
                         Divider(),
                         TextField(
                           enabled: false,
-                          controller: _imagen,
+                          controller: _imagenController,
                           style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                           decoration: InputDecoration(
                             icon: Icon(Icons.image),
@@ -215,18 +159,14 @@ Future<String> uploadImage ()async{
                         RaisedButton(
                           
                           onPressed: () {
-                            if(imagensubida != false || _nombreController == null || _descripcionController == null
-                            || _precioControlles == null){
+                            if(imagensubida != false && _nombreCategoriaController != null 
+                             && _descripcionController != null){
                                   CloudFunctions.instance.call(
-                                    functionName: "crearProducto",
+                                    functionName: "crearCategoriaGeneral",
                                     parameters: {
-                                      "doc_ciu": widget.ciu.documentID,
-                                      "doc_prov": widget.prove.documentID,
-                                      "doc_cat": widget.cat.documentID,
-                                      "nombre_pro": _nombreController.text,
-                                      "descripcion_pro": _descripcionController.text,
-                                      "precio_pro": _precioControlles.text,
-                                      "imagen_pro": _imagen.text,
+                                      "nombre_cat_gen": _nombreCategoriaController.text,
+                                      "descripcion_cat_gen": _descripcionController.text,
+                                      "imagen_cat_gen": _imagenController.text,
                                     }
                                   );
                                   image = null;

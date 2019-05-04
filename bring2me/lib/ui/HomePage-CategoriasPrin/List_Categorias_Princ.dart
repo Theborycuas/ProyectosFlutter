@@ -1,4 +1,5 @@
 import 'package:bring2me/ui/listProductUsu.dart';
+import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +74,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                   currentAccountPicture: InkWell(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => UserProfile(
-                                          )
+                                          builder: (context) => UserProfile(user: widget.user, usuDoc: widget.usuDoc,)
                                         ));
                     },
                     child: CircleAvatar(                    
@@ -92,7 +92,8 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                     otherAccountsPictures: <Widget>[
                       GestureDetector(
                         child: CircleAvatar(
-                          backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"]) : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg") , 
+                          backgroundImage: widget.usuDoc.data["foto"] != "" ? NetworkImage(widget.usuDoc.data["foto"])
+                               : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg") , 
                         ),
                       )
                     ],
@@ -331,9 +332,10 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                                   case "8": {  
                                     print("8"); 
                                     Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => ListViewProductUsu(
+                                       builder: (context) => ProductHomePage(docUsu: widget.usuDoc, usu: widget.user,)
+                                         /*  builder: (context) => ListViewProductUsu(
                                             user: widget.user, cat: widget.usuDoc,
-                                          )
+                                          ) */
                                         ));
                                     } 
                                   break;

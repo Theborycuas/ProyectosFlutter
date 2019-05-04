@@ -1,4 +1,4 @@
-import 'package:bring2me/ui/HomePage-CategoriasPrin/homePageUsu.dart';
+import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,7 +78,7 @@ class _SignInEmailState extends State<SignInEmail> {
  
               Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                   Navigator.push(context, MaterialPageRoute(
-                       builder: (context) => HomePageUsu(user:null, usuDoc: usuarioDoc,))); 
+                       builder: (context) => ListCategoriaPrincipal(user:null, usuDoc: usuarioDoc,))); 
               });
                }).catchError((e){
                  print(e);
