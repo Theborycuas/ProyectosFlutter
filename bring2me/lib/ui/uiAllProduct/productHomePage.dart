@@ -1,13 +1,13 @@
 import 'package:bring2me/ui/uiAllProduct/furniture-category-home.dart';
-import 'package:bring2me/ui/uiAllProduct/furniture-category-item.dart';
-import 'package:bring2me/ui/uiAllProduct/furniture-content-section.dart';
-import 'package:bring2me/ui/uiAllProduct/furniture_data.dart';
+import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/alitasKfc.dart';
+import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/combosKfc.dart';
+import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/hamburguesasKfc.dart';
+import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/Menestras%20del%20Negro/postres.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 class ProductHomePage extends StatefulWidget {
   const ProductHomePage({Key key, @required this.docUsu, this.usu}) : super(key: key);
@@ -69,10 +69,8 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => UserProfile(usuDoc: widget.docUsu, user: widget.usu,)
                     ));
-                },
-              
+                },              
             ),
-            
           ],
         ),
       ),
@@ -201,7 +199,6 @@ class _ProductHomePageState extends State<ProductHomePage> {
             ),
           ),
           _recuperarCategoriasGenerales(height, width),
-          /* _buildCategoriesSection(height, width), */
           _buildContent(height, width),
         ],
       ),
@@ -216,18 +213,38 @@ class _ProductHomePageState extends State<ProductHomePage> {
       child: LayoutBuilder(
         builder: (BuildContext c, BoxConstraints constraints) {
           final List<Widget> items = [];
-          furnitureResult.forEach((item) {
+          
             items.add(
-              FurnitureContentSection(
+              AlitasKfc(
                 width: constraints.maxWidth,
                 height: constraints.maxHeight * .50,
-                isLargeImg: item.price == "3500",
+                isLargeImg: "300" == "3500",
               ),
             );
-          });
+            items.add(
+              CombosKfc(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight * .50,
+                isLargeImg: "300" == "3500",
+              ),
+            );
+            items.add(
+              HamburguesasKfc(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight * .50,
+                isLargeImg: "300" == "3500",
+              ),
+            );
+            items.add(
+              PostresMenestrasNegro(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight * .50,
+                isLargeImg: "300" == "3500",
+              ),
+            );            
 
           items.add(SizedBox(
-            height: constraints.maxHeight / 3,
+            height: constraints.maxHeight / 5,
           ));
 
           return ListView(
@@ -239,23 +256,6 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-/*   Widget _buildCategoriesSection(height, width) {
-    return Positioned(
-      width: width,
-      height: 100,
-      top: (height * .35) - 45,
-      child: ListView(
-        padding: EdgeInsets.only(left: 20.0),
-        scrollDirection: Axis.horizontal,
-        children: List.generate(
-          15,
-          (int index) =>
-              FurnitureCategoryItem(newItemCount: index % 3 == 0 ? 40 : 0),
-        ).toList(),
-      ),
-    );
-  
-  } */
 
    StreamBuilder<QuerySnapshot> _recuperarCategoriasGenerales(height, width) {
      
@@ -370,117 +370,10 @@ class _ProductHomePageState extends State<ProductHomePage> {
 
               ),
             );
-
-         /*  return ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-
-                  final prodDoc = snapshot.data.documents[index];
-                  return Dismissible( // <--------------------------NEW CODE-----------------
-                    key: new Key(snapshot.data.documents[index].documentID),
-                    direction: DismissDirection.horizontal,
-                    onDismissed: (DismissDirection direction) {
-                      if (direction != DismissDirection.horizontal) {
-                          
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return AlertDialog(
-                                title: new Text("ELIMINAR PRODUCTO"),
-                                content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new FlatButton(
-                                    child: new Text("CANCELAR"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  FlatButton(
-                                    child: Text("ACEPTAR"),
-                                    onPressed: (){
-                                           Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
-                                           Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            }
-                          );
-                         
-                      }
-                    },                    
-                    
-                    child: InkWell(
-                       onTap:() { 
-                           /* Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CrearProducto(cat:widget.cat, prove: widget.prove, ciu: widget.ciu,)
-                                      ));  */
-                       },
-                       child: Column(
-                         children: <Widget>[
-                           Row(
-                             children: <Widget>[
-                               Expanded(
-                                 child: ListTile(
-                                      title: new Text(prodDoc['nombre_pro']),
-                                      subtitle: new Text(prodDoc['descripcion_pro']),
-                                      leading: Column(
-                                      children: <Widget>[
-                                        Image.network('${prodDoc['imagen_pro']}', width: 40),
-                                      ],
-                                    ),
-                                 ),
-                               ),      
-                                IconButton(
-                                icon: Icon(Icons.delete),
-                                color: Colors.red,
-                                onPressed: () { 
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context){
-                                            return AlertDialog(
-                                              title: new Text("ELIMINAR PRODUCTO"),
-                                              content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
-                                              actions: <Widget>[
-                                                // usually buttons at the bottom of the dialog
-                                                new FlatButton(
-                                                  child: new Text("CANCELAR"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                FlatButton(
-                                                  child: Text("ACEPTAR"),
-                                                  onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
-                                                        Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              ],
-                                            );
-                                          }
-                                        );
-                                 }
-                                )                            
-                             ],
-                             
-                             
-                           ),
-
-                         ],
-                         
-                       )
-                    )
-                  );
-              }
-          ); */
-
         }
     );
 
   }
-
 }
 
 
