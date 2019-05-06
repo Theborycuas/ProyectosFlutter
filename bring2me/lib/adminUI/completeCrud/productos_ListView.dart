@@ -1,6 +1,7 @@
 import 'package:bring2me/adminUI/completeCrud/crearCategoria_Admin.dart';
 import 'package:bring2me/adminUI/completeCrud/crearProductos_Admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,46 +59,10 @@ class _ListViewProductosState extends State<ListViewProductos> {
               itemBuilder: (context, index) {
 
                   final prodDoc = snapshot.data.documents[index];
-                  return Dismissible( // <--------------------------NEW CODE-----------------
-                    key: new Key(snapshot.data.documents[index].documentID),
-                    direction: DismissDirection.horizontal,
-                    onDismissed: (DismissDirection direction) {
-                      if (direction != DismissDirection.horizontal) {
-                          
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return AlertDialog(
-                                title: new Text("ELIMINAR PRODUCTO"),
-                                content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new FlatButton(
-                                    child: new Text("CANCELAR"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  FlatButton(
-                                    child: Text("ACEPTAR"),
-                                    onPressed: (){
-                                           Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
-                                           Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            }
-                          );
-                         
-                      }
-                    },                    
-                    
-                    child: InkWell(
+                  return InkWell(
                        onTap:() { 
-                           /* Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => CrearProducto(cat:widget.cat, prove: widget.prove, ciu: widget.ciu,)
-                                      ));  */
+                           _verProductoDialog(context, prodDoc, widget.ciu, widget.prove, 
+                                              widget.cat);
                        },
                        child: Column(
                          children: <Widget>[
@@ -114,6 +79,13 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                     ),
                                  ),
                                ),      
+                               IconButton(
+                                  icon: Icon(Icons.edit),
+                                  color: Colors.blueAccent,
+                                  onPressed: (){
+                                    _actualizarProductoDialog(context, prodDoc, widget.ciu, widget.prove, widget.cat);
+                                  },
+                                ),
                                 IconButton(
                                 icon: Icon(Icons.delete),
                                 color: Colors.red,
@@ -144,7 +116,8 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                           }
                                         );
                                  }
-                                )                            
+                                ),
+                                                         
                              ],
                              
                              
@@ -153,14 +126,146 @@ class _ListViewProductosState extends State<ListViewProductos> {
                          ],
                          
                        )
-                    )
+                    
                   );
               }
           );
 
         }
     );
+  }
 
+  Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
+   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: Text("${prodDoc['nombre_pro']}"),
+          content: Container(
+            height: 400.0,
+            width: 100.0,
+            child: ListView(
+              children: <Widget>[
+                Divider(height: 20,),
+                Text("Descripción:"),
+                Text("${prodDoc['descripcion_pro']}", style: TextStyle(fontSize: 20.0),),
+                Divider(height: 20,),
+                Text("Precio:"),
+                Text("\$${prodDoc['precio_pro']}", style: TextStyle(fontSize: 20.0)),
+                Divider(height: 20,),
+                SizedBox(height: 10,),
+                Text("Imagen:"),
+                SizedBox(height: 15,),
+                FlatButton(
+                  child: Image.network("${prodDoc.data["imagen_pro"]}", width: 250.0,),
+                  onPressed: (){},
+                )
+                
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancelar")
+            ),
+            // This button results in adding the contact to the database
+            new FlatButton(
+                onPressed: () {
+                   _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc);
+                },
+                child: const Text("Actualizar")
+            )
+          ],
+
+        );
+      }
+    );
+  }
+
+   Future<Null> _actualizarProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
+   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
+    TextEditingController _nombreController = new TextEditingController(text: prodDoc['nombre_pro']);
+    TextEditingController _descripcionController = new TextEditingController(text: prodDoc['descripcion_pro']);
+    TextEditingController _precioControlles = new TextEditingController(text: prodDoc['precio_pro']);
+    TextEditingController _imagen = new TextEditingController(text: prodDoc['imagen_pro']);
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: Text("EDITAR PRODUCTO"),
+          content: Container(
+            height: 420.0,
+            width: 100.0,
+            child: ListView(
+              children: <Widget>[
+                new TextField(
+                  controller: _nombreController,
+                  decoration: new InputDecoration(labelText: "NombrePro: "),
+
+                ),
+                new TextField(
+                  controller: _descripcionController,
+                  decoration: new InputDecoration(labelText: "DescripcionPro: "),
+                ),
+                new TextField(
+                  controller: _precioControlles,
+                  decoration: new InputDecoration(labelText: "PrecioPro: "),
+
+                ),
+                new TextField(
+                  enabled: false,
+                  controller: _imagen,
+                  decoration: new InputDecoration(labelText: "ImagenPro: "),
+                ),
+                SizedBox(height: 10,),
+                FlatButton(
+                  child: Image.network("${prodDoc.data["imagen_pro"]}", width: 150.0,),
+                  onPressed: (){},
+                )
+                
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancelar")
+            ),
+            // This button results in adding the contact to the database
+            new FlatButton(
+                onPressed: () {
+                  CloudFunctions.instance.call(
+                      functionName: "updateProducto",
+                      parameters: {
+                        "doc_ciu": ciuDoc.documentID,
+                        "doc_prov": provDoc.documentID,
+                        "doc_cat": catDoc.documentID,
+                        "doc_id": prodDoc.documentID,
+                        "nombre_pro": _nombreController.text,
+                        "descripcion_pro": _descripcionController.text,
+                        "precio_pro": _precioControlles.text,
+                        "imagen_pro": _imagen.text
+                      }
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Guardar")
+            )
+          ],
+
+        );
+      }
+    );
   }
   
 }

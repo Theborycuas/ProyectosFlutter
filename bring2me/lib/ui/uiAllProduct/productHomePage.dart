@@ -130,7 +130,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   height: 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: primaryColor,
+                    color: Colors.red,
                     border: Border.all(color: Colors.white),
                   ),
                 ),
@@ -149,10 +149,12 @@ class _ProductHomePageState extends State<ProductHomePage> {
       color: Colors.white,
       child: Stack(
         children: <Widget>[
+          //Fondo de color
           Positioned(
             top: 0,
             width: width,
-            height: height * .35,
+            height: height * .285,
+            //Fondo de color
             child: Container(
               color: primaryColor,
               padding: EdgeInsets.only(left: 20),
@@ -163,7 +165,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   children: <Widget>[
                     SizedBox(height: 15),
                     _buildAppBar(height, width),
-                    SizedBox(height: 30),
+                    SizedBox(height: 15),
                     Container(
                       width: width - 40,
                       height: 40,
@@ -184,7 +186,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 15),
                     Text(
                       "Categorias",
                       style: TextStyle(
@@ -207,7 +209,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
 
   Widget _buildContent(height, width) {
     return Positioned(
-      top: (height * .35) + 50,
+      top: (height * .30) + 50,
       width: width,
       height: height - (height * .35) + 50,
       child: LayoutBuilder(
@@ -281,7 +283,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
           return Positioned(
               width: width,
               height: 100,
-              top: (height * .35) - 45,
+              top: (height * .29) - 45,
               child: ListView.builder(
                 itemCount:  snapshot.data.documents.length,                
                 padding: EdgeInsets.only(left: 20.0),

@@ -5,12 +5,14 @@ import 'package:bring2me/googleMaps/maps.dart';
 import 'package:bring2me/googleMaps/mapsTest.dart';
 import 'package:bring2me/loginPage.dart';
 import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
+import 'package:bring2me/ui/search_all/searchInterface.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
    home: FirstPage(),
+   title: "Bring2Me"
   ));
 }
 
@@ -42,16 +44,7 @@ class _FirstPageState extends State<FirstPage> {
                
              },
            ),
-            RaisedButton(
-             child: Text('Iniciar Sesion Admin'),
-             onPressed: (){ 
-               Navigator.push(context, MaterialPageRoute(
-                 builder: (context) => Menu()
-                 /* builder: (context) => InicioAdmin() */
-               ));
-               
-             },
-           )
+
 
 
          ],
