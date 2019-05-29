@@ -1,43 +1,42 @@
-import 'package:bring2me/adminUI/completeCrud/crearCategoria_Admin.dart';
-import 'package:bring2me/adminUI/completeCrud/crearProductos_Admin.dart';
+
+import 'package:admin_bring2_me/adminUI/completeCrud/categoriaGen_CrearAdmin.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/proveedores_ListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ListViewProductos extends StatefulWidget {
-  const ListViewProductos({Key key, @required this.ciu, this.prove, this.cat }) : super(key: key);  
+class ListViewCategoriasGen extends StatefulWidget {
+  const ListViewCategoriasGen({Key key, @required this.ciu}) : super(key: key);  
   final DocumentSnapshot ciu;
-  final DocumentSnapshot prove;
-  final DocumentSnapshot cat;
 
   @override
-  _ListViewProductosState createState() => new _ListViewProductosState();
+  _ListViewCategoriasGenState createState() => new _ListViewCategoriasGenState();
  }
  
-class _ListViewProductosState extends State<ListViewProductos> {
+class _ListViewCategoriasGenState extends State<ListViewCategoriasGen> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
-        title: Text('PRODUCTOS:'),       
+        title: Text('CATEGORIAS GENERALES:'),       
       ),
       body: Center(
-        child: _recuperarProductos(),
+        child: _recuperarCategoriaS(),
       ),
-       floatingActionButton: FloatingActionButton(
+       /* floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearProducto(ciu: widget.ciu, prove: widget.prove, cat: widget.cat,))),
-        tooltip: 'Crear Productos',
+          builder: (context)=>CrearCategoriaGen(ciu: widget.ciu))),
+        tooltip: 'Crear Categoria',
         child: Icon(Icons.add),
-      ),      
+      ),   */    
     );
   }
 
-   StreamBuilder<QuerySnapshot> _recuperarProductos() {
+   StreamBuilder<QuerySnapshot> _recuperarCategoriaS() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -45,7 +44,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 285.0,),
-                  Text('Cargando Productos...'),
+                  Text('Cargando Categorias...'),
                   SizedBox(height: 15.0,),
                   CupertinoActivityIndicator(            
                         ),
@@ -58,11 +57,10 @@ class _ListViewProductosState extends State<ListViewProductos> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
 
-                  final prodDoc = snapshot.data.documents[index];
+                  final catGenDoc = snapshot.data.documents[index];
                   return InkWell(
                        onTap:() { 
-                           _verProductoDialog(context, prodDoc, widget.ciu, widget.prove, 
-                                              widget.cat);
+                         _verCategoriaDialog(context, catGenDoc, widget.ciu);
                        },
                        child: Column(
                          children: <Widget>[
@@ -70,32 +68,25 @@ class _ListViewProductosState extends State<ListViewProductos> {
                              children: <Widget>[
                                Expanded(
                                  child: ListTile(
-                                      title: new Text(prodDoc['nombre_pro']),
-                                      subtitle: new Text(prodDoc['descripcion_pro']),
+                                      title: new Text(catGenDoc['nombre_cat_gen']),
+                                      subtitle: new Text(catGenDoc['descripcion_cat_gen']),
                                       leading: Column(
                                       children: <Widget>[
-                                        Image.network('${prodDoc['imagen_pro']}', width: 40),
+                                        Image.network('${catGenDoc['imagen_cat_gen']}', width: 40),
                                       ],
                                     ),
                                  ),
                                ),      
-                               IconButton(
-                                  icon: Icon(Icons.edit),
-                                  color: Colors.blueAccent,
-                                  onPressed: (){
-                                    _actualizarProductoDialog(context, prodDoc, widget.ciu, widget.prove, widget.cat);
-                                  },
-                                ),
                                 IconButton(
                                 icon: Icon(Icons.delete),
                                 color: Colors.red,
-                                onPressed: () { 
-                                        showDialog(
+                                onPressed: () {
+                                  showDialog(
                                           context: context,
                                           builder: (BuildContext context){
                                             return AlertDialog(
-                                              title: new Text("ELIMINAR PRODUCTO"),
-                                              content: new Text("¿Realmente desea eliminar el prodcuto ${prodDoc.data['nombre_pro']}?"),
+                                              title: new Text("ELIMINAR LA CATEGORIA"),
+                                              content: new Text("¿Realmente desea eliminar la categoria  ${catGenDoc.data['nombre_cat_gen']}?"),
                                               actions: <Widget>[
                                                 // usually buttons at the bottom of the dialog
                                                 new FlatButton(
@@ -107,17 +98,24 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
+                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(catGenDoc.documentID).delete();        
                                                         Navigator.of(context).pop();
                                                   },
-                                                )
+                                                ),
                                               ],
                                             );
                                           }
                                         );
-                                 }
-                                ),
-                                                         
+                                     }
+                                    ), 
+                                    IconButton(
+                                      icon: Icon(Icons.arrow_forward),
+                                      onPressed: (){
+                                        Navigator.push(context, MaterialPageRoute(
+                                       builder: (context) => ListViewProveedores(ciu: widget.ciu, catGen: catGenDoc,)
+                                      ));
+                                      },
+                                    )                         
                              ],
                              
                              
@@ -126,23 +124,23 @@ class _ListViewProductosState extends State<ListViewProductos> {
                          ],
                          
                        )
-                    
                   );
               }
           );
 
         }
     );
+
   }
 
-  Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
-   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
+Future<Null> _verCategoriaDialog(BuildContext context, DocumentSnapshot catGenDoc,
+   DocumentSnapshot ciuDoc) {
 
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: Text("${prodDoc['nombre_pro']}"),
+          title: Text("${catGenDoc['nombre_cat']}"),
           content: Container(
             height: 400.0,
             width: 100.0,
@@ -150,16 +148,13 @@ class _ListViewProductosState extends State<ListViewProductos> {
               children: <Widget>[
                 Divider(height: 20,),
                 Text("Descripción:"),
-                Text("${prodDoc['descripcion_pro']}", style: TextStyle(fontSize: 20.0),),
-                Divider(height: 20,),
-                Text("Precio:"),
-                Text("\$${prodDoc['precio_pro']}", style: TextStyle(fontSize: 20.0)),
+                Text("${catGenDoc['descripcion_cat']}", style: TextStyle(fontSize: 20.0),),
                 Divider(height: 20,),
                 SizedBox(height: 10,),
                 Text("Imagen:"),
                 SizedBox(height: 15,),
                 FlatButton(
-                  child: Image.network("${prodDoc.data["imagen_pro"]}", width: 250.0,),
+                  child: Image.network("${catGenDoc.data["imagen_cat"]}", width: 250.0,),
                   onPressed: (){},
                 )
                 
@@ -177,7 +172,8 @@ class _ListViewProductosState extends State<ListViewProductos> {
             // This button results in adding the contact to the database
             new FlatButton(
                 onPressed: () {
-                   _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc);
+                  _actualizarCategoriaDialog(context, catGenDoc, widget.ciu);
+                   
                 },
                 child: const Text("Actualizar")
             )
@@ -188,18 +184,17 @@ class _ListViewProductosState extends State<ListViewProductos> {
     );
   }
 
-   Future<Null> _actualizarProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
-   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
-    TextEditingController _nombreController = new TextEditingController(text: prodDoc['nombre_pro']);
-    TextEditingController _descripcionController = new TextEditingController(text: prodDoc['descripcion_pro']);
-    TextEditingController _precioControlles = new TextEditingController(text: prodDoc['precio_pro']);
-    TextEditingController _imagen = new TextEditingController(text: prodDoc['imagen_pro']);
+   Future<Null> _actualizarCategoriaDialog(BuildContext context, DocumentSnapshot catGenDoc,
+    DocumentSnapshot ciuDoc) {
+    TextEditingController _nombreController = new TextEditingController(text: catGenDoc['nombre_cat']);
+    TextEditingController _descripcionController = new TextEditingController(text: catGenDoc['descripcion_cat']);
+    TextEditingController _imagen = new TextEditingController(text: catGenDoc['imagen_cat']);
 
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: Text("EDITAR PRODUCTO"),
+          title: Text("EDITAR CATEGORIA"),
           content: Container(
             height: 420.0,
             width: 100.0,
@@ -207,26 +202,21 @@ class _ListViewProductosState extends State<ListViewProductos> {
               children: <Widget>[
                 new TextField(
                   controller: _nombreController,
-                  decoration: new InputDecoration(labelText: "NombrePro: "),
+                  decoration: new InputDecoration(labelText: "NombreCat: "),
 
                 ),
                 new TextField(
                   controller: _descripcionController,
-                  decoration: new InputDecoration(labelText: "DescripcionPro: "),
-                ),
-                new TextField(
-                  controller: _precioControlles,
-                  decoration: new InputDecoration(labelText: "PrecioPro: "),
-
+                  decoration: new InputDecoration(labelText: "DescripcionCat: "),
                 ),
                 new TextField(
                   enabled: false,
                   controller: _imagen,
-                  decoration: new InputDecoration(labelText: "ImagenPro: "),
+                  decoration: new InputDecoration(labelText: "ImagenCat: "),
                 ),
                 SizedBox(height: 10,),
                 FlatButton(
-                  child: Image.network("${prodDoc.data["imagen_pro"]}", width: 150.0,),
+                  child: Image.network("${catGenDoc.data["imagen_cat"]}", width: 150.0,),
                   onPressed: (){},
                 )
                 
@@ -241,20 +231,17 @@ class _ListViewProductosState extends State<ListViewProductos> {
                 },
                 child: const Text("Cancelar")
             ),
-            // This button results in adding the contact to the database
+            
             new FlatButton(
                 onPressed: () {
                   CloudFunctions.instance.call(
-                      functionName: "updateProducto",
+                      functionName: "actualizarCategoriaGeneral",
                       parameters: {
                         "doc_ciu": ciuDoc.documentID,
-                        "doc_prov": provDoc.documentID,
-                        "doc_cat": catDoc.documentID,
-                        "doc_id": prodDoc.documentID,
-                        "nombre_pro": _nombreController.text,
-                        "descripcion_pro": _descripcionController.text,
-                        "precio_pro": _precioControlles.text,
-                        "imagen_pro": _imagen.text
+                        "doc_id": catGenDoc.documentID,
+                        "nombre_cat_gen": _nombreController.text,
+                        "descripcion_cat_gen": _descripcionController.text,
+                        "imagen_cat_gen": _imagen.text
                       }
                   );
                   Navigator.of(context).pop();
@@ -266,6 +253,6 @@ class _ListViewProductosState extends State<ListViewProductos> {
         );
       }
     );
-  }
+  }  
   
 }

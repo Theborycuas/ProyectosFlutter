@@ -1,12 +1,13 @@
-import 'package:admin_bring2_me/adminUI/completeCrud/crearProductos_Admin.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/productos_CrearAdmin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListViewProductos extends StatefulWidget {
-  const ListViewProductos({Key key, @required this.ciu, this.prove, this.cat }) : super(key: key);  
-  final DocumentSnapshot ciu;
+  const ListViewProductos({Key key, @required this.ciu, this.catGen, this.prove, this.cat }) : super(key: key);  
+  final DocumentSnapshot ciu;  
+  final DocumentSnapshot catGen;
   final DocumentSnapshot prove;
   final DocumentSnapshot cat;
 
@@ -26,7 +27,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
       ),
        floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearProducto(ciu: widget.ciu, prove: widget.prove, cat: widget.cat,))),
+          builder: (context)=>CrearProducto(ciu: widget.ciu, catGen: widget.catGen, prove: widget.prove, cat: widget.cat,))),
         tooltip: 'Crear Productos',
         child: Icon(Icons.add),
       ),      
@@ -36,7 +37,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
    StreamBuilder<QuerySnapshot> _recuperarProductos() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('productos').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -61,7 +62,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
                   return InkWell(
                        onTap:() { 
                            _verProductoDialog(context, prodDoc, widget.ciu, widget.prove, 
-                                              widget.cat);
+                                              widget.cat, widget.catGen);
                        },
                        child: Column(
                          children: <Widget>[
@@ -82,7 +83,8 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                   icon: Icon(Icons.edit),
                                   color: Colors.blueAccent,
                                   onPressed: (){
-                                    _actualizarProductoDialog(context, prodDoc, widget.ciu, widget.prove, widget.cat);
+                                    _actualizarProductoDialog(context, prodDoc, widget.ciu, 
+                                    widget.prove, widget.cat, widget.catGen);
                                   },
                                 ),
                                 IconButton(
@@ -106,7 +108,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
+                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(widget.cat.documentID).collection('producto').document(prodDoc.documentID).delete();        
                                                         Navigator.of(context).pop();
                                                   },
                                                 )
@@ -135,7 +137,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
   }
 
   Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
-   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
+   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc, DocumentSnapshot catGen) {
 
     return showDialog(
       context: context,
@@ -176,7 +178,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
             // This button results in adding the contact to the database
             new FlatButton(
                 onPressed: () {
-                   _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc);
+                   _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen);
                 },
                 child: const Text("Actualizar")
             )
@@ -188,7 +190,7 @@ class _ListViewProductosState extends State<ListViewProductos> {
   }
 
    Future<Null> _actualizarProductoDialog(BuildContext context, DocumentSnapshot prodDoc,
-   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc) {
+   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catDoc, DocumentSnapshot catgen) {
     TextEditingController _nombreController = new TextEditingController(text: prodDoc['nombre_pro']);
     TextEditingController _descripcionController = new TextEditingController(text: prodDoc['descripcion_pro']);
     TextEditingController _precioControlles = new TextEditingController(text: prodDoc['precio_pro']);

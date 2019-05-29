@@ -9,8 +9,9 @@ import 'package:path/path.dart';
 import 'package:toast/toast.dart';
 
 class CrearCategoria extends StatefulWidget {
-  const CrearCategoria({Key key, @required this.ciu, this.prov}): super(key:key);
+  const CrearCategoria({Key key, @required this.ciu, this.prov, this.catGen}): super(key:key);
   final DocumentSnapshot  ciu;
+  final DocumentSnapshot catGen;
   final DocumentSnapshot prov;
   @override
   _CrearCategoriaState createState() => new _CrearCategoriaState();
@@ -23,15 +24,20 @@ class _CrearCategoriaState extends State<CrearCategoria> {
 
     TextEditingController _nombreCiu = new TextEditingController();
     TextEditingController _nombreProv = new TextEditingController();
+    TextEditingController _nombreCatGen = new TextEditingController();
     TextEditingController _nombreController = new TextEditingController();
     TextEditingController _descripcionController = new TextEditingController();
     TextEditingController _imagen = new TextEditingController();
+    bool imagensubida = false;
 
 @override
   void initState() {
     // TODO: implement initState
     _nombreCiu = TextEditingController(text: widget.ciu.data['nombre_ciu']);
     _nombreProv = TextEditingController(text: widget.prov.data['nombre_prov']);
+    _nombreCatGen = TextEditingController(text: widget.catGen.data['nombre_cat_gen']);
+    image = null;
+    filename = null; 
     super.initState();
   }
   @override
@@ -59,6 +65,15 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                 ),
                 Padding(padding: EdgeInsets.only(top: 8.0),),
                 Divider(),
+                TextField(
+                  controller: _nombreCatGen,
+                  enabled: false,
+                  style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.camera_front),
+                    labelText: 'Nombre Categoria General:'
+                  ),
+                ),                
                 TextField(
                   controller: _nombreProv,
                   enabled: false,
@@ -93,6 +108,7 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                 Padding(padding: EdgeInsets.only(top: 8.0),),
                 Divider(),
                 TextField(
+                  enabled: false,
                   controller: _imagen,
                   style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                   decoration: InputDecoration(
@@ -118,19 +134,28 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                 
                 RaisedButton(
                   onPressed: () {
-                    CloudFunctions.instance.call(
-                      functionName: "crearCategoria",
-                      parameters: {
-                        "doc_ciu": widget.ciu.documentID,
-                        "doc_prov": widget.prov.documentID,
-                        "nombre_cat": _nombreController.text,
-                        "descripcion_cat": _descripcionController.text,
-                        "imagen_cat": _imagen.text,
-                      }
-                    );
-                   
-                    image = null;
-                    Navigator.of(context).pop();
+                    if(_nombreController.text != "" && _descripcionController.text != "" && imagensubida != false){
+                        CloudFunctions.instance.call(
+                          functionName: "updateCategoria",
+                          parameters: {
+                            "doc_ciu": widget.ciu.documentID,
+                            "doc_catGen": widget.catGen.documentID,
+                            "doc_prov": widget.prov.documentID,
+                            "nombre_cat": _nombreController.text,
+                            "descripcion_cat": _descripcionController.text,
+                            "imagen_cat": _imagen.text,
+                          }
+                        );
+                      
+                        image = null;
+                        Navigator.of(context).pop();
+                    }
+                    else{                           
+                        print('no actions');
+                        showToast("INGRESE LA INFORMACION COMPLETA", context,
+                        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);  
+                    }                        
+
                   },
                   child: const Text("Guardar")
               )           
@@ -144,7 +169,9 @@ class _CrearCategoriaState extends State<CrearCategoria> {
     );
     
   }
-
+void showToast(String msg, BuildContext context, {int duration, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+  }
 
   //Seleccionar imagen o tmar foto. 
   Future _getImage() async{
@@ -175,6 +202,7 @@ Future<String> uploadImage ()async{
   var url = downUrl.toString(); 
     setState(() { 
         _imagen = TextEditingController(text: url);
+        imagensubida = true;
     });
 
   return url;

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,21 +7,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:toast/toast.dart';
 
-class CrearCategoria extends StatefulWidget {
-  const CrearCategoria({Key key, @required this.ciu, this.prov}): super(key:key);
+class CrearCategoriaGen extends StatefulWidget {
+  const CrearCategoriaGen({Key key, @required this.ciu}): super(key:key);
   final DocumentSnapshot  ciu;
-  final DocumentSnapshot prov;
   @override
-  _CrearCategoriaState createState() => new _CrearCategoriaState();
+  _CrearCategoriaGenState createState() => new _CrearCategoriaGenState();
  }
   //imagen
   File image = null;
   String filename = null; //image
 
-class _CrearCategoriaState extends State<CrearCategoria> {
+class _CrearCategoriaGenState extends State<CrearCategoriaGen> {
 
     TextEditingController _nombreCiu = new TextEditingController();
-    TextEditingController _nombreProv = new TextEditingController();
     TextEditingController _nombreController = new TextEditingController();
     TextEditingController _descripcionController = new TextEditingController();
     TextEditingController _imagen = new TextEditingController();
@@ -31,14 +28,15 @@ class _CrearCategoriaState extends State<CrearCategoria> {
   void initState() {
     // TODO: implement initState
     _nombreCiu = TextEditingController(text: widget.ciu.data['nombre_ciu']);
-    _nombreProv = TextEditingController(text: widget.prov.data['nombre_prov']);
+    image = null;
+    filename = null;
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
   return new Scaffold(
       appBar: AppBar(
-        title: Text('CREAR CATEGORIA'),
+        title: Text('CREAR CATEGORIA GENERAL'),
       ),
       body: Container(
         height: 670.0,
@@ -57,26 +55,14 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                     labelText: 'Nombre Ciudad:'
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: 8.0),),
-                Divider(),
-                TextField(
-                  controller: _nombreProv,
-                  enabled: false,
-                  style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.camera_front),
-                    labelText: 'Nombre Proveedor:'
-                  ),
-                ),
-                
-                Padding(padding: EdgeInsets.only(top: 8.0),),
+                Padding(padding: EdgeInsets.only(top: 8.0),),               
                 Divider(),
                 TextField(
                   controller: _nombreController,
                   style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                   decoration: InputDecoration(
                     icon: Icon(Icons.content_paste),
-                    labelText: 'Nombre Categoria:'
+                    labelText: 'Nombre Categoria General:'
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(top: 8.0),),
@@ -93,6 +79,7 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                 Padding(padding: EdgeInsets.only(top: 8.0),),
                 Divider(),
                 TextField(
+                  enabled: false,
                   controller: _imagen,
                   style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
                   decoration: InputDecoration(
@@ -119,13 +106,12 @@ class _CrearCategoriaState extends State<CrearCategoria> {
                 RaisedButton(
                   onPressed: () {
                     CloudFunctions.instance.call(
-                      functionName: "crearCategoria",
+                      functionName: "actualizarCategoriaGen",
                       parameters: {
                         "doc_ciu": widget.ciu.documentID,
-                        "doc_prov": widget.prov.documentID,
-                        "nombre_cat": _nombreController.text,
-                        "descripcion_cat": _descripcionController.text,
-                        "imagen_cat": _imagen.text,
+                        "nombre_cat_gen": _nombreController.text,
+                        "descripcion_cat_gen": _descripcionController.text,
+                        "imagen_cat_gen": _imagen.text,
                       }
                     );
                    

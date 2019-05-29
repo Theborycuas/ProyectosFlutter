@@ -1,3 +1,4 @@
+import 'package:admin_bring2_me/adminUI/loginAdmin.dart';
 import 'package:admin_bring2_me/adminUI/menu_Admin.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ void main() {
 
    home: FirstPage(),
    title: "AdminBring2Me",
-  ));
+  )); 
 }
 
 class FirstPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _FirstPageState extends State<FirstPage> {
   Widget build(BuildContext context) {
    return new Scaffold(
      appBar: AppBar(
-       title: Text('Bring2Me'),
+       title: Text('Bring2MeAdmin'),
        backgroundColor: Colors.black,
      ),
      body: Container(
@@ -34,15 +35,16 @@ class _FirstPageState extends State<FirstPage> {
              onPressed: (){
                Navigator.push(context, MaterialPageRoute(
                  builder: (context) => Menu()
-               ));
-               
+                 /* builder: (context) => InicioAdmin() */
+                 
+               )
+               );               
              },
-           )
+           ),
+           
          ],
        ),
-     ),
-
-  
+     ),  
    );
   }
 }

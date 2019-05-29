@@ -36,6 +36,7 @@ dependencies:
   flutter_screenutil: ^0.5.2
   geolocator: ^4.0.1
   flutter_google_places:  
+  firebase_dynamic_links: ^0.4.0
 
 dev_dependencies:
   flutter_test:

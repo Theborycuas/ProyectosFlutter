@@ -1,32 +1,33 @@
-import 'package:bring2me/adminUI/completeCrud/crearCategoria_Admin.dart';
-import 'package:bring2me/adminUI/completeCrud/productos_ListView.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/categoriaProv_CrearAdmin.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/productos_ListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ListViewCategorias extends StatefulWidget {
-  const ListViewCategorias({Key key, @required this.ciu, this.prove }) : super(key: key);  
+class ListViewCategoriasProv extends StatefulWidget {
+  const ListViewCategoriasProv({Key key, @required this.ciu, this.prove, this.catGen }) : super(key: key);  
   final DocumentSnapshot ciu;
   final DocumentSnapshot prove;
+  final DocumentSnapshot catGen;
 
   @override
-  _ListViewCategoriasState createState() => new _ListViewCategoriasState();
+  _ListViewCategoriasProvState createState() => new _ListViewCategoriasProvState();
  }
  
-class _ListViewCategoriasState extends State<ListViewCategorias> {
+class _ListViewCategoriasProvState extends State<ListViewCategoriasProv> {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
       appBar: AppBar(
-        title: Text('CATEGORIAS:'),       
+        title: Text('CATEGORIAS de ${widget.prove.data['nombre_prov']}:'),       
       ),
       body: Center(
         child: _recuperarCategoriaS(),
       ),
        floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearCategoria(ciu: widget.ciu, prov: widget.prove,))),
+          builder: (context)=>CrearCategoria(ciu: widget.ciu,  prov: widget.prove, catGen: widget.catGen,))),
         tooltip: 'Crear Ciudad',
         child: Icon(Icons.add),
       ),      
@@ -36,7 +37,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
    StreamBuilder<QuerySnapshot> _recuperarCategoriaS() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -60,7 +61,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                   final catDoc = snapshot.data.documents[index];
                   return InkWell(
                        onTap:() { 
-                         _verCategoriaDialog(context, catDoc, widget.ciu, widget.prove);
+                         _verCategoriaDialog(context, catDoc,  widget.ciu, widget.prove, widget.catGen);
                        },
                        child: Column(
                          children: <Widget>[
@@ -98,7 +99,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(catDoc.documentID).delete();        
+                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(widget.prove.documentID).collection('categoria').document(catDoc.documentID).delete();        
                                                         Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -112,7 +113,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                                       icon: Icon(Icons.arrow_forward),
                                       onPressed: (){
                                         Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => ListViewProductos(ciu: widget.ciu, prove: widget.prove, cat: catDoc,)
+                                       builder: (context) => ListViewProductos(ciu: widget.ciu, catGen: widget.catGen, prove: widget.prove, cat: catDoc,)
                                       ));
                                       },
                                     )                         
@@ -134,7 +135,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
   }
 
 Future<Null> _verCategoriaDialog(BuildContext context, DocumentSnapshot catDoc,
-   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc) {
+   DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catGen) {
 
     return showDialog(
       context: context,
@@ -172,7 +173,7 @@ Future<Null> _verCategoriaDialog(BuildContext context, DocumentSnapshot catDoc,
             // This button results in adding the contact to the database
             new FlatButton(
                 onPressed: () {
-                  _actualizarCategoriaDialog(context, catDoc, ciuDoc, provDoc);
+                  _actualizarCategoriaDialog(context, catDoc, ciuDoc, provDoc, catDoc);
                    
                 },
                 child: const Text("Actualizar")
@@ -185,7 +186,7 @@ Future<Null> _verCategoriaDialog(BuildContext context, DocumentSnapshot catDoc,
   }
 
    Future<Null> _actualizarCategoriaDialog(BuildContext context, DocumentSnapshot catDoc,
-    DocumentSnapshot ciuDoc, DocumentSnapshot provDoc) {
+    DocumentSnapshot ciuDoc, DocumentSnapshot provDoc, DocumentSnapshot catGen) {
     TextEditingController _nombreController = new TextEditingController(text: catDoc['nombre_cat']);
     TextEditingController _descripcionController = new TextEditingController(text: catDoc['descripcion_cat']);
     TextEditingController _imagen = new TextEditingController(text: catDoc['imagen_cat']);
@@ -238,6 +239,7 @@ Future<Null> _verCategoriaDialog(BuildContext context, DocumentSnapshot catDoc,
                       functionName: "updateCategoria",
                       parameters: {
                         "doc_ciu": ciuDoc.documentID,
+                        "doc_catGen": catGen.documentID,
                         "doc_prov": provDoc.documentID,
                         "doc_id": catDoc.documentID,
                         "nombre_cat": _nombreController.text,

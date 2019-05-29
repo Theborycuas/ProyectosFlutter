@@ -9,8 +9,9 @@ import 'package:path/path.dart';
 import 'package:toast/toast.dart';
 
 class CrearProducto extends StatefulWidget {
-  const CrearProducto({Key key, this.ciu, this.prove, this.cat}) : super(key:key);
+  const CrearProducto({Key key, this.ciu, this.catGen, this.prove, this.cat}) : super(key:key);
   final DocumentSnapshot ciu;
+  final DocumentSnapshot catGen;
   final DocumentSnapshot prove;
   final DocumentSnapshot cat;
   @override
@@ -22,6 +23,7 @@ class CrearProducto extends StatefulWidget {
 class _CrearProductoState extends State<CrearProducto> {
 
     TextEditingController _nombreCiudad = TextEditingController();
+    TextEditingController _nombreCatGen = TextEditingController();
     TextEditingController _nombreProveedor = TextEditingController();
     TextEditingController _nombreCategoria = TextEditingController();
     TextEditingController _nombreController = new TextEditingController();
@@ -36,6 +38,7 @@ class _CrearProductoState extends State<CrearProducto> {
   void initState() {
     // TODO: implement initState
     _nombreCiudad = TextEditingController(text: widget.ciu.data["nombre_ciu"]);
+    _nombreCatGen = TextEditingController(text: widget.catGen.data["nombre_cat_gen"]);
     _nombreProveedor = TextEditingController(text: widget.prove.data["nombre_prov"]);
     _nombreCategoria = TextEditingController(text: widget.cat.data["nombre_cat"]);
     super.initState();
@@ -55,10 +58,10 @@ class _CrearProductoState extends State<CrearProducto> {
   Future _getImage() async{
     var selectedImage =await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
-    image = selectedImage;
-    filename = basename(image.path);
-    uploadArea();
-    uploadImage();
+      image = selectedImage;
+      filename = basename(image.path);
+      uploadArea();
+      uploadImage();
     });
 
 }//imagen
@@ -136,6 +139,17 @@ Future<String> uploadImage ()async{
                           ),
                         ),
                         Divider(),                                        
+                       SizedBox(height: 5.0,),                      
+                       TextField(
+                         enabled: false,
+                          controller: _nombreCatGen,
+                          style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.panorama_horizontal),
+                            labelText: 'Categoria General:'
+                          ),
+                        ),
+                        Divider(),                         
                        TextField(
                          enabled: false,
                           controller: _nombreProveedor,
@@ -221,6 +235,7 @@ Future<String> uploadImage ()async{
                                     functionName: "crearProducto",
                                     parameters: {
                                       "doc_ciu": widget.ciu.documentID,
+                                      "doc_catGen": widget.catGen.documentID,                                     
                                       "doc_prov": widget.prove.documentID,
                                       "doc_cat": widget.cat.documentID,
                                       "nombre_pro": _nombreController.text,
@@ -236,7 +251,7 @@ Future<String> uploadImage ()async{
                               
                               print('no actions');
                               showToast("INGRESE LA INFORMACION COMPLETA", context,
-                                 duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+                                 duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);  
                             }
                           },
                           child: const Text("Guardar Producto")

@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 Color primaryColor = Color(0xffdc2f2e);
+String subCat;
 
-class FurnitureCategoryHome extends StatelessWidget {
-  FurnitureCategoryHome({Key key}) : super(key: key);
-
+class FurnitureCategoriaAlcohol extends StatelessWidget {
+  FurnitureCategoriaAlcohol({Key key, @required this.docCat}) : super(key: key);
+  final DocumentSnapshot docCat;
+  
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -27,7 +30,7 @@ class FurnitureCategoryHome extends StatelessWidget {
                     },
                   ),
                   Text(
-                    "Chair Furniture",
+                    docCat.data["nombre_cat_gen"],
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
@@ -83,12 +86,12 @@ class FurnitureCategoryHome extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.only(left: 10),
                 children: <Widget>[
-                  _buildCategoryItem(
+                 /*  _buildCategoryItem(
                     width: 70.0,
-                    child: Icon(
+                  /*   child: Icon(
                       Icons.tune,
                       size: 32.0,
-                    ),
+                    ), */
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
@@ -106,45 +109,41 @@ class FurnitureCategoryHome extends StatelessWidget {
                         },
                       );
                     },
+                  ), */
+                  _buildCategoryItem(
+                    width: 100.0,
+                    subCat: "Cerveza"
                   ),
                   _buildCategoryItem(
                     width: 100.0,
-                    child: Text(
-                      "Office",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                      ),
-                    ),
-                    color: primaryColor,
+                    subCat: "Vino"
+                  ),
+                  _buildCategoryItem(
+                     width: 100.0,
+                    subCat: "Whisky"                    
                   ),
                   _buildCategoryItem(
                     width: 100.0,
-                    child: Text(
-                      "Kitchen",
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
+                    subCat: "Tequila"
                   ),
                   _buildCategoryItem(
                     width: 100.0,
-                    child: Text(
-                      "Cofe",
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
+                    subCat: "Vodka"
+                  ),
+                  _buildCategoryItem(
+                     width: 100.0,
+                    subCat: "Ron"                    
                   ),
                   _buildCategoryItem(
                     width: 100.0,
-                    child: Text(
-                      "Home",
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
+                    subCat: "Ginebra"
                   ),
+                  _buildCategoryItem(
+                    width: 100.0,
+                    subCat: "Brandy"
+                  ),                                
+
+                  
                 ],
               ),
             ),
@@ -152,7 +151,7 @@ class FurnitureCategoryHome extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: <Widget>[
-                  Row(
+                  /* Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       _buildItem(width),
@@ -165,7 +164,7 @@ class FurnitureCategoryHome extends StatelessWidget {
                       _buildItem(width),
                       _buildItem(width),
                     ],
-                  ),
+                  ), */
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -181,6 +180,7 @@ class FurnitureCategoryHome extends StatelessWidget {
       ),
     );
   }
+  
 
   Widget _buildItem(double width) {
     return Padding(
@@ -276,7 +276,7 @@ class FurnitureCategoryHome extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryItem({width, child, color = Colors.white, onTap}) {
+  Widget _buildCategoryItem({width, String subCat, color = Colors.white, onTap}) {
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -292,7 +292,59 @@ class FurnitureCategoryHome extends StatelessWidget {
             color: color,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: child,
+          child: InkWell(            
+            child: Text(
+                      "${subCat}",
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    ),
+            onTap: (){
+                      switch(subCat.toString()) { 
+                                  case "Cerveza": {  
+                                    print("cerveza");
+                                    } 
+                                  break; 
+                                
+                                  case "Vino": {  
+                                    
+                                    } 
+                                  break; 
+                                
+                                  case "Whisky": {  
+                                    
+                                    } 
+                                  break; 
+                                
+                                  case "Tequila": {  
+                                    
+                                    } 
+                                  break; 
+                                  case "Vodka": {  
+                                    
+                                    } 
+                                  break;
+                                  case "Ron": {  
+                                   
+                                    } 
+                                  break;
+                                  case "Ginegra": {  
+                                    
+                                    } 
+                                  break;
+                                  case "Brandy": {  
+                                    
+                                    } 
+                                  break;
+                                
+                                  default: { print("Incorrecto"); } 
+                                  break; 
+                              }
+
+              /* 
+                  print("Hola soy "+child.); */
+            },
+          ),
         ),
       ),
     );

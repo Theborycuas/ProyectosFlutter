@@ -1,4 +1,5 @@
-import 'package:bring2me/ui/uiAllProduct/furniture-category-home.dart';
+import 'package:bring2me/ui/uiAllProduct/SubCategoriasYProductos/SubAlcohol.dart';
+import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat.dart';
 import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/alitasKfc.dart';
 import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/combosKfc.dart';
 import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/hamburguesasKfc.dart';
@@ -29,12 +30,59 @@ class _ProductHomePageState extends State<ProductHomePage> {
         title: Text("Bienvenido a BRING2ME"),
         backgroundColor: Colors.blueGrey,
       ),
-      bottomNavigationBar: _buildBottomBar(),
-      body: _buildBody(height, width),
+      bottomNavigationBar: _contruccionBottomBar(),
+             drawer: Drawer(
+            elevation: 20.0,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountName: Text(widget.docUsu.data["nombres"]),
+                  accountEmail: Text(widget.docUsu.data["correo"]),
+                  currentAccountPicture: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => UserProfile(user: widget.usu, usuDoc: widget.docUsu,)
+                                        ));
+                    },
+                    child: CircleAvatar(                    
+                    backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"]) 
+                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+                  ),
+                  ),
+                  
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    /* image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage("${widget.user.photoUrl}"),
+                    ) */),
+                    otherAccountsPictures: <Widget>[
+                      GestureDetector(
+                        child: CircleAvatar(
+                          backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"])
+                               : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg") , 
+                        ),
+                      )
+                    ],
+
+                ),
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text("Hola"),
+                  trailing: Icon(Icons.settings),
+                  onTap: (){
+
+                  },
+                )
+              ],
+            )
+          ),
+      body: _construccionCuerpo(height, width),
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _contruccionBottomBar() {
     return BottomAppBar(
       child: Padding(
         padding: const EdgeInsets.all(8),
@@ -77,7 +125,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-  Widget _buildAppBar(height, width) {
+  Widget _construccionAppBar(height, width) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,7 +165,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   color: Colors.white,
                 ),
                 child: Icon(
-                  Icons.notifications_none,
+                  Icons.shopping_cart,
                   color: Colors.black87,
                   size: 28,
                 ),
@@ -142,7 +190,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-  Widget _buildBody(height, width) {
+  Widget _construccionCuerpo(height, width) {
     return Container(
       height: height,
       width: width,
@@ -164,7 +212,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 15),
-                    _buildAppBar(height, width),
+                    _construccionAppBar(height, width),
                     SizedBox(height: 15),
                     Container(
                       width: width - 40,
@@ -201,13 +249,13 @@ class _ProductHomePageState extends State<ProductHomePage> {
             ),
           ),
           _recuperarCategoriasGenerales(height, width),
-          _buildContent(height, width),
+          _contruccionContenidos(height, width),
         ],
       ),
     );
   }
 
-  Widget _buildContent(height, width) {
+  Widget _contruccionContenidos(height, width) {
     return Positioned(
       top: (height * .30) + 50,
       width: width,
@@ -218,6 +266,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
           
             items.add(
               AlitasKfc(
+                user: widget.usu,
                 width: constraints.maxWidth,
                 height: constraints.maxHeight * .50,
                 isLargeImg: "300" == "3500",
@@ -305,7 +354,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (c) => FurnitureCategoryHome(),
+                                builder: (c) => ProveYCat(docCat: catGenDoc),
                               ),
                             );
                           },

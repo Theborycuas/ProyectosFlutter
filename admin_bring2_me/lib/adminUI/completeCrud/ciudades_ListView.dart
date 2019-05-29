@@ -1,5 +1,5 @@
-import 'package:admin_bring2_me/adminUI/completeCrud/crearCiudad_Admin.dart';
-import 'package:admin_bring2_me/adminUI/completeCrud/proveedores_ListView.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/categoriaGen_ListView.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/ciudad_CrearAdmin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
@@ -109,7 +109,7 @@ StreamBuilder<QuerySnapshot> _recuperarCiudades() {
                                  icon: Icon(Icons.arrow_forward, color: Colors.blue,),
                                      onPressed: (){
                                         Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) => ListViewProveedores(ciu: ciudadDoc)
+                                            builder: (context) => ListViewCategoriasGen(ciu: ciudadDoc)
                                                     ));
                                      },
                                   )

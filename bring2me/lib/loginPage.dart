@@ -2,18 +2,18 @@ import 'package:bring2me/LoginPage/CustomIcons.dart';
 import 'package:bring2me/LoginPage/SocialIcons.dart';
 import 'package:bring2me/login/register_page.dart';
 import 'package:bring2me/login/signin_google_perfil.dart';
-import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
+import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toast/toast.dart';
 
-void main() => runApp(MaterialApp(
-      home: MyAppLoginPage(),
-      debugShowCheckedModeBanner: false,
-    ));
-
+final FirebaseAuth _auth = FirebaseAuth.instance;
 class MyAppLoginPage extends StatefulWidget {
+  const MyAppLoginPage({Key key, @required this.usuDoc , this.user}) : super(key: key);  
+  final FirebaseUser user;
+  final DocumentSnapshot usuDoc;
   @override
   _MyAppLoginPageState createState() => new _MyAppLoginPageState();
 }
@@ -26,9 +26,10 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
 
   @override
   void initState() {
-    passwordVisible = true;
+    
     _emailController = TextEditingController(text: "");
     _paswordcontroller = TextEditingController(text: "");
+    passwordVisible = true;
   }
   bool _isSelected = false;
 
@@ -72,6 +73,7 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
+      
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -154,29 +156,30 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
                               
                                 TextField(
                                   controller: _paswordcontroller,
-                                  obscureText: true,
+                                  
                                 
                                   decoration: InputDecoration(
                                     labelText: 'Contraseña',
                                       hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0),
                                       icon: Icon(Icons.vpn_key),
                                       suffixIcon: IconButton(
-                                        icon: Icon(
-                                          
-                                          passwordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                          color: Theme.of(context).primaryColorDark,
-                                        ),
-                                        onPressed: (){
-                                          setState(() {
-                                            passwordVisible
-                                            ? passwordVisible = false
-                                            : passwordVisible = true;                                      
-                                          });
-                                        },
-                                      )
+                                                  icon: Icon(
+                                                    passwordVisible
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                    color: Theme.of(context).primaryColorDark,
+                                                  ),
+                                                  onPressed: (){
+                                                    setState(() {
+                                                      passwordVisible
+                                                      ? passwordVisible = false
+                                                      : passwordVisible = true;
+                                                    });
+                                                  },
+                                                ),
+                                                
                                       ),
+                                      obscureText: passwordVisible,
                                       
                                 ),
                                 SizedBox(
@@ -241,7 +244,7 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-                                      signInEmail(context);
+                                      _signInEmail(context);
 
                                   },
                                   child: Center(
@@ -347,19 +350,57 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
     );
   }
 
-  Future<Null> signInEmail(BuildContext context) async{
+  Future<Null> _signInEmail(BuildContext context) async{
+    FirebaseUser user;
 
+    try {
+      user = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _paswordcontroller.text,
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+    finally {
+      if (user != null) {
+        // sign in successful!
+            Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
+               Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ProductHomePage(usu: user, docUsu: usuarioDoc,)));
+              showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+       });
+      } else {
+        // sign in unsuccessful
+        showToast("Clave o contraseña incorrecta", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+        print('sign in Not');
+      }
+    }
+  
+/* 
     FirebaseAuth.instance.signInWithEmailAndPassword(
       email: _emailController.text,
       password: _paswordcontroller.text,
        ).then((FirebaseUser user){
             Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ListCategoriaPrincipal(user:null, usuDoc: usuarioDoc,))); 
+                  builder: (context) => ProductHomePage(usu: user, docUsu: usuarioDoc,)));
+              showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
        });
          }).catchError((e){
                print(e);
-           });    
+               showToast(e, context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM); 
+               
+           }); 
+            */
+              
      
   }
+    void showToast(String msg, BuildContext context, {int duration, int gravity}) 
+  {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+   }
 }

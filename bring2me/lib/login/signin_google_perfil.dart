@@ -1,5 +1,5 @@
-import 'dart:math';
-import 'package:bring2me/ui/HomePage-CategoriasPrin/List_Categorias_Princ.dart';
+import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
+import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:toast/toast.dart';
 
 class AuthService {
 
@@ -66,13 +67,19 @@ Observable<Map<String, dynamic>> profile;
              loading.add(false);
              Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                   Navigator.push(context, MaterialPageRoute(
-                       builder: (context) => ListCategoriaPrincipal(user:user, usuDoc: usuarioDoc,))); 
+                       builder: (context) => ProductHomePage(usu:user, docUsu: usuarioDoc,))); 
+                  showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
               });
                isLogIn = true;
      }
      return isLogIn;
      
   }
+  void showToast(String msg, BuildContext context, {int duration, int gravity}) 
+  {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+   }
 
    void updateUserDatabase(FirebaseUser user, BuildContext context)async{
 

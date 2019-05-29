@@ -1,5 +1,5 @@
-import 'package:admin_bring2_me/adminUI/completeCrud/categoria_ListView.dart';
-import 'package:admin_bring2_me/adminUI/completeCrud/crearProveedores_Admin.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/categoriaProv_ListView.dart';
+import 'package:admin_bring2_me/adminUI/completeCrud/proveedores_CrearAdmin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class ListViewProveedores extends StatefulWidget {
-  const ListViewProveedores({Key key, @required this.ciu }) : super(key: key);  
+  const ListViewProveedores({Key key, @required this.ciu, this.catGen }) : super(key: key);  
   final DocumentSnapshot ciu;
+  final   DocumentSnapshot catGen;
 
   @override
   _ListViewProveedoresState createState() => new _ListViewProveedoresState();
@@ -28,7 +29,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
       ),
        floatingActionButton: FloatingActionButton(
         onPressed:() => Navigator.push(context, MaterialPageRoute(
-          builder: (context)=>CrearProveedor(prove: widget.ciu))),
+          builder: (context)=>CrearProveedor(ciu: widget.ciu, catGen: widget.catGen,))),
         tooltip: 'Crear Ciudad',
         child: Icon(Icons.add),
       ),      
@@ -38,7 +39,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
    StreamBuilder<QuerySnapshot> _recuperarProveedores() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').snapshots(),      
+      stream: Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -62,7 +63,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
                   final provDoc = snapshot.data.documents[index];
                   return InkWell(
                        onTap:() { 
-                                  _verProveedorDialog(context, provDoc, widget.ciu);
+                                  _verProveedorDialog(context, provDoc, widget.ciu, widget.catGen);
                        },
                        child: Column(
                          children: <Widget>[
@@ -96,7 +97,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('proveedor').document(provDoc.documentID).delete();        
+                                                    Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(provDoc.documentID).delete();
                                                         Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -110,7 +111,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
                                 icon: Icon(Icons.arrow_forward),
                                 onPressed: () { 
                                   Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => ListViewCategorias(ciu: widget.ciu, prove: provDoc,)
+                                      builder: (context) => ListViewCategoriasProv(ciu: widget.ciu, catGen: widget.catGen, prove: provDoc, )
                                               ));      
                                  }
                                 )                            
@@ -131,7 +132,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
     );
 
   }
-  Future<Null> _verProveedorDialog(BuildContext context, DocumentSnapshot provDoc, DocumentSnapshot ciuDoc) {
+  Future<Null> _verProveedorDialog(BuildContext context, DocumentSnapshot provDoc, DocumentSnapshot ciuDoc, DocumentSnapshot catGen) {
 
     return showDialog(
       context: context,
@@ -166,7 +167,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
             // This button results in adding the contact to the database
             new FlatButton(
                 onPressed: () {
-                  _actualizarProveedorDialog(context, provDoc, ciuDoc);
+                  _actualizarProveedorDialog(context, provDoc, ciuDoc, catGen);
                    
                 },
                 child: const Text("Actualizar")
@@ -178,7 +179,8 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
     );
   }
 
-   Future<Null> _actualizarProveedorDialog(BuildContext context, DocumentSnapshot provDoc, DocumentSnapshot ciuDoc) {
+   Future<Null> _actualizarProveedorDialog(BuildContext context, DocumentSnapshot provDoc,
+    DocumentSnapshot ciuDoc, DocumentSnapshot catGen) {
     TextEditingController _nombreController = new TextEditingController(text: provDoc['nombre_prov']);
     TextEditingController _telefono = new TextEditingController(text: provDoc['telefono_prov']);
     TextEditingController _direccion = new TextEditingController(text: provDoc['direccion_prov']);
@@ -225,6 +227,7 @@ class _ListViewProveedoresState extends State<ListViewProveedores> {
                       functionName: "updateProveedor",
                       parameters: {
                         "doc_ciu": ciuDoc.documentID,
+                        "doc_catGen": catGen.documentID,
                         "doc_id": provDoc.documentID,
                         "nombre_prov": _nombreController.text,
                         "direccion_prov": _direccion.text,

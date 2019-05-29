@@ -8,8 +8,9 @@ import 'package:path/path.dart';
 import 'package:toast/toast.dart';
 
 class CrearProveedor extends StatefulWidget {
-  const CrearProveedor({Key key, @required this.prove}):super(key: key);
-  final DocumentSnapshot prove;
+  const CrearProveedor({Key key, @required this.ciu, this.catGen}):super(key: key);
+  final DocumentSnapshot ciu;
+  final DocumentSnapshot catGen;
   @override
   _CrearProveedorState createState() => new _CrearProveedorState();
  }
@@ -19,6 +20,7 @@ class CrearProveedor extends StatefulWidget {
 
 class _CrearProveedorState extends State<CrearProveedor> {
     TextEditingController _nombreCiudad = new TextEditingController();
+    TextEditingController _nombreCategoiaGen = new TextEditingController();
     TextEditingController _nombreController = new TextEditingController();
     TextEditingController _direccionController = new TextEditingController();
     TextEditingController _telefonoControlles = new TextEditingController();
@@ -26,7 +28,8 @@ class _CrearProveedorState extends State<CrearProveedor> {
 @override
   void initState() {
     // TODO: implement initState
-    _nombreCiudad = TextEditingController(text: widget.prove.data['nombre_ciu']);
+    _nombreCiudad = TextEditingController(text: widget.ciu.data['nombre_ciu']);
+    _nombreCategoiaGen = TextEditingController(text: widget.catGen.data['nombre_cat_gen']);
     super.initState();
   }
 
@@ -52,6 +55,15 @@ class _CrearProveedorState extends State<CrearProveedor> {
                     labelText: 'Ciudad:'
                   ),
                 ),
+                TextField(
+                  enabled: false,
+                  controller: _nombreCategoiaGen,
+                  style: TextStyle(fontSize: 17.0, color: Colors.deepOrangeAccent),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.panorama_wide_angle),
+                    labelText: 'Categoria General:'
+                  ),
+                ),                
                 Padding(padding: EdgeInsets.only(top: 8.0),),
                 Divider(),
                 TextField(
@@ -86,17 +98,26 @@ class _CrearProveedorState extends State<CrearProveedor> {
                 Padding(padding: EdgeInsets.only(top: 8.0),),                
                 RaisedButton(
                   onPressed: () {
-                    CloudFunctions.instance.call(
-                      functionName: "crearProveedor",
-                      parameters: {
-                        "doc_ciu": widget.prove.documentID,
-                        "nombre_prov": _nombreController.text,
-                        "direccion_prov": _direccionController.text,
-                        "telefono_prov": _telefonoControlles.text,
-                      }
-                    );
-                   
-                    Navigator.of(context).pop();
+                    if(_nombreController.text != "" && _direccionController.text != "" && _telefonoControlles.text != ""){
+                        CloudFunctions.instance.call(
+                          functionName: "updateProveedor",
+                          parameters: {
+                            "doc_ciu": widget.ciu.documentID,
+                            "doc_catGen": widget.catGen.documentID,
+                            "nombre_prov": _nombreController.text,
+                            "direccion_prov": _direccionController.text,
+                            "telefono_prov": _telefonoControlles.text,
+                          }
+                        );
+                      
+                        Navigator.of(context).pop();
+                    }
+                    else{                           
+                        print('no actions');
+                        showToast("INGRESE LA INFORMACION COMPLETA", context,
+                        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);  
+                    }                    
+
                   },
                   child: const Text("Guardar")
               )           
@@ -110,4 +131,7 @@ class _CrearProveedorState extends State<CrearProveedor> {
     );
     
   }  
+  void showToast(String msg, BuildContext context, {int duration, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+  }
 }

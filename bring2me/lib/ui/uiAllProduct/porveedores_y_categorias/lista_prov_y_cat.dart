@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AlitasKfc extends StatelessWidget {
-  const AlitasKfc(
+class PruebaListaProveedoresYCartegoria extends StatelessWidget {
+  const PruebaListaProveedoresYCartegoria(
       {Key key, @required this.width, this.height, this.isLargeImg = false, this.user})
       : super(key: key);
 
@@ -29,7 +29,7 @@ class AlitasKfc extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Alitas de KFC",
+                "Licoreria San Marcos",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class AlitasKfc extends StatelessWidget {
             child: LayoutBuilder(
               builder: (BuildContext c, BoxConstraints constr) {
                 return new StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ciudad').document("ORYrQioVN7Pny0KZ6Mg7").collection('proveedor').document("27xbICfN52yat7hdcokl").collection('categoria').document("oXFXAEsAXyNHQx71rOmR").collection('producto').snapshots(),      
+                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document("ALCOHOL").collection('proveedor').document('Licorería Andrade').collection('categoria').snapshots(),      
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     
                       if (!snapshot.hasData || snapshot.data == null) {
@@ -74,7 +74,7 @@ class AlitasKfc extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount:  snapshot.data.documents.length,
                         itemBuilder: (context, index){
-                        final prodDoc = snapshot.data.documents[index];
+                        final catProvDoc = snapshot.data.documents[index];
                             return Padding(
                               padding: const EdgeInsets.only(right: 15),
                               child: Container(
@@ -94,7 +94,7 @@ class AlitasKfc extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(5),
                                             image: DecorationImage(
                                               fit: BoxFit.cover,
-                                              image: NetworkImage("${prodDoc.data["imagen_pro"]}"),
+                                              image: NetworkImage("${catProvDoc.data["imagen_cat"]}"),
                                               colorFilter: ColorFilter.mode(
                                                 Colors.black.withOpacity(0.2),
                                                 BlendMode.hardLight,
@@ -103,8 +103,8 @@ class AlitasKfc extends StatelessWidget {
                                           ),
                                         ),
                                         onTap: (){
-                                          print("${prodDoc.data["nombre_pro"]}");
-                                          _verProductoDialog(context, prodDoc, user);
+                                          print("${catProvDoc.data["nombre_cat"]}");
+                                          _verProductoDialog(context, catProvDoc, user);
                                         },
                                     ),
                                     
@@ -116,7 +116,7 @@ class AlitasKfc extends StatelessWidget {
                                           SizedBox(
                                             width: 175.0,
                                             child: Text(
-                                            "${prodDoc.data["nombre_pro"]}",
+                                            "${catProvDoc.data["nombre_cat"]}",
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class AlitasKfc extends StatelessWidget {
                                             width: 175.0,
                                             child: Text(
                                               
-                                                "${prodDoc.data["nombre_pro"]}",
+                                                "${catProvDoc.data["nombre_cat"]}",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontSize: 16,
@@ -140,10 +140,10 @@ class AlitasKfc extends StatelessWidget {
                                         ],
                                       ),
                                       InkWell(
-                                          child: Icon(Icons.shopping_cart),
+                                          child: Icon(Icons.arrow_forward),
                                           onTap: (){
-                                            print("soy un ${prodDoc.data["nombre_pro"]}");
-                                            _verProductoDialog(context, prodDoc, user);
+                                            print("soy un ${catProvDoc.data["nombre_cat"]}");
+                                            _verProductoDialog(context, catProvDoc, user);
                                           },
 
                                         ),
@@ -152,7 +152,16 @@ class AlitasKfc extends StatelessWidget {
                                     Row(
                                       children: <Widget>[
                                         Text(
-                                          "\$${prodDoc.data["precio_pro"]}",
+                                          "hi",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            decoration: TextDecoration.lineThrough,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        
+/*                                         Text(
+                                          "\$${catProvDoc.data["precio_pro"]}",
                                           style: TextStyle(
                                             color: Colors.grey,
                                             decoration: TextDecoration.lineThrough,
@@ -161,13 +170,13 @@ class AlitasKfc extends StatelessWidget {
                                         ),
                                         SizedBox(width: 10),
                                         Text(
-                                          "\$${prodDoc.data["precio_pro"]}",
+                                          "\$${catProvDoc.data["precio_pro"]}",
                                           style: TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 19,
                                           ),
-                                        ),
+                                        ), */
                                         
                                       ],
                                     ),

@@ -1,5 +1,4 @@
-import 'package:bring2me/adminUI/loginAdmin.dart';
-import 'package:bring2me/login/register_page.dart';
+/* import 'package:bring2me/login/register_page.dart';
 import 'package:bring2me/login/sigin_email.dart';
 import 'package:bring2me/login/signin_google_perfil.dart';
 import 'package:flutter/material.dart';
@@ -117,4 +116,4 @@ class _LoginPageState extends State<LoginPage> {
      ),  
    );
   }
-}
+} */
