@@ -1,9 +1,4 @@
-import 'package:bring2me/ui/uiAllProduct/SubCategoriasYProductos/SubAlcohol.dart';
-import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/alitasKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/combosKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/hamburguesasKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/Menestras%20del%20Negro/postres.dart';
+import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat_list.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -96,7 +91,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
               color: primaryColor,
             ),
             Icon(
-              Icons.adjust,
+              Icons.favorite_border,
               color: Colors.black54,
               size: 30,
             ),
@@ -105,11 +100,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
               size: 30,
               color: Colors.black54,
             ),
-            Icon(
-              Icons.message,
-              color: Colors.black54,
-              size: 30,
-            ),
+           
             IconButton(
               icon: Icon(Icons.perm_identity, 
                 size: 30.0,),
@@ -165,7 +156,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                   color: Colors.white,
                 ),
                 child: Icon(
-                  Icons.shopping_cart,
+                  Icons.message,
                   color: Colors.black87,
                   size: 28,
                 ),
@@ -250,6 +241,10 @@ class _ProductHomePageState extends State<ProductHomePage> {
           ),
           _recuperarCategoriasGenerales(height, width),
           _contruccionContenidos(height, width),
+         /*  Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: ProveYCat(docCatGen: catGenDoc,),
+          ) */
         ],
       ),
     );
@@ -257,53 +252,95 @@ class _ProductHomePageState extends State<ProductHomePage> {
 
   Widget _contruccionContenidos(height, width) {
     return Positioned(
-      top: (height * .30) + 50,
+      top: (height * .15) + 150,
       width: width,
-      height: height - (height * .35) + 50,
-      child: LayoutBuilder(
-        builder: (BuildContext c, BoxConstraints constraints) {
-          final List<Widget> items = [];
-          
-            items.add(
-              AlitasKfc(
-                user: widget.usu,
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
+      height: height - (height * .35) + 130,
+      child: StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('ciudad').document('Esmeraldas').collection('categoriaGen').document("COMIDA").collection('proveedor').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData || snapshot.data == null) {
+            //print(logger);
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 285.0,),
+                  Text('Cargando Ciudades...'),
+                  SizedBox(height: 15.0,),
+                  CupertinoActivityIndicator(            
+                        ),
+                ],
               ),
-            );
-            items.add(
-              CombosKfc(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
-              ),
-            );
-            items.add(
-              HamburguesasKfc(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
-              ),
-            );
-            items.add(
-              PostresMenestrasNegro(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
-              ),
-            );            
+                
+             );
+          }
+          return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                  final catProvDoc = snapshot.data.documents[index];
 
-          items.add(SizedBox(
-            height: constraints.maxHeight / 5,
-          ));
-
-          return ListView(
-            padding: EdgeInsets.only(left: 20),
-            children: items,
+                  return InkWell(
+                       onTap:() {
+                         /* _verCategoriaDialog(context, ciudadDoc); */                        
+                         },
+                       child: Column(                         
+                         children: <Widget>[                           
+                           Row(
+                             children: <Widget>[                               
+                               Expanded(                                 
+                                 child: Padding(
+                                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                   child: Column(
+                                     children: <Widget>[
+                                       Padding(
+                                         padding: const EdgeInsets.only(right: 120),
+                                         child: Text(catProvDoc['nombre_prov'],
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                            )
+                                            ),
+                                            )
+                                       
+                                       
+                                                                              
+                                     ],
+                                   )
+                                 )
+                                 
+                                 /* ListTile(
+                                      
+                                      title: new Text(ciudadDoc['nombre_prov']),
+                                      subtitle: new Text(ciudadDoc['direccion_prov']),                                     
+                                 ), */
+                               ),
+                               IconButton(
+                                 icon: Icon(Icons.arrow_forward, color: Colors.blue,),
+                                     onPressed: (){
+                                        /* Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) => ListViewCategoriasGen(ciu: ciudadDoc)
+                                                    )); */
+                                     },
+                                  )                               
+                             ],                             
+                           ),
+                           /* Padding(
+                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                             child: PruebaListaProveedoresYCartegoria(
+                                      width: 350.0,
+                                      height: 250.0,
+                                      isLargeImg: "300" == "3500",
+                                      docProv: catProvDoc,
+                                      docCatGen: docCatGen,
+                                   ),  
+                           ) */
+                         
+                         ],
+                       )
+                    );
+              }
           );
-        },
-      ),
+        }
+    )
     );
   }
 
@@ -354,7 +391,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (c) => ProveYCat(docCat: catGenDoc),
+                                builder: (c) => ProveYCat(docCatGen: catGenDoc, usu: widget.usu, userDoc: widget.docUsu,)
                               ),
                             );
                           },

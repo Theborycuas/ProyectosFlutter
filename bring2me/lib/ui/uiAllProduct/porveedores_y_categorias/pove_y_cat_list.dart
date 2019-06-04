@@ -1,17 +1,21 @@
-import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/lista_prov_y_cat.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/alitasKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/combosKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/KFC/hamburguesasKfc.dart';
-import 'package:bring2me/ui/uiAllProduct/productPrincipalPage/Menestras%20del%20Negro/postres.dart';
+import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/categoria_de_proveedores.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Color primaryColor = Color(0xffdc2f2e);
+Color primaryColor = Colors.blueGrey;
 String subCat;
 
 class ProveYCat extends StatelessWidget {
-  ProveYCat({Key key, @required this.docCat}) : super(key: key);
-  final DocumentSnapshot docCat;
+  ProveYCat({Key key, @required this.docCatGen, this.usu, this.userDoc}) : super(key: key);
+  final DocumentSnapshot docCatGen;
+  final FirebaseUser usu;
+  final DocumentSnapshot userDoc;
+
+  
+  
+  
   
   @override
   Widget build(BuildContext context) {
@@ -66,7 +70,7 @@ class ProveYCat extends StatelessWidget {
                                         },
                                       ),
                                       Text(
-                                        docCat.data["nombre_cat_gen"],
+                                        docCatGen.data["nombre_cat_gen"],
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 22,
@@ -118,27 +122,7 @@ class ProveYCat extends StatelessWidget {
                             ),
                           ),                            
                     ),
-                    /* SizedBox(height: 15),
-                    TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.black87,
-                          ),
-                          hintText: 'Buscalo, encuentralo y pidelo ahora...',
-                        ),
-                      ),
-                    Text(
-                      "Categorias",
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ) */
+                   
                   ],
                 ),
               ),
@@ -153,39 +137,95 @@ class ProveYCat extends StatelessWidget {
 
   Widget _contruccionContenidos(height, width) {
     return Positioned(
-      top: (height * .15) + 50,
+      top: (height * .15) + 27,
       width: width,
-      height: height - (height * .35) + 50,
-      child: LayoutBuilder(
-        builder: (BuildContext c, BoxConstraints constraints) {
-          final List<Widget> items = [];
-          
-
-            items.add(
-              PruebaListaProveedoresYCartegoria(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
+      height: height - (height * .35) + 130,
+      child: StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('ciudad').document('Esmeraldas').collection('categoriaGen').document(docCatGen.documentID).collection('proveedor').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData || snapshot.data == null) {
+            //print(logger);
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 285.0,),
+                  Text('Cargando Ciudades...'),
+                  SizedBox(height: 15.0,),
+                  CupertinoActivityIndicator(            
+                        ),
+                ],
               ),
-            );
-            items.add(
-              PruebaListaProveedoresYCartegoria(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight * .50,
-                isLargeImg: "300" == "3500",
-              ),
-            );          
+                
+             );
+          }
+          return ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                  final catProvDoc = snapshot.data.documents[index];
 
-          items.add(SizedBox(
-            height: constraints.maxHeight / 5,
-          ));
-
-          return ListView(
-            padding: EdgeInsets.only(left: 20),
-            children: items,
+                  return InkWell(
+                       onTap:() {
+                         /* _verCategoriaDialog(context, ciudadDoc); */
+                        
+                         },
+                       child: Column(                         
+                         children: <Widget>[                           
+                           Row(
+                             children: <Widget>[                               
+                               Expanded(                                 
+                                 child: Padding(
+                                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                   child: Column(
+                                     children: <Widget>[
+                                       Padding(
+                                         padding: const EdgeInsets.only(right: 120),
+                                         child: Text(catProvDoc['nombre_prov'],
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                            )
+                                            ),
+                                            )
+                                       
+                                       
+                                                                              
+                                     ],
+                                   )
+                                 )
+                                
+                               ),
+                               IconButton(
+                                 icon: Icon(Icons.arrow_forward, color: Colors.blue,),
+                                     onPressed: (){
+                                        /* Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) => ListViewCategoriasGen(ciu: ciudadDoc)
+                                                    )); */
+                                     },
+                                  )
+                               
+                             ],
+                             
+                           ),
+                           Padding(
+                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                             child: PruebaListaProveedoresYCartegoria(
+                                      width: 350.0,
+                                      height: 250.0,
+                                      isLargeImg: "300" == "3500",
+                                      docProv: catProvDoc,
+                                      docCatGen: docCatGen,
+                                      usu: usu,
+                                      userDoc: userDoc,
+                                   ),  
+                           )
+                         
+                         ],
+                       )
+                    );
+              }
           );
-        },
-      ),
+        }
+    )
     );
   }
 }

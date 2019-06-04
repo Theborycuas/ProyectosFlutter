@@ -1,3 +1,4 @@
+import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,13 +7,17 @@ import 'package:flutter/material.dart';
 
 class PruebaListaProveedoresYCartegoria extends StatelessWidget {
   const PruebaListaProveedoresYCartegoria(
-      {Key key, @required this.width, this.height, this.isLargeImg = false, this.user})
+      {Key key, @required this.width, this.height, this.isLargeImg = false,
+       this.docProv, this.docCatGen, this.usu, this.userDoc})
       : super(key: key);
 
   final double height;
   final double width;
   final bool isLargeImg;
-  final FirebaseUser user;
+  final DocumentSnapshot docProv;
+  final DocumentSnapshot docCatGen;
+  final FirebaseUser usu;
+  final DocumentSnapshot userDoc;
 
   
 
@@ -24,32 +29,13 @@ class PruebaListaProveedoresYCartegoria extends StatelessWidget {
       child: Column(
         children: <Widget>[
           SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Licoreria San Marcos",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Icon(
-                  Icons.arrow_forward,
-                  size: 28,
-                ),
-              ),
-            ],
-          ),
+
           SizedBox(height: 15),
           Expanded(
             child: LayoutBuilder(
               builder: (BuildContext c, BoxConstraints constr) {
                 return new StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document("ALCOHOL").collection('proveedor').document('Licorería Andrade').collection('categoria').snapshots(),      
+                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document(docCatGen.documentID).collection('proveedor').document(docProv.documentID).collection('categoria').snapshots(),      
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     
                       if (!snapshot.hasData || snapshot.data == null) {
@@ -68,7 +54,7 @@ class PruebaListaProveedoresYCartegoria extends StatelessWidget {
                         );
                       }
                       return Container(
-                      width: constr.maxWidth,
+                      width: constr.maxWidth ,
                       height: constr.maxHeight,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -104,7 +90,11 @@ class PruebaListaProveedoresYCartegoria extends StatelessWidget {
                                         ),
                                         onTap: (){
                                           print("${catProvDoc.data["nombre_cat"]}");
-                                          _verProductoDialog(context, catProvDoc, user);
+                                           Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, 
+                                                catProvDoc: catProvDoc , proveDoc: docProv, usu: usu, userDoc: userDoc,)
+                                              ));
+                                          /* _verProductoDialog(context, catProvDoc, user); */
                                         },
                                     ),
                                     
@@ -143,7 +133,10 @@ class PruebaListaProveedoresYCartegoria extends StatelessWidget {
                                           child: Icon(Icons.arrow_forward),
                                           onTap: (){
                                             print("soy un ${catProvDoc.data["nombre_cat"]}");
-                                            _verProductoDialog(context, catProvDoc, user);
+                                            Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, proveDoc: docProv, catProvDoc: catProvDoc , )
+                                              ));
+                                            /* _verProductoDialog(context, catProvDoc, user); */
                                           },
 
                                         ),
