@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PruebaListaProveedoresYCartegoria extends StatelessWidget {
-  const PruebaListaProveedoresYCartegoria(
+class ListaProveedoresYCartegoria extends StatelessWidget {
+  const ListaProveedoresYCartegoria(
       {Key key, @required this.width, this.height, this.isLargeImg = false,
        this.docProv, this.docCatGen, this.usu, this.userDoc})
       : super(key: key);

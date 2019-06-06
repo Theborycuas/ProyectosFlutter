@@ -95,8 +95,8 @@ StreamBuilder<QuerySnapshot> _recuperarCiudades() {
                                                 FlatButton(
                                                   child: Text("ACEPTAR"),
                                                   onPressed: (){
-                                                        Firestore.instance.collection('ciudad').document(ciudadDoc.documentID).delete();        
-                                                        Navigator.of(context).pop();
+                                                       /*  Firestore.instance.collection('ciudad').document(ciudadDoc.documentID).delete();        
+                                                        Navigator.of(context).pop(); */
                                                   },
                                                 ),
                                               ],

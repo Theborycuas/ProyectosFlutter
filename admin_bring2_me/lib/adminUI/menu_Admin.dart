@@ -1,6 +1,6 @@
 import 'package:admin_bring2_me/adminUI/categoriasGeneales/categoriasGenerales_ListView.dart';
 import 'package:admin_bring2_me/adminUI/completeCrud/ciudades_ListView.dart';
-import 'package:admin_bring2_me/adminUI/listPedidos_Admin.dart';
+import 'package:admin_bring2_me/adminUI/pedidos/listPedidos_Admin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
@@ -51,7 +51,7 @@ class _MenuState extends State<Menu> {
                 child: Text("PEDIDOS"),             
                 onPressed: (){  
                   Navigator.push(context, 
-                      MaterialPageRoute(builder: (context) => AdminPedidos()));
+                      MaterialPageRoute(builder: (context) => ListViewPedidos()));
                       showToast("Bienvenido al Panel de Pedidos", 
                       duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
                   

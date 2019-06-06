@@ -1,20 +1,18 @@
+import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AlitasKfc extends StatelessWidget {
-  const AlitasKfc(
-      {Key key, @required this.width, this.height, this.isLargeImg = false, this.user})
-      : super(key: key);
+class ListaPromociones extends StatelessWidget {
+  const ListaPromociones({Key key, @required this.width, this.height, this.isLargeImg = false,
+    this.docCatProv,}) : super(key: key);
 
   final double height;
   final double width;
   final bool isLargeImg;
-  final FirebaseUser user;
-
-  
+  final DocumentSnapshot docCatProv;  
 
   @override
   Widget build(BuildContext context) {
@@ -24,32 +22,11 @@ class AlitasKfc extends StatelessWidget {
       child: Column(
         children: <Widget>[
           SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Alitas de KFC",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Icon(
-                  Icons.arrow_forward,
-                  size: 28,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 15),
           Expanded(
             child: LayoutBuilder(
               builder: (BuildContext c, BoxConstraints constr) {
                 return new StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ciudad').document("ORYrQioVN7Pny0KZ6Mg7").collection('proveedor').document("27xbICfN52yat7hdcokl").collection('categoria').document("oXFXAEsAXyNHQx71rOmR").collection('producto').snapshots(),      
+                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document('COMIDA').collection('proveedor').document(docCatProv.documentID).collection('categoria').document('Promociones').collection('productos').snapshots(),      
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     
                       if (!snapshot.hasData || snapshot.data == null) {
@@ -68,7 +45,7 @@ class AlitasKfc extends StatelessWidget {
                         );
                       }
                       return Container(
-                      width: constr.maxWidth,
+                      width: constr.maxWidth ,
                       height: constr.maxHeight,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -103,8 +80,12 @@ class AlitasKfc extends StatelessWidget {
                                           ),
                                         ),
                                         onTap: (){
-                                          print("${prodDoc.data["nombre_pro"]}");
-                                          _verProductoDialog(context, prodDoc, user);
+                                          /* print("${catProvDoc.data["nombre_cat"]}");
+                                           Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, 
+                                                catProvDoc: catProvDoc , proveDoc: docProv, usu: usu, userDoc: userDoc,)
+                                              )); */
+                                          /* _verProductoDialog(context, catProvDoc, user); */
                                         },
                                     ),
                                     
@@ -126,11 +107,11 @@ class AlitasKfc extends StatelessWidget {
                                           ),
                                           SizedBox(
                                             width: 175.0,
-                                            child: Text(
-                                              
-                                                "${prodDoc.data["nombre_pro"]}",
+                                            child: Text(                                              
+                                                "\$ ${prodDoc.data["precio_pro"]}",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
+                                                  decoration: TextDecoration.lineThrough,
                                                   fontSize: 16,
                                                   color: Colors.grey,
                                                 ),
@@ -140,10 +121,13 @@ class AlitasKfc extends StatelessWidget {
                                         ],
                                       ),
                                       InkWell(
-                                          child: Icon(Icons.shopping_cart),
+                                          child: Icon(Icons.arrow_forward),
                                           onTap: (){
-                                            print("soy un ${prodDoc.data["nombre_pro"]}");
-                                            _verProductoDialog(context, prodDoc, user);
+                                            /* print("soy un ${catProvDoc.data["nombre_cat"]}");
+                                            Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, proveDoc: docProv, catProvDoc: catProvDoc , )
+                                              )); */
+                                            /* _verProductoDialog(context, catProvDoc, user); */
                                           },
 
                                         ),
@@ -151,8 +135,17 @@ class AlitasKfc extends StatelessWidget {
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        Text(
-                                          "\$${prodDoc.data["precio_pro"]}",
+                                      Text(                                             
+                                           "\$ ${prodDoc.data["precio_pro"]}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(                                            
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        
+/*                                         Text(
+                                          "\$${catProvDoc.data["precio_pro"]}",
                                           style: TextStyle(
                                             color: Colors.grey,
                                             decoration: TextDecoration.lineThrough,
@@ -161,13 +154,13 @@ class AlitasKfc extends StatelessWidget {
                                         ),
                                         SizedBox(width: 10),
                                         Text(
-                                          "\$${prodDoc.data["precio_pro"]}",
+                                          "\$${catProvDoc.data["precio_pro"]}",
                                           style: TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 19,
                                           ),
-                                        ),
+                                        ), */
                                         
                                       ],
                                     ),

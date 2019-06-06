@@ -1,3 +1,4 @@
+import 'package:bring2me/ui/uiAllProduct/relizar%20pedido/confirmar_direccion.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +39,7 @@ class _ListProductosState extends State<ListProductos> {
           if (!snapshot.hasData || snapshot.data == null) {
             print("No existen productos.");
             //print(logger);
-            return Container();
+            return Container(); 
           }
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
@@ -159,7 +160,13 @@ class _ListProductosState extends State<ListProductos> {
                   icon: Icon(Icons.shopping_cart),
                   color: Colors.blueGrey,
                   onPressed: (){ 
-                      CloudFunctions.instance.call(
+                    Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => ConfirmarDireccionYPedido(userDoc: userDoc,
+                                                catGenDoc: widget.catGenDoc, proveDoc: widget.proveDoc,
+                                                catProvDoc: widget.catProvDoc, prodDoc: prodDoc,)
+                        ));
+                    
+                      /* CloudFunctions.instance.call(
                         functionName: "crearPedidoUsu",
                         parameters: {
                           "doc_id": usu.uid,
@@ -182,9 +189,8 @@ class _ListProductosState extends State<ListProductos> {
                           "precio": prodDoc['precio_pro'],
                           "imagen": prodDoc['imagen_pro'],
                         }
-                      );  
-                      Navigator.of(context).pop();
-                      
+                      );   *//* 
+                      Navigator.of(context).pop();  */                     
                   }
                   ,)
               ],

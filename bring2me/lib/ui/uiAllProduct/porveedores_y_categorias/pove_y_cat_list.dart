@@ -12,9 +12,7 @@ class ProveYCat extends StatelessWidget {
   final DocumentSnapshot docCatGen;
   final FirebaseUser usu;
   final DocumentSnapshot userDoc;
-
-  
-  
+ 
   
   
   @override
@@ -208,7 +206,7 @@ class ProveYCat extends StatelessWidget {
                            ),
                            Padding(
                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                             child: PruebaListaProveedoresYCartegoria(
+                             child: ListaProveedoresYCartegoria(
                                       width: 350.0,
                                       height: 250.0,
                                       isLargeImg: "300" == "3500",

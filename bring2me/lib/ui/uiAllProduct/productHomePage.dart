@@ -1,4 +1,7 @@
 import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat_list.dart';
+import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
+import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_promociones.dart';
+import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_prov_promo.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,41 +80,89 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-  Widget _contruccionBottomBar() {
-    return BottomAppBar(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.home,
-              size: 35,
+  
+  Widget _construccionCuerpo(height, width) {
+    return Container(
+      height: height,
+      width: width,
+      color: Colors.white,
+      child: Stack(
+        children: <Widget>[
+          //Fondo de color
+          Positioned(
+            top: 0,
+            width: width,
+            height: height * .285,
+            //Fondo de color
+            child: Container(
               color: primaryColor,
+              padding: EdgeInsets.only(left: 20),
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 15),
+                    _construccionAppBar(height, width),
+                    SizedBox(height: 15),
+                    Container(
+                      width: width - 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black87,
+                          ),
+                          hintText: 'Buscalo, encuentralo y pidelo ahora...',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      "Categorias",
+                      style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-            Icon(
-              Icons.favorite_border,
-              color: Colors.black54,
-              size: 30,
-            ),
-            Icon(
-              Icons.shopping_cart,
-              size: 30,
-              color: Colors.black54,
-            ),
-           
-            IconButton(
-              icon: Icon(Icons.perm_identity, 
-                size: 30.0,),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => UserProfile(usuDoc: widget.docUsu, user: widget.usu,)
-                    ));
-                },              
-            ),
-          ],
-        ),
+          ),
+          _recuperarCategoriasGenerales(height, width),
+         Padding(
+           padding: EdgeInsets.fromLTRB(100.0, 270.0, 100.0, 100.0),
+           child:   Text("PROMOCIONES",
+              style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),       
+         ),
+         ListaProvPromo(
+                                      width: width,
+                                      height: height,
+                                   ),  
+                   
+         /* _contruccionContenidos(height, width), */
+          /* _contruccionContenidos(height, width) */
+          
+         /*  Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: ProveYCat(docCatGen: catGenDoc,),
+          ) */
+        ],
       ),
     );
   }
@@ -180,171 +231,6 @@ class _ProductHomePageState extends State<ProductHomePage> {
       ],
     );
   }
-
-  Widget _construccionCuerpo(height, width) {
-    return Container(
-      height: height,
-      width: width,
-      color: Colors.white,
-      child: Stack(
-        children: <Widget>[
-          //Fondo de color
-          Positioned(
-            top: 0,
-            width: width,
-            height: height * .285,
-            //Fondo de color
-            child: Container(
-              color: primaryColor,
-              padding: EdgeInsets.only(left: 20),
-              child: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 15),
-                    _construccionAppBar(height, width),
-                    SizedBox(height: 15),
-                    Container(
-                      width: width - 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.black87,
-                          ),
-                          hintText: 'Buscalo, encuentralo y pidelo ahora...',
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      "Categorias",
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          _recuperarCategoriasGenerales(height, width),
-          _contruccionContenidos(height, width),
-         /*  Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: ProveYCat(docCatGen: catGenDoc,),
-          ) */
-        ],
-      ),
-    );
-  }
-
-  Widget _contruccionContenidos(height, width) {
-    return Positioned(
-      top: (height * .15) + 150,
-      width: width,
-      height: height - (height * .35) + 130,
-      child: StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('ciudad').document('Esmeraldas').collection('categoriaGen').document("COMIDA").collection('proveedor').snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData || snapshot.data == null) {
-            //print(logger);
-            return Center(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 285.0,),
-                  Text('Cargando Ciudades...'),
-                  SizedBox(height: 15.0,),
-                  CupertinoActivityIndicator(            
-                        ),
-                ],
-              ),
-                
-             );
-          }
-          return ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-                  final catProvDoc = snapshot.data.documents[index];
-
-                  return InkWell(
-                       onTap:() {
-                         /* _verCategoriaDialog(context, ciudadDoc); */                        
-                         },
-                       child: Column(                         
-                         children: <Widget>[                           
-                           Row(
-                             children: <Widget>[                               
-                               Expanded(                                 
-                                 child: Padding(
-                                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                   child: Column(
-                                     children: <Widget>[
-                                       Padding(
-                                         padding: const EdgeInsets.only(right: 120),
-                                         child: Text(catProvDoc['nombre_prov'],
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            )
-                                            ),
-                                            )
-                                       
-                                       
-                                                                              
-                                     ],
-                                   )
-                                 )
-                                 
-                                 /* ListTile(
-                                      
-                                      title: new Text(ciudadDoc['nombre_prov']),
-                                      subtitle: new Text(ciudadDoc['direccion_prov']),                                     
-                                 ), */
-                               ),
-                               IconButton(
-                                 icon: Icon(Icons.arrow_forward, color: Colors.blue,),
-                                     onPressed: (){
-                                        /* Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) => ListViewCategoriasGen(ciu: ciudadDoc)
-                                                    )); */
-                                     },
-                                  )                               
-                             ],                             
-                           ),
-                           /* Padding(
-                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                             child: PruebaListaProveedoresYCartegoria(
-                                      width: 350.0,
-                                      height: 250.0,
-                                      isLargeImg: "300" == "3500",
-                                      docProv: catProvDoc,
-                                      docCatGen: docCatGen,
-                                   ),  
-                           ) */
-                         
-                         ],
-                       )
-                    );
-              }
-          );
-        }
-    )
-    );
-  }
-
-
    StreamBuilder<QuerySnapshot> _recuperarCategoriasGenerales(height, width) {
      
     return new StreamBuilder<QuerySnapshot>(
@@ -378,7 +264,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
 
                 final catGenDoc = snapshot.data.documents[index];
                 final int newItemCount = 0 ;
-
+                
                 return Container(
                   height: 90,
                   width: 110,
@@ -393,7 +279,8 @@ class _ProductHomePageState extends State<ProductHomePage> {
                               MaterialPageRoute(
                                 builder: (c) => ProveYCat(docCatGen: catGenDoc, usu: widget.usu, userDoc: widget.docUsu,)
                               ),
-                            );
+                            );/* 
+                            _contruccionContenidos(height, width); */
                           },
                           child: Material(
                             elevation: 2,
@@ -462,6 +349,210 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
 
   }
+
+  Widget _contruccionBottomBar() {
+    return BottomAppBar(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.home,
+              size: 35,
+              color: primaryColor,
+            ),
+            Icon(
+              Icons.favorite_border,
+              color: Colors.black54,
+              size: 30,
+            ),
+            Icon(
+              Icons.shopping_cart,
+              size: 30,
+              color: Colors.black54,
+            ),
+           
+            IconButton(
+              icon: Icon(Icons.perm_identity, 
+                size: 30.0,),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => UserProfile(usuDoc: widget.docUsu, user: widget.usu,)
+                    ));
+                },              
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _listaPromociones(height, width, DocumentSnapshot docCatProv) {
+    return Container(
+      height: height ,
+      width: width,
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 15),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (BuildContext c, BoxConstraints constr) {
+                return new StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document("COMIDA").collection('proveedor').document(docCatProv.documentID).collection('categoria').document('Promociones').collection('productos').snapshots(),      
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        //print(logger);
+                        return Center(
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 285.0,),
+                              Text('Cargando CATEGORIAS...'),
+                              SizedBox(height: 15.0,),
+                              CupertinoActivityIndicator(            
+                                    ),
+                            ],
+                          ),
+                            
+                        );
+                      }
+                      return Container(
+                      width: constr.maxWidth ,
+                      height: constr.maxHeight,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:  snapshot.data.documents.length,
+                        itemBuilder: (context, index){
+                        final catProvDoc = snapshot.data.documents[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Container(
+                                width: 0.8,
+                                height: constr.maxHeight ,
+                                color: Colors.white,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    InkWell(
+                                      child: Container(
+                                          height: constr.maxHeight ,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage("${catProvDoc.data["imagen_cat"]}"),
+                                              colorFilter: ColorFilter.mode(
+                                                Colors.black.withOpacity(0.2),
+                                                BlendMode.hardLight,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        onTap: (){
+                                          print("${catProvDoc.data["nombre_cat"]}");
+                                          /*  Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, 
+                                                catProvDoc: catProvDoc , proveDoc: docProv, usu: usu, userDoc: userDoc,)
+                                              )); */
+                                          /* _verProductoDialog(context, catProvDoc, user); */
+                                        },
+                                    ),
+                                    
+                                    SizedBox(height: 10),
+                                    Row(
+                                      children: <Widget>[
+                                      Column(
+                                        children: <Widget>[
+                                          SizedBox(
+                                            width: 175.0,
+                                            child: Text(
+                                            "${catProvDoc.data["nombre_cat"]}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                        ),
+                                          ),
+                                          SizedBox(
+                                            width: 175.0,
+                                            child: Text(
+                                              
+                                                "${catProvDoc.data["nombre_cat"]}",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                          )
+                                        
+                                        ],
+                                      ),
+                                      InkWell(
+                                          child: Icon(Icons.arrow_forward),
+                                          onTap: (){
+                                            /* print("soy un ${catProvDoc.data["nombre_cat"]}");
+                                            Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ListProductos(catGenDoc: docCatGen, proveDoc: docProv, catProvDoc: catProvDoc , )
+                                              )); */
+                                            /* _verProductoDialog(context, catProvDoc, user); */
+                                          },
+
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "hi",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            decoration: TextDecoration.lineThrough,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        
+/*                                         Text(
+                                          "\$${catProvDoc.data["precio_pro"]}",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            decoration: TextDecoration.lineThrough,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          "\$${catProvDoc.data["precio_pro"]}",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 19,
+                                          ),
+                                        ), */
+                                        
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                        }
+                      ),
+                    );
+                  }
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 
