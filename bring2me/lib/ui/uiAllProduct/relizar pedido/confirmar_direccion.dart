@@ -289,15 +289,20 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   }
 
   Widget bodyConfirmarPedidoSegudo(DocumentSnapshot docUsu) {
-    
-    
+    num _subtotal;
+    num _cantidad;
+    num _precio;
+    num _total = 0;
+
    return Container(
        height: 500.0,
           child: Center(            
            child: Column(
              children: <Widget>[
                Text("DETALLE DE PEDIDO", style: TextStyle(fontSize: 20.0),),
-               Text("DETALLE DE PEDIDO", style: TextStyle(fontSize: 20.0),),
+               SizedBox(height: 30.0),
+               Text("Cant.       Producto                        Precio      Subtotal",),
+               SizedBox(height: 20.0),
                SizedBox(
                  height: 400.0,
                  width: 500.0,
@@ -324,8 +329,14 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                 itemCount: snapshot.data.documents.length,
                                 itemBuilder: (context, index) {
 
-                                    final prePedDoc = snapshot.data.documents[index];
-                                    TextEditingController _cantidad = TextEditingController(text: prePedDoc['cantidad_pro']);
+                                   final prePedDoc = snapshot.data.documents[index];
+                                    
+                                   _cantidad = int.parse(prePedDoc['cantidad_pro']);                                   
+                                   _precio = int.parse(prePedDoc['precio_pro']);
+                                    _subtotal = _cantidad *_precio; 
+                                     _total += _subtotal;
+                                     print('total ${_total}');
+                                    
                                     return InkWell(
                                         onTap:() { 
                                         },
@@ -334,15 +345,17 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                             Row(
                                               children: <Widget>[
                                                 SizedBox(
-                                                  height: 15,
+                                                  height: 45,
                                                   width: 25,
-                                                  child: Text(prePedDoc['cantidad_pro'],),
+                                                  child: Text('${prePedDoc['cantidad_pro']}'),
                                                 ),
                                                 Expanded(
-                                                  child: ListTile(
-                                                        title: new Text(prePedDoc['nombre_pro']),
-                                                        
+                                                  child: SizedBox(
+                                                    height: 45.0,
+                                                    width: 30.0,
+                                                    child: Text('${prePedDoc['nombre_pro']}'),
                                                   ),
+                                                     
                                                 ),  
                                                 SizedBox(
                                                   width: 50.0,
@@ -356,9 +369,8 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                                 SizedBox(
                                                   width: 50.0,
                                                     child: Column(
-                                                    children: <Widget>[        
-                                                      Text("Prec."),
-                                                      Text('\$ ${prePedDoc['precio_pro']}'),
+                                                    children: <Widget>[   
+                                                       Text('\$ ${_subtotal.toString()}'), 
                                                                                         
                                                     ],
                                                   ),
@@ -370,11 +382,9 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                     );
                                 }
                             );
-
                           }
                       )
-               ),
-               
+               ),               
              ],
            ),
          ),
