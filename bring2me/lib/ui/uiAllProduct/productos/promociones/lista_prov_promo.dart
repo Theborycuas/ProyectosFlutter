@@ -7,10 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListaProvPromo extends StatelessWidget {
-  const ListaProvPromo({Key key, @required this.width, this.height,}) : super(key: key);
+  const ListaProvPromo({Key key, @required this.width, this.height, this.docUsu}) : super(key: key);
 
   final double height;
   final double width;
+  final DocumentSnapshot docUsu;
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +88,12 @@ class ListaProvPromo extends StatelessWidget {
                            ),
                             Padding(
                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                             child: ListaPromociones(
+                             child: ListaPromocinones(
                                       width: 350.0,
                                       height: 250.0,
                                       isLargeImg: "300" == "3500",
                                       docCatProv: catProvDoc,
+                                      docUsu: docUsu,
                                    ),  
                            ) 
                          

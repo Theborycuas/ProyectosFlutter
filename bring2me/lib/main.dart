@@ -23,8 +23,7 @@ class _FirstPageState extends State<FirstPage> {
        backgroundColor: Colors.black,
      ),
      body: Container(
-       child: ListView(
-         
+       child: ListView(         
          children: <Widget>[
            SizedBox(
              height: 300.0,

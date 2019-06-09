@@ -1,24 +1,32 @@
 import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
+import 'package:bring2me/ui/uiAllProduct/relizar%20pedido/confirmar_direccion.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
-class ListaPromociones extends StatelessWidget {
-  const ListaPromociones({Key key, @required this.width, this.height, this.isLargeImg = false,
-    this.docCatProv,}) : super(key: key);
+class ListaPromocinones extends StatefulWidget {
+    const ListaPromocinones({Key key, @required this.width, this.height, this.isLargeImg = false,
+    this.docCatProv, this.docUsu}) : super(key: key);
 
   final double height;
   final double width;
   final bool isLargeImg;
   final DocumentSnapshot docCatProv;  
+  final DocumentSnapshot docUsu;
+  _ListaPromocinonesState createState() => _ListaPromocinonesState();
+}
 
-  @override
-  Widget build(BuildContext context) {
+class _ListaPromocinonesState extends State<ListaPromocinones> {
+  
+
+@override
+  Widget build(BuildContext context){
     return Container(
-      height: height,
-      width: width,
+      height: widget.height,
+      width: widget.width,
       child: Column(
         children: <Widget>[
           SizedBox(height: 15),
@@ -26,7 +34,7 @@ class ListaPromociones extends StatelessWidget {
             child: LayoutBuilder(
               builder: (BuildContext c, BoxConstraints constr) {
                 return new StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document('COMIDA').collection('proveedor').document(docCatProv.documentID).collection('categoria').document('Promociones').collection('productos').snapshots(),      
+                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document('COMIDA').collection('proveedor').document(widget.docCatProv.documentID).collection('categoria').document('Promociones').collection('productos').snapshots(),      
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     
                       if (!snapshot.hasData || snapshot.data == null) {
@@ -55,7 +63,7 @@ class ListaPromociones extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.only(right: 15),
                               child: Container(
-                                width: isLargeImg
+                                width: widget.isLargeImg
                                     ? constr.maxWidth * .8
                                     : constr.maxWidth * .6,
                                 height: constr.maxHeight,
@@ -80,12 +88,7 @@ class ListaPromociones extends StatelessWidget {
                                           ),
                                         ),
                                         onTap: (){
-                                          /* print("${catProvDoc.data["nombre_cat"]}");
-                                           Navigator.push(context, MaterialPageRoute(
-                                                builder: (context) => ListProductos(catGenDoc: docCatGen, 
-                                                catProvDoc: catProvDoc , proveDoc: docProv, usu: usu, userDoc: userDoc,)
-                                              )); */
-                                          /* _verProductoDialog(context, catProvDoc, user); */
+                                          _verPromociones(context, prodDoc, widget.docCatProv);
                                         },
                                     ),
                                     
@@ -105,32 +108,37 @@ class ListaPromociones extends StatelessWidget {
                                             ),
                                         ),
                                           ),
-                                          SizedBox(
-                                            width: 175.0,
-                                            child: Text(                                              
-                                                "\$ ${prodDoc.data["precio_pro"]}",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  decoration: TextDecoration.lineThrough,
-                                                  fontSize: 16,
-                                                  color: Colors.grey,
+                                          Row(
+                                            children: <Widget>[
+                                            SizedBox(
+                                              width: 175.0,
+                                              child: Text(                                              
+                                                  "\$ ${prodDoc.data["precio_pro"]}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    decoration: TextDecoration.lineThrough,
+                                                    fontSize: 16,
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
-                                              ),
+                                            ),
+
+                                            ],
                                           )
+                                          
                                         
                                         ],
                                       ),
                                       InkWell(
-                                          child: Icon(Icons.arrow_forward),
+                                          child: Icon(Icons.shopping_cart),
                                           onTap: (){
-                                            /* print("soy un ${catProvDoc.data["nombre_cat"]}");
-                                            Navigator.push(context, MaterialPageRoute(
-                                                builder: (context) => ListProductos(catGenDoc: docCatGen, proveDoc: docProv, catProvDoc: catProvDoc , )
-                                              )); */
-                                            /* _verProductoDialog(context, catProvDoc, user); */
-                                          },
+                                            _verPromociones(context, prodDoc, widget.docCatProv);
+                                            /* 
+                                              */
+                                                                  },
 
                                         ),
+                                       
                                       ],
                                     ),
                                     Row(
@@ -180,38 +188,70 @@ class ListaPromociones extends StatelessWidget {
       ),
     );
   }
-Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc, FirebaseUser user) {
-     Firestore.instance.collection('ciudad').document("ORYrQioVN7Pny0KZ6Mg7").collection('proveedor')
-     .document("27xbICfN52yat7hdcokl").collection('categoria').document("oXFXAEsAXyNHQx71rOmR")
-     .collection('producto').document(prodDoc.documentID).get().then((DocumentSnapshot userDoc) {
-   
-        return showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return new AlertDialog(
-              title: Text('${prodDoc['nombre_pro']}', style: TextStyle(fontSize: 30.0),),
-              content: Container(
-                height: 350.0,
-                width: 150.0,
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(                          
-                            width: 250.0,
-                            height: 150.0,
-                            child: Image.network('${prodDoc['imagen_pro']}', width: 40),     
-                    ),//imagen
-                  Padding(padding: EdgeInsets.only(top: 15.0),),
-                  Divider(),
-                  Text("Descripcion", style: TextStyle(fontSize: 15.0),),
-                    Text('${prodDoc['descripcion_pro']}', style: TextStyle(fontSize: 20.0),),
-                    Padding(padding: EdgeInsets.only(top: 15.0),),
-                  Divider(),
-                  Text("Precio", style: TextStyle(fontSize: 15.0),),
-                    Text(' ${prodDoc['precio_pro']}', style: TextStyle(fontSize: 20.0),),
-                
-                  ],
+
+  Future<Null> _verPromociones (BuildContext context, DocumentSnapshot prodDoc,
+    DocumentSnapshot userDoc){
+      TextEditingController _cantidad = TextEditingController(text: '1');
+ 
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: Text('${prodDoc['nombre_pro']}'),
+          content: Container(
+            height: 400.0,
+            width: 100.0,
+            child: ListView(
+              children: <Widget>[
+                SizedBox(                          
+                        width: 250.0,
+                        height: 150.0,
+                        child: Image.network('${prodDoc['imagen_pro']}', width: 40),     
+                ),//imagen               
+               Padding(padding: EdgeInsets.only(top: 15.0),),
+               Divider(),
+               Text("Descripción:"),
+                Text('${prodDoc['descripcion_pro']}', style: TextStyle(fontSize: 23.0),),
+                Padding(padding: EdgeInsets.only(top: 15.0),),
+               Divider(),
+               Text("Precio:"),
+                Text('\$ ${prodDoc['precio_pro']} c/u', style: TextStyle(fontSize: 23.0),),
+                Padding(padding: EdgeInsets.only(top: 15.0),),
+                Text("Cantidad:"),
+                SizedBox(
+                  width: 25.0,
+                  height: 50.0,
+                  child: TextField(
+                  controller: _cantidad,                  
+
                 ),
-              ),
+                )
+                
+                /* Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.remove_circle),
+                      onPressed: (){},
+                    ),
+                    SizedBox(
+                      width: 30.0,
+                      height: 25.0,
+                      child: Text('$_contador'),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add_circle),
+                      onPressed: (){
+                         _incrementCounter();
+                      },
+                    )
+
+                  ],
+                ) */
+               
+
+              ],
+            ),
+          ),
               actions: <Widget>[
                 new FlatButton(
                     onPressed: () {
@@ -220,12 +260,35 @@ Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc, 
                     child: const Text("Cancelar")
                 ), 
                 IconButton(
-                  icon: Icon(Icons.add_shopping_cart),
-                  onPressed: (){
-                      CloudFunctions.instance.call(
+                  icon: Icon(Icons.shopping_cart),
+                  color: Colors.blueGrey,
+                  onPressed: (){ 
+
+                    CloudFunctions.instance.call(
+                       functionName: "crearPrePedidoUsu",
+                       parameters: {
+                          "doc_id": widget.docUsu.documentID,
+                          "nombre_pro": prodDoc['nombre_pro'],
+                          "descripcion_pro": prodDoc['descripcion_pro'],
+                          "precio_pro": prodDoc['precio_pro'],
+                          "imagen_pro": prodDoc['imagen_pro'],
+                          "cantidad_pro": _cantidad.text
+                      }
+                    );
+                  showToast("El Producto ${prodDoc['nombre_pro']} se agrego al Carrito de compra", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+                  Navigator.of(context).pop();
+                   
+                  /* Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => ConfirmarDireccionYPedido(userDoc: docUsu,
+                                                catGenDoc: docCatProv, proveDoc: null,
+                                                catProvDoc: null, prodDoc: prodDoc,)
+                                                )); */
+                    
+                      /* CloudFunctions.instance.call(
                         functionName: "crearPedidoUsu",
                         parameters: {
-                          "doc_id": user.uid,
+                          "doc_id": usu.uid,
                           "uid": prodDoc['uid'],
                           "nombre": prodDoc['nombre_pro'],
                           "descripcion": prodDoc['descripcion_pro'],
@@ -237,24 +300,27 @@ Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc, 
                        CloudFunctions.instance.call(
                         functionName: "crearPedidoAdminBring",
                         parameters: {
-                          "nombres": user.displayName,
-                          "correo": user.email,
+                          "nombres": usu.displayName,
+                          "correo": usu.email,
                           "telefono": userDoc.data['telefono'],
                           "nombrePizza": prodDoc['nombre_pro'],
                           "descripcion": prodDoc['descripcion_pro'],
                           "precio": prodDoc['precio_pro'],
                           "imagen": prodDoc['imagen_pro'],
                         }
-                      );  
-
-                  },)
+                      );   *//* 
+                      Navigator.of(context).pop();  */                     
+                  }
+                  ,)
               ],
-            );
-          }
+
         );
-        });
-        
+      }
+    );
+  }
 
-  } 
-
+  void showToast(String msg, BuildContext context, {int duration, int gravity}) 
+  {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+   }
 }

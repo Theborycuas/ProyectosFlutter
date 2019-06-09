@@ -2,6 +2,7 @@ import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat_lis
 import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
 import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_promociones.dart';
 import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_prov_promo.dart';
+import 'package:bring2me/ui/uiAllProduct/relizar%20pedido/pre_pedidos.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -76,12 +77,12 @@ class _ProductHomePageState extends State<ProductHomePage> {
               ],
             )
           ),
-      body: _construccionCuerpo(height, width),
+      body: _construccionCuerpo(height, width, widget.docUsu),
     );
   }
 
   
-  Widget _construccionCuerpo(height, width) {
+  Widget _construccionCuerpo(height, width, DocumentSnapshot docUsu) {
     return Container(
       height: height,
       width: width,
@@ -151,8 +152,9 @@ class _ProductHomePageState extends State<ProductHomePage> {
                     ),       
          ),
          ListaProvPromo(
-                                      width: width,
-                                      height: height,
+                    width: width,
+                    height: height,
+                    docUsu: docUsu,
                                    ),  
                    
          /* _contruccionContenidos(height, width), */
@@ -368,10 +370,14 @@ class _ProductHomePageState extends State<ProductHomePage> {
               color: Colors.black54,
               size: 30,
             ),
-            Icon(
-              Icons.shopping_cart,
-              size: 30,
-              color: Colors.black54,
+            IconButton(
+              icon: Icon(Icons.shopping_cart),
+              iconSize: 30.0,
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ListViewPrePedidos(docUsu: widget.docUsu,)
+                    ));
+              },
             ),
            
             IconButton(
@@ -389,169 +395,6 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-  Widget _listaPromociones(height, width, DocumentSnapshot docCatProv) {
-    return Container(
-      height: height ,
-      width: width,
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 15),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (BuildContext c, BoxConstraints constr) {
-                return new StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ciudad').document("Esmeraldas").collection('categoriaGen').document("COMIDA").collection('proveedor').document(docCatProv.documentID).collection('categoria').document('Promociones').collection('productos').snapshots(),      
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    
-                      if (!snapshot.hasData || snapshot.data == null) {
-                        //print(logger);
-                        return Center(
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 285.0,),
-                              Text('Cargando CATEGORIAS...'),
-                              SizedBox(height: 15.0,),
-                              CupertinoActivityIndicator(            
-                                    ),
-                            ],
-                          ),
-                            
-                        );
-                      }
-                      return Container(
-                      width: constr.maxWidth ,
-                      height: constr.maxHeight,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount:  snapshot.data.documents.length,
-                        itemBuilder: (context, index){
-                        final catProvDoc = snapshot.data.documents[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Container(
-                                width: 0.8,
-                                height: constr.maxHeight ,
-                                color: Colors.white,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Container(
-                                          height: constr.maxHeight ,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage("${catProvDoc.data["imagen_cat"]}"),
-                                              colorFilter: ColorFilter.mode(
-                                                Colors.black.withOpacity(0.2),
-                                                BlendMode.hardLight,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        onTap: (){
-                                          print("${catProvDoc.data["nombre_cat"]}");
-                                          /*  Navigator.push(context, MaterialPageRoute(
-                                                builder: (context) => ListProductos(catGenDoc: docCatGen, 
-                                                catProvDoc: catProvDoc , proveDoc: docProv, usu: usu, userDoc: userDoc,)
-                                              )); */
-                                          /* _verProductoDialog(context, catProvDoc, user); */
-                                        },
-                                    ),
-                                    
-                                    SizedBox(height: 10),
-                                    Row(
-                                      children: <Widget>[
-                                      Column(
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 175.0,
-                                            child: Text(
-                                            "${catProvDoc.data["nombre_cat"]}",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                        ),
-                                          ),
-                                          SizedBox(
-                                            width: 175.0,
-                                            child: Text(
-                                              
-                                                "${catProvDoc.data["nombre_cat"]}",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                          )
-                                        
-                                        ],
-                                      ),
-                                      InkWell(
-                                          child: Icon(Icons.arrow_forward),
-                                          onTap: (){
-                                            /* print("soy un ${catProvDoc.data["nombre_cat"]}");
-                                            Navigator.push(context, MaterialPageRoute(
-                                                builder: (context) => ListProductos(catGenDoc: docCatGen, proveDoc: docProv, catProvDoc: catProvDoc , )
-                                              )); */
-                                            /* _verProductoDialog(context, catProvDoc, user); */
-                                          },
-
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          "hi",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            decoration: TextDecoration.lineThrough,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        
-/*                                         Text(
-                                          "\$${catProvDoc.data["precio_pro"]}",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            decoration: TextDecoration.lineThrough,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          "\$${catProvDoc.data["precio_pro"]}",
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 19,
-                                          ),
-                                        ), */
-                                        
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                        }
-                      ),
-                    );
-                  }
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
 }
 

@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:toast/toast.dart';
+
 class ListProductos extends StatefulWidget {
   const ListProductos({Key key, @required this.catGenDoc, this.proveDoc, 
     this.catProvDoc, this.usu, this.userDoc }) : super(key: key); 
@@ -122,6 +124,7 @@ class _ListProductosState extends State<ListProductos> {
   }
    Future<Null> _verProductDialog(BuildContext context, DocumentSnapshot prodDoc,
     FirebaseUser usu, DocumentSnapshot userDoc) {
+    TextEditingController _cantidad = TextEditingController(text: '1');
 
     return showDialog(
       context: context,
@@ -129,22 +132,33 @@ class _ListProductosState extends State<ListProductos> {
         return new AlertDialog(
           title: Text('${prodDoc['nombre_pro']}'),
           content: Container(
-            height: 320.0,
+            height: 420.0,
             width: 100.0,
             child: ListView(
               children: <Widget>[
-                SizedBox(                          
+               SizedBox(                          
                         width: 250.0,
                         height: 150.0,
                         child: Image.network('${prodDoc['imagen_pro']}', width: 40),     
                 ),//imagen               
                Padding(padding: EdgeInsets.only(top: 15.0),),
                Divider(),
-                Text('${prodDoc['descripcion_pro']}'),
+               Text("Descripción:"),
+                Text('${prodDoc['descripcion_pro']}', style: TextStyle(fontSize: 23.0),),
                 Padding(padding: EdgeInsets.only(top: 15.0),),
                Divider(),
-                Text('${prodDoc['precio_pro']}'),
-               
+               Text("Precio:"),
+                Text('\$ ${prodDoc['precio_pro']} c/u', style: TextStyle(fontSize: 23.0),),
+                Padding(padding: EdgeInsets.only(top: 15.0),),
+                Text("Cantidad:"),
+                SizedBox(
+                  width: 25.0,
+                  height: 50.0,
+                  child: TextField(
+                  controller: _cantidad,                  
+
+                ),
+                )
 
               ],
             ),
@@ -160,21 +174,33 @@ class _ListProductosState extends State<ListProductos> {
                   icon: Icon(Icons.shopping_cart),
                   color: Colors.blueGrey,
                   onPressed: (){ 
-                    Navigator.push(context, MaterialPageRoute(
+                                    CloudFunctions.instance.call(
+                       functionName: "crearPrePedidoUsu",
+                       parameters: {
+                          "doc_id": widget.userDoc.documentID,
+                          "nombre_pro": prodDoc['nombre_pro'],
+                          "descripcion_pro": prodDoc['descripcion_pro'],
+                          "precio_pro": prodDoc['precio_pro'],
+                          "imagen_pro": prodDoc['imagen_pro'],
+                          "cantidad_pro": _cantidad.text
+                      }
+                    );
+                  showToast("El Producto ${prodDoc['nombre_pro']} se agrego al Carrito de compra", context, 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+                  Navigator.of(context).pop();
+                    /* Navigator.push(context, MaterialPageRoute(
                           builder: (context) => ConfirmarDireccionYPedido(userDoc: userDoc,
-                                                catGenDoc: widget.catGenDoc, proveDoc: widget.proveDoc,
-                                                catProvDoc: widget.catProvDoc, prodDoc: prodDoc,)
-                        ));
+                                                 prodDoc: prodDoc,)
+                        )); */
                     
                       /* CloudFunctions.instance.call(
                         functionName: "crearPedidoUsu",
                         parameters: {
                           "doc_id": usu.uid,
-                          "uid": prodDoc['uid'],
-                          "nombre": prodDoc['nombre_pro'],
-                          "descripcion": prodDoc['descripcion_pro'],
-                          "precio": prodDoc['precio_pro'],
-                          "imagen": prodDoc['imagen_pro'],
+                          "nombre_pro": prodDoc['nombre_pro'],
+                          "descripcion_pro": prodDoc['descripcion_pro'],
+                          "precio_pro": prodDoc['precio_pro'],
+                          "imagen_pro": prodDoc['imagen_pro'],
                         }
                       );
                       
@@ -184,10 +210,10 @@ class _ListProductosState extends State<ListProductos> {
                           "nombres": usu.displayName,
                           "correo": usu.email,
                           "telefono": userDoc.data['telefono'],
-                          "nombrePizza": prodDoc['nombre_pro'],
-                          "descripcion": prodDoc['descripcion_pro'],
-                          "precio": prodDoc['precio_pro'],
-                          "imagen": prodDoc['imagen_pro'],
+                          "nombre_pro": prodDoc['nombre_pro'],
+                          "descripcion_pro": prodDoc['descripcion_pro'],
+                          "precio_pro": prodDoc['precio_pro'],
+                          "imagen_pro": prodDoc['imagen_pro'],
                         }
                       );   *//* 
                       Navigator.of(context).pop();  */                     
@@ -199,4 +225,8 @@ class _ListProductosState extends State<ListProductos> {
       }
     );
   }
+    void showToast(String msg, BuildContext context, {int duration, int gravity}) 
+  {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+   }
 }
