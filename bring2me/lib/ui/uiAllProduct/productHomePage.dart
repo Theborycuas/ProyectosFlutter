@@ -1,8 +1,7 @@
+import 'package:bring2me/ui/uiAllProduct/pedidos/pedidos_en_proceso/pedido_en_proceso.dart';
+import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/pre_pedidos.dart';
 import 'package:bring2me/ui/uiAllProduct/porveedores_y_categorias/pove_y_cat_list.dart';
-import 'package:bring2me/ui/uiAllProduct/productos/productos.dart';
-import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_promociones.dart';
 import 'package:bring2me/ui/uiAllProduct/productos/promociones/lista_prov_promo.dart';
-import 'package:bring2me/ui/uiAllProduct/relizar%20pedido/pre_pedidos.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,14 +65,28 @@ class _ProductHomePageState extends State<ProductHomePage> {
                     ],
 
                 ),
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text("Hola"),
-                  trailing: Icon(Icons.settings),
+                InkWell(
                   onTap: (){
-
+                    Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ListViewPedidosEnProceso(docUsu: widget.docUsu)
+                                      ));
                   },
-                )
+                    child:  ListTile(
+                    title: Text("Pedidos en Proceso", style: TextStyle(fontSize: 15.0),),
+                    trailing: Icon(Icons.list),
+                                      ),
+                ),
+                InkWell(
+                  onTap: (){
+                    print("hi");
+                  },
+                    child:  ListTile(
+                    title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
+                    trailing: Icon(Icons.list),
+                   
+                  ),
+                )              
+               
               ],
             )
           ),

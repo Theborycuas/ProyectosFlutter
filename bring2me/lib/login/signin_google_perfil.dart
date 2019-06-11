@@ -86,16 +86,15 @@ Observable<Map<String, dynamic>> profile;
             CloudFunctions.instance.call(
               functionName: "actualizarUsuarioBring",
               parameters: {
-                                "doc_id": user.uid,
                                 'uid' : user.uid,
                                 'nombres' : user.displayName,
-                                'telefono': user.phoneNumber,
+                                'telefono': "",
                                 'direccion':'',
                                 'ubicacion': '',
                                 'correo' :user.email,
                                 'clave' :user.uid,  
                                 'foto' :user.photoUrl,
-                                'ultimoacceso' :DateTime.now().toString(),                         
+                                'ultimoacceso' : DateTime.now().toString(),                         
 
                     }
                   );   

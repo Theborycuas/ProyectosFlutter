@@ -1,5 +1,6 @@
 import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
@@ -39,7 +40,11 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
               this._currentStep = this._currentStep + 1;
             } else {
               //Logic to check if everything is completed
+              
               print('Completed, check fields.');
+               showToast("Completed, check fields.", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+
             }
           });
         },
@@ -71,7 +76,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
         title: Text('Paso 3'),
         isActive: _currentStep >= 2,
         content: bodyConfirmarPedidoTercero(widget.userDoc),
-      )
+      ) 
     ];
     return _steps;
   }
@@ -500,153 +505,138 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   }
 
   Widget bodyConfirmarPedidoTercero(DocumentSnapshot docUsu) {
+    
+    double subtotal = 0;
+    double cantidad = 0;
+    double precio = 0;
+    double total = 0;
+    var date = DateTime.now();
+    String time = "${date.day}\-${date.month}\-${date.year}  ${date.hour}\:${date.minute}";
+    print(time);
+    
+    CloudFunctions.instance.call(
+      functionName: "crearfecha",
+      parameters: {
+        "doc_id" : docUsu["nombres"],
+        "fecha" : time.toString()
+           }
+    );  
+
+
     return Container(
-      height: 490.0,
+      height: 510.0,
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
-              "CONFIRMAR PEDIDO",
-              style: TextStyle(fontSize: 20.0),
+              "FELICIDADES, TU PEDIDO ESTA EN PROCESO, EN POCOS MINUTOS LLEGAREMOS A TU DIRECCIÓN",
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-            /* Row(
-                 children: <Widget>[
+            SizedBox(
+                height: 200.0,
+                width: 500.0,
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection('usuarios')
+                        .document(widget.userDoc.documentID)
+                        .collection('prePedidosUsu')
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        //print(logger);
+                        return Center(
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                height: 45.0,
+                              ),
+                              Text('Cargando Productos...'),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              CupertinoActivityIndicator(),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            final prePedDoc = snapshot.data.documents[index];
 
-                   Expanded(
-                     child: ListTile(
-                       title: new Text(docProd['nombre_pro']),
-                        subtitle: new Text(docProd['descripcion_pro']),
-                        leading: Column(
-                        children: <Widget>[
-                          Image.network('${docProd['imagen_pro']}', width: 40),
-                          ],
-                       ),
-                    ),
-                   
-                   ),
-                   Column(
-                     children: <Widget>[
-                       
-                       Text('\$ ${docProd['precio_pro']}', style: TextStyle(fontSize: 15),),
-                       IconButton(
-                      icon: Icon(Icons.plus_one),
-                      onPressed: (){
+                            cantidad = double.parse(prePedDoc['cantidad_pro']);
+                            precio = double.parse(prePedDoc['precio_pro']);
+                            subtotal = cantidad * precio;
 
-                      },
-                    ),
-                     ],
-                   )
-                    
-                 ],
-               ),
-               Padding(padding: EdgeInsets.only(top: 8.0),),
-               Divider(),
-               Text("DATOS DE USUARIO/S", style: TextStyle(fontSize: 20.0),),
-               Row(
-                 children: <Widget>[
+                            total = total + subtotal;
 
-                   Expanded(
-                     child: ListTile(
-                       title: new Text(docUsu['nombres']),
-                        subtitle: new Text(docUsu['correo']),
-                        leading: Column(
-                        children: <Widget>[
-                          Image.network('${docUsu['foto']}', width: 40),
-                          ],
-                       ),
-                    ),
-                   
-                   ),
-                   Column(
-                     children: <Widget>[
-                       IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: (){
+                            suma = total;
 
-                      },
-                    ),
-                     ],
-                   )
-                    
-                 ],
-               ),
-               Padding(padding: EdgeInsets.only(top: 8.0),),
-               Divider(),
-               Text("DATOS DE DIRECCIÓN", style: TextStyle(fontSize: 20.0),),
-               Row(
-                 children: <Widget>[
+                            print(suma);
+                            CloudFunctions.instance.call(
+                              functionName: "crearPedidoUsu",
+                              parameters: {
+                                "doc_id": docUsu['nombres'],
+                                'doc_fecha' : time.toString(),
+                                "nombre_pro": prePedDoc['nombre_pro'],
+                                "descripcion_pro": prePedDoc['descripcion_pro'],
+                                "precio_pro": prePedDoc['precio_pro'],
+                                "imagen_pro": prePedDoc['imagen_pro'],
+                                "cantidad_pro": prePedDoc['cantidad_pro'],
+                              }
+                            );  
 
-                   Expanded(
-                     child: ListTile(
-                       title: new Text("Esmeraldas"),
-                        subtitle: new Text("Sucre y Montalvo"),
-                        leading: Column(
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.location_on),
-                            onPressed: (){},
-                          )
-                          ],
-                       ),
-                    ),
-                   
-                   ),
-                   Column(
-                     children: <Widget>[
-                       IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: (){
-
-                      },
-                    ),
-                     ],
-                   )
-                    
-                 ],
-               ),
-                Divider(), 
-               Text("DATOS DE CONTACTO", style: TextStyle(fontSize: 20.0),),
-               Row(
-                 children: <Widget>[
-
-                   Expanded(
-                     child: ListTile(
-                       title: new Text("Telefono"),
-                        subtitle: new Text("0996588558", style: TextStyle(fontSize: 20),),
-                        leading: Column(
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.phone),
-                            onPressed: (){},
-                          )
-                          ],
-                       ),
-                    ),
-                   
-                   ),
-                   Column(
-                     children: <Widget>[
-                       IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: (){
-
-                      },
-                    ),
-                     ],
-                   )
-                    
-                 ],
-               ), */
-
-            Divider(),
+                            return Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[/* 
+                                    SizedBox(
+                                      height: 45,
+                                      width: 25,
+                                      child: Text(
+                                          '${prePedDoc['cantidad_pro']}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 45.0,
+                                        width: 30.0,
+                                        child:
+                                            Text('${prePedDoc['nombre_pro']}'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 50.0,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text('\$ ${prePedDoc['precio_pro']}'),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 50.0,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text('\$ ${subtotal.toString()}'),
+                                        ],
+                                      ),
+                                    ), */
+                                  ],
+                                ),
+                              ],
+                            );
+                          });
+                    })),                       
           ],
         ),
       ),
     );
   }
-
+  
   void showToast(String msg, BuildContext context,
       {int duration, int gravity}) {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
+
 }
