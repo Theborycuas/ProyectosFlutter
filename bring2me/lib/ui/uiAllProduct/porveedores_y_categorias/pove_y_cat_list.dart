@@ -4,18 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Color primaryColor = Colors.blueGrey;
-String subCat;
-
-class ProveYCat extends StatelessWidget {
+class ProveYCat extends StatefulWidget {
   ProveYCat({Key key, @required this.docCatGen, this.usu, this.userDoc}) : super(key: key);
   final DocumentSnapshot docCatGen;
   final FirebaseUser usu;
   final DocumentSnapshot userDoc;
- 
-  
-  
-  @override
+  _ProveYCatState createState() => _ProveYCatState();
+}
+
+class _ProveYCatState extends State<ProveYCat> {
+  Color primaryColor = Colors.blueGrey;
+@override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -67,8 +66,7 @@ class ProveYCat extends StatelessWidget {
                                           Navigator.of(context).pop();
                                         },
                                       ),
-                                      Text(
-                                        docCatGen.data["nombre_cat_gen"],
+                                      Text(widget.docCatGen.data["nombre_cat_gen"],
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 22,
@@ -126,14 +124,14 @@ class ProveYCat extends StatelessWidget {
               ),
             ),
           ),
-          _contruccionContenidos(height, width),
+          _contruccionContenidos(height, width, widget.userDoc, widget.docCatGen),
         ],
       ),
     )
     );
-  }
-
-  Widget _contruccionContenidos(height, width) {
+  }  
+}
+Widget _contruccionContenidos(height, width, DocumentSnapshot userDoc, DocumentSnapshot docCatGen) {
     return Positioned(
       top: (height * .15) + 27,
       width: width,
@@ -212,7 +210,6 @@ class ProveYCat extends StatelessWidget {
                                       isLargeImg: "300" == "3500",
                                       docProv: catProvDoc,
                                       docCatGen: docCatGen,
-                                      usu: usu,
                                       userDoc: userDoc,
                                    ),  
                            )
@@ -226,4 +223,7 @@ class ProveYCat extends StatelessWidget {
     )
     );
   }
-}
+
+
+
+

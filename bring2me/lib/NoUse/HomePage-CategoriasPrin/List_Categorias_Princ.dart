@@ -74,7 +74,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                   currentAccountPicture: InkWell(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => UserProfile(user: widget.user, usuDoc: widget.usuDoc,)
+                                          builder: (context) => UserProfile(usuDoc: widget.usuDoc,)
                                         ));
                     },
                     child: CircleAvatar(                    

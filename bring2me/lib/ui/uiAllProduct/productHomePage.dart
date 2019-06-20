@@ -18,6 +18,7 @@ class ProductHomePage extends StatefulWidget {
 class _ProductHomePageState extends State<ProductHomePage> {
     
   Color primaryColor = Colors.blueGrey;
+  
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -58,8 +59,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                     otherAccountsPictures: <Widget>[
                       GestureDetector(
                         child: CircleAvatar(
-                          backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"])
-                               : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg") , 
+                          backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
                         ),
                       )
                     ],
@@ -112,44 +112,48 @@ class _ProductHomePageState extends State<ProductHomePage> {
               color: primaryColor,
               padding: EdgeInsets.only(left: 20),
               child: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
                   children: <Widget>[
-                    SizedBox(height: 15),
-                    _construccionAppBar(height, width),
-                    SizedBox(height: 15),
-                    Container(
-                      width: width - 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.black87,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 15),
+                        _construccionAppBar(height, width),
+                        SizedBox(height: 15),
+                        Container(
+                          width: width - 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          hintText: 'Buscalo, encuentralo y pidelo ahora...',
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.black87,
+                              ),
+                              hintText: 'Buscalo, encuentralo y pidelo ahora...',
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 15),
+                        Text(
+                          "Categorias",
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(height: 15),
-                    Text(
-                      "Categorias",
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )
                   ],
-                ),
+                )
               ),
             ),
           ),

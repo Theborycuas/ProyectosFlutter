@@ -21,17 +21,17 @@ class _ListViewPedidosEnProcesoState extends State<ListViewPedidosEnProceso> {
    return Scaffold(
       appBar: AppBar(
 
-        title: Text('PROVEEDORES:'),
+        title: Text('Pedidos en Proceso:'),
         
       ),
       body: Center(
-        child: _recuperarProveedores(),
+        child: _recuperarPedidoEnProc(),
       ),
        
     );
   }
 
-   StreamBuilder<QuerySnapshot> _recuperarProveedores() {
+   StreamBuilder<QuerySnapshot> _recuperarPedidoEnProc() {
      
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('usuarios').document(widget.docUsu.documentID).collection('pedidosProcUsu').snapshots(),      
@@ -58,7 +58,7 @@ class _ListViewPedidosEnProcesoState extends State<ListViewPedidosEnProceso> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
 
-                  final provDoc = snapshot.data.documents[index];
+                  final numpedDoc = snapshot.data.documents[index];
                   return InkWell(
                        onTap:() { 
                                   /* _verProveedorDialog(context, provDoc, widget.ciu, widget.catGen); */
@@ -69,8 +69,8 @@ class _ListViewPedidosEnProcesoState extends State<ListViewPedidosEnProceso> {
                              children: <Widget>[
                                Expanded(
                                  child: ListTile(
-                                      title: new Text(provDoc['nombre_prov']),
-                                      subtitle: new Text(provDoc['direccion_prov']),
+                                      title: new Text(numpedDoc['numero_pedido']),
+                                      
                                       
                                  ),
                                ),  
@@ -83,7 +83,7 @@ class _ListViewPedidosEnProcesoState extends State<ListViewPedidosEnProceso> {
                                           builder: (BuildContext context){
                                             return AlertDialog(
                                               title: new Text("ELIMINAR EL PROVEEDOR"),
-                                              content: new Text("¿Realmente desea eliminar la categoria  ${provDoc.data['nombre_prov']}?"),
+                                              content: new Text("¿Realmente desea eliminar la categoria  ${numpedDoc.data['numero_pedido']}?"),
                                               actions: <Widget>[
                                                 // usually buttons at the bottom of the dialog
                                                 new FlatButton(

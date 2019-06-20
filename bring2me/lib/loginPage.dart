@@ -130,76 +130,80 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
                                     blurRadius: 10.0),
                               ]),
                           child: Padding(
-                            padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            padding: EdgeInsets.only(left: 16.0, right: 16.0,),
+                            child: ListView(
                               children: <Widget>[
-                                Text("Iniciar Sesión",
-                                    style: TextStyle(
-                                        fontSize: ScreenUtil.getInstance().setSp(45),
-                                        fontFamily: "Poppins-Bold",
-                                        letterSpacing: .6)),
-                                SizedBox(
-                                  height: ScreenUtil.getInstance().setHeight(30),
-                                ),
-                                
-                                TextField(
-                                  controller: _emailController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Usuario',
-                                    icon: Icon(Icons.person),
-                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
-                                ),
-                                SizedBox(
-                                  height: ScreenUtil.getInstance().setHeight(30),
-                                ),
-                              
-                                TextField(
-                                  controller: _paswordcontroller,
-                                  
-                                
-                                  decoration: InputDecoration(
-                                    labelText: 'Contraseña',
-                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0),
-                                      icon: Icon(Icons.vpn_key),
-                                      suffixIcon: IconButton(
-                                                  icon: Icon(
-                                                    passwordVisible
-                                                    ? Icons.visibility
-                                                    : Icons.visibility_off,
-                                                    color: Theme.of(context).primaryColorDark,
-                                                  ),
-                                                  onPressed: (){
-                                                    setState(() {
-                                                      passwordVisible
-                                                      ? passwordVisible = false
-                                                      : passwordVisible = true;
-                                                    });
-                                                  },
-                                                ),
-                                                
-                                      ),
-                                      obscureText: passwordVisible,
-                                      
-                                ),
-                                SizedBox(
-                                  height: ScreenUtil.getInstance().setHeight(35),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(
-                                      "Olvidaste tu contraseña?",
-                                      style: TextStyle(
-                                          color: Colors.blue,
-                                          fontFamily: "Poppins-Medium",
-                                          fontSize: ScreenUtil.getInstance().setSp(28)),
-                                    )
+                                    Text("Iniciar Sesión",
+                                        style: TextStyle(
+                                            fontSize: ScreenUtil.getInstance().setSp(45),
+                                            fontFamily: "Poppins-Bold",
+                                            letterSpacing: .6)),
+                                    SizedBox(
+                                      height: ScreenUtil.getInstance().setHeight(30),
+                                    ),
+                                    
+                                    TextField(
+                                      controller: _emailController,
+                                      decoration: InputDecoration(
+                                        labelText: 'Usuario',
+                                        icon: Icon(Icons.person),
+                                          hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
+                                    ),
+                                    SizedBox(
+                                      height: ScreenUtil.getInstance().setHeight(30),
+                                    ),
+                                  
+                                    TextField(
+                                      controller: _paswordcontroller,
+                                      
+                                    
+                                      decoration: InputDecoration(
+                                        labelText: 'Contraseña',
+                                          hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0),
+                                          icon: Icon(Icons.vpn_key),
+                                          suffixIcon: IconButton(
+                                                      icon: Icon(
+                                                        passwordVisible
+                                                        ? Icons.visibility
+                                                        : Icons.visibility_off,
+                                                        color: Theme.of(context).primaryColorDark,
+                                                      ),
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          passwordVisible
+                                                          ? passwordVisible = false
+                                                          : passwordVisible = true;
+                                                        });
+                                                      },
+                                                    ),
+                                                    
+                                          ),
+                                          obscureText: passwordVisible,
+                                          
+                                    ),
+                                    SizedBox(
+                                      height: ScreenUtil.getInstance().setHeight(35),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          "Olvidaste tu contraseña?",
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              fontFamily: "Poppins-Medium",
+                                              fontSize: ScreenUtil.getInstance().setSp(28)),
+                                        )
+                                      ],
+                                    ),
+                                    
                                   ],
                                 ),
-                                
                               ],
-                            ),
+                            )
                           ),
                         ),
                 

@@ -1,7 +1,7 @@
 
+import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/pre_pedidos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -13,14 +13,12 @@ class ListProductos extends StatefulWidget {
       @required this.catGenDoc,
       this.proveDoc,
       this.catProvDoc,
-      this.usu,
       this.userDoc})
       : super(key: key);
 
   final DocumentSnapshot catGenDoc;
   final DocumentSnapshot proveDoc;
   final DocumentSnapshot catProvDoc;
-  final FirebaseUser usu;
   final DocumentSnapshot userDoc;
   @override
   _ListProductosState createState() => new _ListProductosState();
@@ -33,6 +31,16 @@ class _ListProductosState extends State<ListProductos> {
       appBar: AppBar(
         title: Text('Productos'),
         backgroundColor: Colors.blueGrey,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ListViewPrePedidos(docUsu: widget.userDoc,)
+                    ));
+            },
+          )
+        ],
       ),
       body: Center(
         child: _recuperarProductos(),
@@ -73,7 +81,7 @@ class _ListProductosState extends State<ListProductos> {
                               snapshot.data.documents[index].documentID),
                           onTap: () {
                             _verProductDialog(
-                                context, prodDoc, widget.usu, widget.userDoc);
+                                context, prodDoc, widget.userDoc);
                           },
                           child: Container(
                             width: double.infinity,
@@ -130,7 +138,7 @@ class _ListProductosState extends State<ListProductos> {
                                         color: Colors.red,
                                         onPressed: () {
                                           _verProductDialog(context, prodDoc,
-                                              widget.usu, widget.userDoc);
+                                              widget.userDoc);
                                         },
                                       )
                                     ],
@@ -147,7 +155,7 @@ class _ListProductosState extends State<ListProductos> {
   }
 
   Future<Null> _verProductDialog(BuildContext context, DocumentSnapshot prodDoc,
-      FirebaseUser usu, DocumentSnapshot userDoc) {
+       DocumentSnapshot userDoc) {
     TextEditingController _cantidad = TextEditingController(text: '1');
 
     return showDialog(
@@ -192,6 +200,7 @@ class _ListProductosState extends State<ListProductos> {
                     height: 50.0,
                     child: TextField(
                       controller: _cantidad,
+                      keyboardType: TextInputType.number,
                     ),
                   )
                 ],
@@ -219,7 +228,7 @@ class _ListProductosState extends State<ListProductos> {
                   showToast(
                       "El Producto ${prodDoc['nombre_pro']} se agrego al Carrito de compra",
                       context,
-                      duration: Toast.LENGTH_LONG,
+                      duration: Toast.LENGTH_SHORT,
                       gravity: Toast.BOTTOM);
                   Navigator.of(context).pop();
                   /* Navigator.push(context, MaterialPageRoute(

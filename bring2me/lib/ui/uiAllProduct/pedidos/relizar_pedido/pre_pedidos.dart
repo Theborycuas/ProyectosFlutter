@@ -1,5 +1,6 @@
 import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/confirmar_pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +38,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
   }
 
   StreamBuilder<QuerySnapshot> _recuperarPrePedidos() {
+    
     return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
             .collection('usuarios')
@@ -50,7 +52,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 285.0,
+                    height: 45.0,
                   ),
                   Text('Cargando Productos...'),
                   SizedBox(
@@ -65,7 +67,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
                 final prePedDoc = snapshot.data.documents[index];
-                TextEditingController _cantidad =
+                final TextEditingController _cantidad =
                     TextEditingController(text: prePedDoc['cantidad_pro']);
                 return InkWell(
                     onTap: () {
@@ -79,7 +81,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
                               child: ListTile(
                                 title: new Text(prePedDoc['nombre_pro']),
                                 subtitle:
-                                    new Text(prePedDoc['descripcion_pro']),
+                                    new Text('\$ ${prePedDoc['precio_pro']} - ${prePedDoc['descripcion_pro']}'),
                                 leading: Column(
                                   children: <Widget>[
                                     Image.network('${prePedDoc['imagen_pro']}',
@@ -94,12 +96,27 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
                                 children: <Widget>[
                                   TextField(
                                     controller: _cantidad,
+                                    keyboardType: TextInputType.number,
                                     decoration:
                                         InputDecoration(labelText: "Cant."),
                                   )
                                 ],
                               ),
                             ),
+                            IconButton(
+                                icon: Icon(Icons.check),
+                                color: Colors.green,
+                                onPressed: () {
+                                    CloudFunctions.instance
+                                        .call(functionName: "crearPrePedidoUsu", parameters: {
+                                            "doc_id": widget.docUsu.documentID,
+                                            "nombre_pro": prePedDoc['nombre_pro'],
+                                            "descripcion_pro": prePedDoc['descripcion_pro'],
+                                            "precio_pro": prePedDoc['precio_pro'],
+                                            "imagen_pro": prePedDoc['imagen_pro'],
+                                            "cantidad_pro": _cantidad.text
+                                    });
+                                }),
                             IconButton(
                                 icon: Icon(Icons.delete),
                                 color: Colors.red,
@@ -137,6 +154,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
                                         );
                                       });
                                 }),
+                                
                           ],
                         ),
                       ],
@@ -191,15 +209,6 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
                 ],
               ),
             ),
-            actions: <Widget>[
-              new FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Cancelar")),
-              // This button results in adding the contact to the database
-              new FlatButton(onPressed: () {}, child: const Text("Actualizar"))
-            ],
           );
         });
   }

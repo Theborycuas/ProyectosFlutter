@@ -4,11 +4,12 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-
+double suma = 0;
 class ConfirmarDireccionYPedido extends StatefulWidget {
   const ConfirmarDireccionYPedido({Key key, @required this.userDoc})
       : super(key: key);
   final DocumentSnapshot userDoc;
+  
 
   @override
   _ConfirmarDireccionYPedidoState createState() =>
@@ -25,40 +26,52 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
         title: new Text("CONFIRMAR PEDIDO"),
         backgroundColor: Colors.greenAccent,
       ),
-      body: Stepper(
-        steps: _mySteps(),
-        type: StepperType.horizontal,
-        currentStep: this._currentStep,
-        onStepTapped: (step) {
-          setState(() {
-            this._currentStep = step;
-          });
-        },
-        onStepContinue: () {
-          setState(() {
-            if (this._currentStep < this._mySteps().length - 1) {
-              this._currentStep = this._currentStep + 1;
-            } else {
-              //Logic to check if everything is completed
-              
-              print('Completed, check fields.');
-               showToast("Completed, check fields.", context,
-              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-
-            }
-          });
-        },
-        onStepCancel: () {
-          setState(() {
-            if (this._currentStep > 0) {
-              this._currentStep = this._currentStep - 1;
-            } else {
-              this._currentStep = 0;
-            }
-          });
-        },
-      ),
+      body: Container(
+        child: principalStepper()
+      )
     );
+  }
+  Widget principalStepper(){
+    return Stepper(
+          steps: _mySteps(),
+          type: StepperType.horizontal,
+          currentStep: this._currentStep,
+          onStepTapped: (step) {
+            setState(() {
+              this._currentStep = step;
+            });
+          },
+          onStepContinue: () {
+            setState(() {
+              if (this._currentStep < this._mySteps().length - 1) {
+                this._currentStep = this._currentStep + 1;
+              } else {
+                //Logic to check if everything is completed
+                Firestore.instance.collection('usuarios').document(widget.userDoc.documentID).collection('prePedidosUsu').getDocuments().then((snapshot){
+                  for (DocumentSnapshot ds in snapshot.documents){
+                      ds.reference.delete();
+                   }
+                });  
+                print('Completed, check fields.');
+                showToast("Completed, check fields.", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ProductHomePage(docUsu: widget.userDoc)
+                ));
+
+              }
+            });
+          },
+          onStepCancel: () {
+            setState(() {
+              if (this._currentStep > 0) {
+                this._currentStep = this._currentStep - 1;
+              } else {
+                this._currentStep = 0;
+              }
+            });
+          },
+        );
   }
   List<Step> _mySteps() {
     List<Step> _steps = [
@@ -70,7 +83,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
       Step(
         title: Text('Paso 2'),
         isActive: _currentStep >= 1,
-        content: bodyConfirmarPedidoSegudo(widget.userDoc),
+        content: bodyConfirmarPedidoSegudo(widget.userDoc,),
       ),
       Step(
         title: Text('Paso 3'),
@@ -80,7 +93,6 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
     ];
     return _steps;
   }
-
   Widget bodyConfirmarPedidoPrimero(DocumentSnapshot docUsu) {
     return Container(
       height: 600.0,
@@ -268,6 +280,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                               child: Column(
                                 children: <Widget>[
                                   TextField(
+                                    keyboardType: TextInputType.number,
                                     controller: _cantidad,
                                     decoration:
                                         InputDecoration(labelText: "Cant."),
@@ -295,37 +308,15 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   int _radioValue1 = -1;
   int correctScore = 0;
 
-  void _handleRadioValueChange1(int value) {
-    setState(() {
-      _radioValue1 = value;
+  
 
-      switch (_radioValue1) {
-        case 0:
-          showToast("Correct !", context,
-              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-
-          correctScore++;
-          break;
-        case 1:
-          showToast("Try again !", context,
-              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-
-          break;
-        case 2:
-          showToast("Try again !", context,
-              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-
-          break;
-      }
-    });
-  }
-
-  double suma = 0;
+  
   Widget bodyConfirmarPedidoSegudo(DocumentSnapshot docUsu) {
     double subtotal = 0;
     double cantidad = 0;
     double precio = 0;
     double total = 0;
+
 
     return Container(
       height: 510.0,
@@ -381,8 +372,8 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                             total = total + subtotal;
 
                             suma = total;
-
-                            print(suma);
+                            
+                            print(suma.toString());
 
                             return Column(
                               children: <Widget>[
@@ -405,7 +396,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 50.0,
+                                      width: 65.0,
                                       child: Column(
                                         children: <Widget>[
                                           Text('\$ ${prePedDoc['precio_pro']}'),
@@ -413,7 +404,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 50.0,
+                                      width: 60.0,
                                       child: Column(
                                         children: <Widget>[
                                           Text('\$ ${subtotal.toString()}'),
@@ -435,7 +426,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                   width: 130.0,
                 ),
                 Text("TOTAL A PAGA:  "),
-                Text(suma.toStringAsFixed(2))
+                Text(suma.toString())
               ],
             ),
             SizedBox(
@@ -505,31 +496,21 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   }
 
   Widget bodyConfirmarPedidoTercero(DocumentSnapshot docUsu) {
-    
-    double subtotal = 0;
-    double cantidad = 0;
-    double precio = 0;
-    double total = 0;
-    var date = DateTime.now();
-    String time = "${date.day}\-${date.month}\-${date.year}  ${date.hour}\:${date.minute}";
-    print(time);
-    
+    int cont = 1;
     CloudFunctions.instance.call(
-      functionName: "crearfecha",
-      parameters: {
-        "doc_id" : docUsu["nombres"],
-        "fecha" : time.toString()
-           }
-    );  
-
-
+        functionName: "crearNumeroPedido",
+        parameters: {
+           "doc_id": docUsu.documentID,
+           "numero_pedido" : cont.toString()
+        }
+    );
     return Container(
       height: 510.0,
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
-              "FELICIDADES, TU PEDIDO ESTA EN PROCESO, EN POCOS MINUTOS LLEGAREMOS A TU DIRECCIÓN",
+              "PRESIONE CONTINUAR PARA CULMINAR EL PEDIDO",
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(
@@ -563,71 +544,24 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index) {
                             final prePedDoc = snapshot.data.documents[index];
-
-                            cantidad = double.parse(prePedDoc['cantidad_pro']);
-                            precio = double.parse(prePedDoc['precio_pro']);
-                            subtotal = cantidad * precio;
-
-                            total = total + subtotal;
-
-                            suma = total;
-
-                            print(suma);
                             CloudFunctions.instance.call(
                               functionName: "crearPedidoUsu",
                               parameters: {
                                 "doc_id": docUsu['nombres'],
-                                'doc_fecha' : time.toString(),
+                                "doc_numeroPedido" : cont.toString,
                                 "nombre_pro": prePedDoc['nombre_pro'],
                                 "descripcion_pro": prePedDoc['descripcion_pro'],
                                 "precio_pro": prePedDoc['precio_pro'],
                                 "imagen_pro": prePedDoc['imagen_pro'],
                                 "cantidad_pro": prePedDoc['cantidad_pro'],
                               }
-                            );  
-
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[/* 
-                                    SizedBox(
-                                      height: 45,
-                                      width: 25,
-                                      child: Text(
-                                          '${prePedDoc['cantidad_pro']}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                    Expanded(
-                                      child: SizedBox(
-                                        height: 45.0,
-                                        width: 30.0,
-                                        child:
-                                            Text('${prePedDoc['nombre_pro']}'),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 50.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text('\$ ${prePedDoc['precio_pro']}'),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 50.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text('\$ ${subtotal.toString()}'),
-                                        ],
-                                      ),
-                                    ), */
-                                  ],
-                                ),
-                              ],
                             );
-                          });
-                    })),                       
+                          }
+                          );
+                          
+                    }
+                )
+            ),                       
           ],
         ),
       ),
@@ -639,4 +573,31 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 
+  void _handleRadioValueChange1(int value) {
+    setState(() {
+      _radioValue1 = value;
+
+      switch (_radioValue1) {
+        case 0:
+          showToast("Correct !", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+
+          correctScore++;
+          break;
+        case 1:
+          showToast("Try again !", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+
+          break;
+        case 2:
+          showToast("Try again !", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+
+          break;
+      }
+    });
+  }
+
 }
+
+

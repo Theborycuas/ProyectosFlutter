@@ -63,15 +63,15 @@ Observable<Map<String, dynamic>> profile;
      if(user != null) {
               _success = true;
               _userID = user.uid;
-             updateUserDatabase(user, context);
-             loading.add(false);
-             Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
-                  Navigator.push(context, MaterialPageRoute(
-                       builder: (context) => ProductHomePage(usu:user, docUsu: usuarioDoc,))); 
-                  showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
-                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
-              });
-               isLogIn = true;
+              updateUserDatabase(user, context);
+              loading.add(false);
+              Firestore.instance.collection('usuarios').document(user.displayName).get().then((DocumentSnapshot usuarioDoc){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => ProductHomePage(usu:user, docUsu: usuarioDoc,))); 
+                    showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
+                        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
+                });
+              isLogIn = true;
      }
      return isLogIn;
      
