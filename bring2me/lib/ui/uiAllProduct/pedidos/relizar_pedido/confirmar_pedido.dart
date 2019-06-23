@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 double suma = 0;
 class ConfirmarDireccionYPedido extends StatefulWidget {
@@ -27,11 +28,11 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
         backgroundColor: Colors.greenAccent,
       ),
       body: Container(
-        child: principalStepper()
+        child: _principalStepper()
       )
     );
   }
-  Widget principalStepper(){
+  Widget _principalStepper(){
     return Stepper(
           steps: _mySteps(),
           type: StepperType.horizontal,
@@ -43,13 +44,53 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
           },
           onStepContinue: () {
             setState(() {
+
+              int cont = 1;
+              DateTime now = DateTime.now();              
+              
+              String formattedDate = DateFormat('dd-MM-yyyy hh:mm a').format(now);
+              print(formattedDate.toString());
+              
+
               if (this._currentStep < this._mySteps().length - 1) {
                 this._currentStep = this._currentStep + 1;
               } else {
                 //Logic to check if everything is completed
-                Firestore.instance.collection('usuarios').document(widget.userDoc.documentID).collection('prePedidosUsu').getDocuments().then((snapshot){
-                  for (DocumentSnapshot ds in snapshot.documents){
-                      ds.reference.delete();
+                CloudFunctions.instance.call(
+                    functionName: "crearNumeroPedido",
+                    parameters: {
+                      "doc_id": widget.userDoc.documentID,
+                      "numero_pedido" : formattedDate.toString(),
+                      "fecha_hora_pedido": DateTime.now().toString()
+                    }
+                );
+                Firestore.instance.collection('usuarios')
+                .document(widget.userDoc.documentID)
+                .collection('prePedidosUsu')
+                .getDocuments().then((snapshot){
+                  /* final cont = snapshot.documents.length; */
+
+                  for (DocumentSnapshot docPrepeConfir in snapshot.documents){
+                     CloudFunctions.instance.call(
+                      functionName: "crearPedidoUsu",
+                      parameters: {
+                        "doc_id": widget.userDoc['nombres'],
+                        "doc_numeroPedido" : formattedDate.toString(),
+                        "nombre_pro": docPrepeConfir['nombre_pro'],
+                        "descripcion_pro": docPrepeConfir['descripcion_pro'],
+                        "precio_pro": docPrepeConfir['precio_pro'],
+                        "imagen_pro": docPrepeConfir['imagen_pro'],
+                        "cantidad_pro": docPrepeConfir['cantidad_pro'],
+                              }
+                            );
+                   }
+                }); 
+                Firestore.instance.collection('usuarios')
+                .document(widget.userDoc.documentID)
+                .collection('prePedidosUsu')
+                .getDocuments().then((snapshot){
+                  for (DocumentSnapshot docPrepeDel in snapshot.documents){
+                      docPrepeDel.reference.delete();
                    }
                 });  
                 print('Completed, check fields.');
@@ -58,7 +99,9 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => ProductHomePage(docUsu: widget.userDoc)
                 ));
-
+                setState(() {
+                 cont = cont +1; 
+                });
               }
             });
           },
@@ -309,8 +352,6 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   int correctScore = 0;
 
   
-
-  
   Widget bodyConfirmarPedidoSegudo(DocumentSnapshot docUsu) {
     double subtotal = 0;
     double cantidad = 0;
@@ -496,14 +537,15 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
   }
 
   Widget bodyConfirmarPedidoTercero(DocumentSnapshot docUsu) {
-    int cont = 1;
+/*     int cont = 1;
     CloudFunctions.instance.call(
         functionName: "crearNumeroPedido",
         parameters: {
            "doc_id": docUsu.documentID,
-           "numero_pedido" : cont.toString()
+           "numero_pedido" : cont.toString(),
+           "fecha_hora_pedido": DateTime.now().toString()
         }
-    );
+    ); */
     return Container(
       height: 510.0,
       child: Center(
@@ -513,7 +555,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
               "PRESIONE CONTINUAR PARA CULMINAR EL PEDIDO",
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(
+            /* SizedBox(
                 height: 200.0,
                 width: 500.0,
                 child: StreamBuilder<QuerySnapshot>(
@@ -561,7 +603,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                           
                     }
                 )
-            ),                       
+            ),           */             
           ],
         ),
       ),

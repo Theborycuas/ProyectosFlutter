@@ -37,6 +37,7 @@ dependencies:
   geolocator: ^4.0.1
   flutter_google_places:  
   firebase_dynamic_links: ^0.4.0
+  intl: ^0.15.8
   #onesignal: ^1.1.0
   #firebase_messaging: ^5.0.2
 

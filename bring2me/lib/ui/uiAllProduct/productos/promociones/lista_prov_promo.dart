@@ -108,7 +108,7 @@ class ListaProvPromo extends StatelessWidget {
         }
     )
     );
-  }
+  }/* 
 Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc, FirebaseUser user) {
      Firestore.instance.collection('ciudad').document("ORYrQioVN7Pny0KZ6Mg7").collection('proveedor')
      .document("27xbICfN52yat7hdcokl").collection('categoria').document("oXFXAEsAXyNHQx71rOmR")
@@ -184,6 +184,6 @@ Future<Null> _verProductoDialog(BuildContext context, DocumentSnapshot prodDoc, 
         });
         
 
-  } 
+  }  */
 
 }

@@ -30,66 +30,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
         backgroundColor: Colors.blueGrey,
       ),
       bottomNavigationBar: _contruccionBottomBar(),
-             drawer: Drawer(
-            elevation: 20.0,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                UserAccountsDrawerHeader(
-                  accountName: Text(widget.docUsu.data["nombres"]),
-                  accountEmail: Text(widget.docUsu.data["correo"]),
-                  currentAccountPicture: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => UserProfile(user: widget.usu, usuDoc: widget.docUsu,)
-                                        ));
-                    },
-                    child: CircleAvatar(                    
-                    backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"]) 
-                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
-                  ),
-                  ),
-                  
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    /* image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage("${widget.user.photoUrl}"),
-                    ) */),
-                    otherAccountsPictures: <Widget>[
-                      GestureDetector(
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
-                        ),
-                      )
-                    ],
-
-                ),
-                InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ListViewPedidosEnProceso(docUsu: widget.docUsu)
-                                      ));
-                  },
-                    child:  ListTile(
-                    title: Text("Pedidos en Proceso", style: TextStyle(fontSize: 15.0),),
-                    trailing: Icon(Icons.list),
-                                      ),
-                ),
-                InkWell(
-                  onTap: (){
-                    print("hi");
-                  },
-                    child:  ListTile(
-                    title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
-                    trailing: Icon(Icons.list),
-                   
-                  ),
-                )              
-               
-              ],
-            )
-          ),
+      drawer: _drawer(),
       body: _construccionCuerpo(height, width, widget.docUsu),
     );
   }
@@ -157,7 +98,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
               ),
             ),
           ),
-          _recuperarCategoriasGenerales(height, width),
+          _recuperarCategoriasGenerales(height, width, widget.docUsu),
          Padding(
            padding: EdgeInsets.fromLTRB(100.0, 270.0, 100.0, 100.0),
            child:   Text("PROMOCIONES",
@@ -250,7 +191,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
       ],
     );
   }
-   StreamBuilder<QuerySnapshot> _recuperarCategoriasGenerales(height, width) {
+   StreamBuilder<QuerySnapshot> _recuperarCategoriasGenerales(height, width, DocumentSnapshot docUsu) {
      
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('categoriaGeneral').snapshots(),
@@ -296,7 +237,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (c) => ProveYCat(docCatGen: catGenDoc, usu: widget.usu, userDoc: widget.docUsu,)
+                                builder: (c) => ProveYCat(docCatGen: catGenDoc, usu: widget.usu, userDoc: docUsu,)
                               ),
                             );/* 
                             _contruccionContenidos(height, width); */
@@ -411,7 +352,68 @@ class _ProductHomePageState extends State<ProductHomePage> {
       ),
     );
   }
+Widget _drawer() {
+    return Drawer(
+            elevation: 20.0,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountName: Text(widget.docUsu.data["nombres"]),
+                  accountEmail: Text(widget.docUsu.data["correo"]),
+                  currentAccountPicture: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => UserProfile(user: widget.usu, usuDoc: widget.docUsu,)
+                                        ));
+                    },
+                    child: CircleAvatar(                    
+                    backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"]) 
+                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+                  ),
+                  ),
+                  
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    /* image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage("${widget.user.photoUrl}"),
+                    ) */),
+                    otherAccountsPictures: <Widget>[
+                      GestureDetector(
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
+                        ),
+                      )
+                    ],
 
+                ),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ListViewPedidosEnProceso(docUsu: widget.docUsu)
+                                      ));
+                  },
+                    child:  ListTile(
+                    title: Text("Pedidos en Proceso", style: TextStyle(fontSize: 15.0),),
+                    trailing: Icon(Icons.list),
+                                      ),
+                ),
+                InkWell(
+                  onTap: (){
+                    print("hi");
+                  },
+                    child:  ListTile(
+                    title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
+                    trailing: Icon(Icons.list),
+                   
+                  ),
+                )              
+               
+              ],
+            )
+          );
+  }
 
 }
 

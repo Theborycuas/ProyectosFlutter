@@ -2,6 +2,7 @@
 import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/pre_pedidos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -63,9 +64,17 @@ class _ListProductosState extends State<ListProductos> {
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            print("No existen productos.");
-            //print(logger);
-            return Container();
+             return Center(
+                    child: Column(
+                       children: <Widget>[
+                          SizedBox(height: 285.0,),
+                          Text('Cargando CATEGORIAS...'),
+                          SizedBox(height: 15.0,),
+                          CupertinoActivityIndicator(),
+                            ],
+                          ),
+                            
+                        );
           }
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
@@ -216,15 +225,17 @@ class _ListProductosState extends State<ListProductos> {
                 icon: Icon(Icons.shopping_cart),
                 color: Colors.blueGrey,
                 onPressed: () {
-                  CloudFunctions.instance
-                      .call(functionName: "crearPrePedidoUsu", parameters: {
-                    "doc_id": widget.userDoc.documentID,
-                    "nombre_pro": prodDoc['nombre_pro'],
-                    "descripcion_pro": prodDoc['descripcion_pro'],
-                    "precio_pro": prodDoc['precio_pro'],
-                    "imagen_pro": prodDoc['imagen_pro'],
-                    "cantidad_pro": _cantidad.text
-                  });
+                CloudFunctions.instance.call(
+                       functionName: "crearPrePedidoUsu",
+                       parameters: {
+                          "doc_id": userDoc.documentID,
+                          "nombre_pro": prodDoc['nombre_pro'],
+                          "descripcion_pro": prodDoc['descripcion_pro'],
+                          "precio_pro": prodDoc['precio_pro'],
+                          "imagen_pro": prodDoc['imagen_pro'],
+                          "cantidad_pro": _cantidad.text
+                      }
+                    );
                   showToast(
                       "El Producto ${prodDoc['nombre_pro']} se agrego al Carrito de compra",
                       context,

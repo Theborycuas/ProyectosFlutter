@@ -125,7 +125,8 @@ class _ListaProveedoresYCartegoriaState extends State<ListaProveedoresYCartegori
                                           onTap: (){
                                             print("soy un ${catProvDoc.data["nombre_cat"]}");
                                             Navigator.push(context, MaterialPageRoute(
-                                                builder: (context) => ListProductos(catGenDoc: widget.docCatGen, proveDoc: widget.docProv, catProvDoc: catProvDoc , )
+                                                builder: (context) => ListProductos(catGenDoc: widget.docCatGen, 
+                                                catProvDoc: catProvDoc , proveDoc: widget.docProv, userDoc: widget.userDoc,)
                                               ));
                                             /* _verProductoDialog(context, catProvDoc, user); */
                                           },
