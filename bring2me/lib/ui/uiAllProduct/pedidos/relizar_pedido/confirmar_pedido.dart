@@ -45,12 +45,11 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
           onStepContinue: () {
             setState(() {
 
-              int cont = 1;
               DateTime now = DateTime.now();              
               
               String formattedDate = DateFormat('dd-MM-yyyy hh:mm a').format(now);
-              print(formattedDate.toString());
-              
+              String fechaHoraPed = DateFormat('dd-MM-yyyy hh:mm:ss').format(now);
+              String estadoPedido = "Esperando Motociclista";
 
               if (this._currentStep < this._mySteps().length - 1) {
                 this._currentStep = this._currentStep + 1;
@@ -61,7 +60,19 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                     parameters: {
                       "doc_id": widget.userDoc.documentID,
                       "numero_pedido" : formattedDate.toString(),
-                      "fecha_hora_pedido": DateTime.now().toString()
+                      "fecha_hora_pedido": fechaHoraPed.toString()
+                    }
+                );
+                 CloudFunctions.instance.call(
+                    functionName: "crearPedidoMoto",
+                    parameters: {
+                    "titulo_pedido": formattedDate.toString(),
+                    "nombre_cliente_pedido": widget.userDoc.data["nombres"],
+                    "direccion_cliente_pedido": widget.userDoc.data["direccion"],
+                    "telefono_cliente_pedido": widget.userDoc.data["telefono"],
+                    "correo_cliente_pedido": widget.userDoc.data["correo"],
+                    "fecha_hora_pedido": fechaHoraPed.toString(),
+                    "estado_pedido": estadoPedido.toString()
                     }
                 );
                 Firestore.instance.collection('usuarios')
@@ -82,7 +93,18 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                         "imagen_pro": docPrepeConfir['imagen_pro'],
                         "cantidad_pro": docPrepeConfir['cantidad_pro'],
                               }
-                            );
+                      );
+                    CloudFunctions.instance.call(
+                      functionName: "crearProductoPedidoMoto",
+                      parameters: {
+                        "id_pedido": formattedDate.toString(),
+                        "nombre_pro": docPrepeConfir['nombre_pro'],
+                        "descripcion_pro": docPrepeConfir['descripcion_pro'],
+                        "precio_pro": docPrepeConfir['precio_pro'],
+                        "imagen_pro": docPrepeConfir['imagen_pro'],
+                        "cantidad_pro": docPrepeConfir['cantidad_pro'],
+                      }
+                    );
                    }
                 }); 
                 Firestore.instance.collection('usuarios')
@@ -98,10 +120,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                 duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => ProductHomePage(docUsu: widget.userDoc)
-                ));
-                setState(() {
-                 cont = cont +1; 
-                });
+                ));              
               }
             });
           },

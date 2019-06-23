@@ -1,3 +1,4 @@
+import 'package:admin_bring2_me/adminUI/RegistrePerson/registerMotociclista.dart';
 import 'package:admin_bring2_me/adminUI/categoriasGeneales/categoriasGenerales_ListView.dart';
 import 'package:admin_bring2_me/adminUI/completeCrud/ciudades_ListView.dart';
 import 'package:admin_bring2_me/adminUI/pedidos/listPedidos_Admin.dart';
@@ -53,6 +54,17 @@ class _MenuState extends State<Menu> {
                   Navigator.push(context, 
                       MaterialPageRoute(builder: (context) => ListViewPedidos()));
                       showToast("Bienvenido al Panel de Pedidos", 
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
+                  
+                },
+              ),
+             SizedBox(height: 20,), 
+              FlatButton(
+                child: Text("REGISTRAR MOTOCICLISTAS"),             
+                onPressed: (){  
+                  Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => RegisterMoto()));
+                      showToast("Bienvenido al Panel de registro de motociclistas", 
                       duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);              
                   
                 },

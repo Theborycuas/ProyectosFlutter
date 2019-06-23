@@ -23,7 +23,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   #firebase imagenes
   firebase_storage: ^2.1.0+1
-  image_picker: ^0.5.0+9
+  image_picker: ^0.6.0+9
   firebase_analytics: ^2.0.3
   cloud_firestore: ^0.9.0
   rxdart: ^0.21.0
