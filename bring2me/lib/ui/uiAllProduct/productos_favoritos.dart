@@ -22,9 +22,9 @@ class _FavoriteProductsState extends State<FavoriteProducts> {
            RaisedButton(  
              child: Text('Iniciar Sesion'),
              onPressed: (){   
-               Navigator.push(context, MaterialPageRoute(
+              /*  Navigator.push(context, MaterialPageRoute(
                  builder: (context) => MyAppLoginPage(usuDoc: null, user: null,)
-               ));
+               )); */
              },
            ),
          ],

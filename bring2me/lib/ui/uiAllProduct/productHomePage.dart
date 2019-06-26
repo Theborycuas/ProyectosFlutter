@@ -9,32 +9,61 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProductHomePage extends StatefulWidget {
-  const ProductHomePage({Key key, @required this.docUsu, this.usu}) : super(key: key);
-  final DocumentSnapshot docUsu;
+  const ProductHomePage({Key key, @required this.usu}) : super(key: key);
+  
   final FirebaseUser usu;
+
+  
   @override
   _ProductHomePageState createState() => new _ProductHomePageState();
  }
-class _ProductHomePageState extends State<ProductHomePage> {
-    
+class _ProductHomePageState extends State<ProductHomePage>  {
+  
+  
   Color primaryColor = Colors.blueGrey;
   
   @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-
+  Widget build(BuildContext context) {    
     return Scaffold(
       appBar: AppBar(
         title: Text("Bienvenido a BRING2ME"),
         backgroundColor: Colors.blueGrey,
       ),
       bottomNavigationBar: _contruccionBottomBar(),
-      drawer: _drawer(),
-      body: _construccionCuerpo(height, width, widget.docUsu),
+         drawer: _drawer(), 
+      body: _streambuilder(context)
+      /* _construccionCuerpo(height, width, widget.docUsu), */
     );
   }
 
+  Widget _streambuilder(BuildContext context){
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return StreamBuilder<DocumentSnapshot>(
+           stream: Firestore.instance
+                     .collection('usuarios')
+                      .document(widget.usu.displayName)
+                      .snapshots(),
+            builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+               if (!snapshot.hasData || snapshot.data == null) {
+                  //print(logger);
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 285.0,),
+                        Text('Iniciando Bring2M2...'),
+                        SizedBox(height: 15.0,),
+                        CupertinoActivityIndicator(            
+                              ),
+                      ],
+                    ),
+                      
+                  );
+                }
+               return _construccionCuerpo(height, width, snapshot.data);
+            }              
+    );
+  }
   
   Widget _construccionCuerpo(height, width, DocumentSnapshot docUsu) {
     return Container(
@@ -60,7 +89,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 15),
-                        _construccionAppBar(height, width),
+                        _construccionAppBar(height, width, docUsu),
                         SizedBox(height: 15),
                         Container(
                           width: width - 40,
@@ -98,36 +127,29 @@ class _ProductHomePageState extends State<ProductHomePage> {
               ),
             ),
           ),
-          _recuperarCategoriasGenerales(height, width, widget.docUsu),
+          _recuperarCategoriasGenerales(height, width, docUsu),
          Padding(
            padding: EdgeInsets.fromLTRB(100.0, 270.0, 100.0, 100.0),
            child:   Text("PROMOCIONES",
-              style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+           style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                       ),
                     ),       
          ),
          ListaProvPromo(
-                    width: width,
-                    height: height,
-                    docUsu: docUsu,
-                                   ),  
-                   
-         /* _contruccionContenidos(height, width), */
-          /* _contruccionContenidos(height, width) */
-          
-         /*  Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: ProveYCat(docCatGen: catGenDoc,),
-          ) */
+            width: width,
+            height: height,
+            docUsu: docUsu,
+          ),  
+     
         ],
       ),
     );
   }
 
-  Widget _construccionAppBar(height, width) {
+  Widget _construccionAppBar(height, width, DocumentSnapshot docUsu) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,7 +159,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Hola, ${widget.docUsu["nombres"]}",
+              "Hola, ${docUsu.data["nombres"]}",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -309,112 +331,161 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
 
   }
-
+ 
   Widget _contruccionBottomBar() {
-    return BottomAppBar(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.home,
-              size: 35,
-              color: primaryColor,
-            ),
-            Icon(
-              Icons.favorite_border,
-              color: Colors.black54,
-              size: 30,
-            ),
-            IconButton(
-              icon: Icon(Icons.shopping_cart),
-              iconSize: 30.0,
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ListViewPrePedidos(docUsu: widget.docUsu,)
-                    ));
-              },
-            ),
-           
-            IconButton(
-              icon: Icon(Icons.perm_identity, 
-                size: 30.0,),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => UserProfile(usuDoc: widget.docUsu, user: widget.usu,)
-                    ));
-                },              
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-Widget _drawer() {
-    return Drawer(
-            elevation: 20.0,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                UserAccountsDrawerHeader(
-                  accountName: Text(widget.docUsu.data["nombres"]),
-                  accountEmail: Text(widget.docUsu.data["correo"]),
-                  currentAccountPicture: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => UserProfile(user: widget.usu, usuDoc: widget.docUsu,)
-                                        ));
-                    },
-                    child: CircleAvatar(                    
-                    backgroundImage: widget.docUsu.data["foto"] != "" ? NetworkImage(widget.docUsu.data["foto"]) 
-                                      : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
-                  ),
-                  ),
-                  
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    /* image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage("${widget.user.photoUrl}"),
-                    ) */),
-                    otherAccountsPictures: <Widget>[
-                      GestureDetector(
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
-                        ),
-                      )
-                    ],
-
-                ),
-                InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ListViewPedidosEnProceso(docUsu: widget.docUsu)
-                                      ));
-                  },
-                    child:  ListTile(
-                    title: Text("Pedidos en Proceso", style: TextStyle(fontSize: 15.0),),
-                    trailing: Icon(Icons.list),
+    return StreamBuilder<DocumentSnapshot>(
+           stream: Firestore.instance
+                     .collection('usuarios')
+                      .document(widget.usu.displayName)
+                      .snapshots(),
+            builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null) {
+                          //print(logger);
+                          return Center(
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 285.0,),
+                                Text('Iniciando Bring2M2...'),
+                                SizedBox(height: 15.0,),
+                                CupertinoActivityIndicator(            
                                       ),
-                ),
-                InkWell(
-                  onTap: (){
-                    print("hi");
-                  },
-                    child:  ListTile(
-                    title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
-                    trailing: Icon(Icons.list),
-                   
-                  ),
-                )              
-               
-              ],
-            )
-          );
+                              ],
+                            ),
+                              
+                          );
+                        }
+                       return BottomAppBar(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.home,
+                                size: 35,
+                                color: primaryColor,
+                              ),
+                              Icon(
+                                Icons.favorite_border,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.shopping_cart),
+                                iconSize: 30.0,
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => ListViewPrePedidos(docUsu: snapshot.data,)
+                                      ));
+                                },
+                              ),
+                            
+                              IconButton(
+                                icon: Icon(Icons.perm_identity, 
+                                  size: 30.0,),
+                                  onPressed: (){
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => UserProfile(usuDoc: snapshot.data, user: widget.usu,)
+                                      ));
+                                  },              
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+            });
+    
   }
 
+Widget _drawer() {
+  return StreamBuilder<DocumentSnapshot>(
+           stream: Firestore.instance
+                     .collection('usuarios')
+                      .document(widget.usu.displayName)
+                      .snapshots(),
+            builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+               if (!snapshot.hasData || snapshot.data == null) {
+                  //print(logger);
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 285.0,),
+                        Text('Iniciando Bring2M2...'),
+                        SizedBox(height: 15.0,),
+                        CupertinoActivityIndicator(            
+                              ),
+                      ],
+                    ),
+                      
+                  );
+                }
+               return Drawer(
+                  elevation: 20.0,
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      UserAccountsDrawerHeader(
+                        accountName: Text(snapshot.data["nombres"]),
+                        accountEmail: Text(snapshot.data["correo"]),
+                        currentAccountPicture: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => UserProfile(user: widget.usu, usuDoc: snapshot.data,)
+                                              ));
+                          },
+                          child: CircleAvatar(                    
+                          backgroundImage: snapshot.data["foto"] != "" ? NetworkImage(snapshot.data["foto"]) 
+                                            : NetworkImage("https://insidelatinamerica.net/wp-content/uploads/2018/01/noImg_2.jpg"), 
+                        ),
+                        ),
+                        
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          /* image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage("${widget.user.photoUrl}"),
+                          ) */),
+                          otherAccountsPictures: <Widget>[
+                            GestureDetector(
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
+                              ),
+                            )
+                          ],
+
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => ListViewPedidosEnProceso(docUsu: snapshot.data)
+                                            ));
+                        },
+                          child:  ListTile(
+                          title: Text("Pedidos en Proceso", style: TextStyle(fontSize: 15.0),),
+                          trailing: Icon(Icons.list),
+                                            ),
+                      ),
+                      InkWell(
+                        onTap: (){
+                          print("hi");
+                        },
+                          child:  ListTile(
+                          title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
+                          trailing: Icon(Icons.list),
+                        
+                        ),
+                      )              
+                    
+                    ],
+                  )
+                );
+            }
+              
+    );
+    
+  }
+ 
 }
 
 

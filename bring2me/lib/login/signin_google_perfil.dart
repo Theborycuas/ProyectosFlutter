@@ -1,3 +1,4 @@
+import 'package:bring2me/CompleteInfo.dart';
 import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:bring2me/ui/userProfile/userProfile.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -65,12 +66,10 @@ Observable<Map<String, dynamic>> profile;
               _userID = user.uid;
               updateUserDatabase(user, context);
               loading.add(false);
-              Firestore.instance.collection('usuarios').document(user.displayName).get().then((DocumentSnapshot usuarioDoc){
+          
                     Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => ProductHomePage(usu:user, docUsu: usuarioDoc,))); 
-                    showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
-                        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
-                });
+                        builder: (context) => CompleteInfo(usu:user,))); 
+                
               isLogIn = true;
      }
      return isLogIn;

@@ -7,6 +7,7 @@ import 'package:toast/toast.dart';
 
 
 class SignInEmail extends StatefulWidget {
+  
   @override
   
   State<StatefulWidget> createState() => new _SignInEmailState();
@@ -78,7 +79,7 @@ class _SignInEmailState extends State<SignInEmail> {
  
               Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                   Navigator.push(context, MaterialPageRoute(
-                       builder: (context) => ProductHomePage(usu:null, docUsu: usuarioDoc,))); 
+                       builder: (context) => ProductHomePage(usu:null,))); 
               });
                }).catchError((e){
                  print(e);

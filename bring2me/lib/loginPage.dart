@@ -11,9 +11,8 @@ import 'package:toast/toast.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 class MyAppLoginPage extends StatefulWidget {
-  const MyAppLoginPage({Key key, @required this.usuDoc , this.user}) : super(key: key);  
-  final FirebaseUser user;
-  final DocumentSnapshot usuDoc;
+  const MyAppLoginPage({Key key,}) : super(key: key);  
+
   @override
   _MyAppLoginPageState createState() => new _MyAppLoginPageState();
 }
@@ -370,7 +369,7 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
         // sign in successful!
             Firestore.instance.collection('usuarios').document(user.uid).get().then((DocumentSnapshot usuarioDoc){
                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ProductHomePage(usu: user, docUsu: usuarioDoc,)));
+                  builder: (context) => ProductHomePage(usu: user)));
               showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 
                       duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);  
        });

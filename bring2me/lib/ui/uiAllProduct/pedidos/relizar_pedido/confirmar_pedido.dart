@@ -119,7 +119,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                 showToast("Completed, check fields.", context,
                 duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ProductHomePage(docUsu: widget.userDoc)
+                  builder: (context) => ProductHomePage(usu: null,)
                 ));              
               }
             });
@@ -177,7 +177,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProductHomePage(
-                              docUsu: widget.userDoc,
+                              usu: null,
                             )));
               },
             ),

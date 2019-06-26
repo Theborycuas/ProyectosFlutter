@@ -1,4 +1,4 @@
-import 'package:bring2me/ui/listProductUsu.dart';
+/* import 'package:bring2me/ui/listProductUsu.dart';
 import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -332,7 +332,7 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
                                   case "8": {  
                                     print("8"); 
                                     Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => ProductHomePage(docUsu: widget.usuDoc, usu: widget.user,)
+                                       builder: (context) => ProductHomePage(usu: widget.user,)
                                          /*  builder: (context) => ListViewProductUsu(
                                             user: widget.user, cat: widget.usuDoc,
                                           ) */
@@ -535,3 +535,4 @@ class _ListCategoriaPrincipalState extends State<ListCategoriaPrincipal> {
     );
   } */
 
+ */
