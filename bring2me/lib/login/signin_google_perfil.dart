@@ -67,8 +67,8 @@ Observable<Map<String, dynamic>> profile;
               updateUserDatabase(user, context);
               loading.add(false);
           
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => CompleteInfo(usu:user,))); 
+                   /*  Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CompleteInfo(usu:user,)));  */
                 
               isLogIn = true;
      }
@@ -87,12 +87,12 @@ Observable<Map<String, dynamic>> profile;
               parameters: {
                                 'uid' : user.uid,
                                 'nombres' : user.displayName,
-                                'telefono': "",
+                                'telefono': '',
                                 'direccion':'',
                                 'ubicacion': '',
                                 'correo' :user.email,
                                 'clave' :user.uid,  
-                                'foto' :user.photoUrl,
+                                'foto' :user.photoUrl,  
                                 'ultimoacceso' : DateTime.now().toString(),                         
 
                     }

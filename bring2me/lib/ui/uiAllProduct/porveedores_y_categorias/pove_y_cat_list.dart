@@ -124,14 +124,14 @@ class _ProveYCatState extends State<ProveYCat> {
               ),
             ),
           ),
-          _contruccionContenidos(height, width, widget.userDoc, widget.docCatGen),
+          _contruccionContenidos(height, width, widget.userDoc, widget.docCatGen, widget.usu),
         ],
       ),
     )
     );
   }  
 }
-Widget _contruccionContenidos(height, width, DocumentSnapshot userDoc, DocumentSnapshot docCatGen) {
+Widget _contruccionContenidos(height, width, DocumentSnapshot userDoc, DocumentSnapshot docCatGen, FirebaseUser usu) {
     return Positioned(
       top: (height * .15) + 27,
       width: width,
@@ -211,6 +211,7 @@ Widget _contruccionContenidos(height, width, DocumentSnapshot userDoc, DocumentS
                                       docProv: catProvDoc,
                                       docCatGen: docCatGen,
                                       userDoc: userDoc,
+                                      usu: usu
                                    ),  
                            )
                          

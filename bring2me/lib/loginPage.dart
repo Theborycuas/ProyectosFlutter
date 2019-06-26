@@ -81,7 +81,7 @@ class _MyAppLoginPageState extends State<MyAppLoginPage> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(top: 40),
-                child: Image.asset("assets/images/logo.png", width: 200.0,),
+                child: Image.asset("assets/images/logo.png", width: 180.0,),
               ),
               Expanded(
                 child: Container(),

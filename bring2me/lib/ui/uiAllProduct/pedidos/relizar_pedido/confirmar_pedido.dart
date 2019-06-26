@@ -1,15 +1,17 @@
 import 'package:bring2me/ui/uiAllProduct/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 double suma = 0;
 class ConfirmarDireccionYPedido extends StatefulWidget {
-  const ConfirmarDireccionYPedido({Key key, @required this.userDoc})
+  const ConfirmarDireccionYPedido({Key key, @required this.userDoc, this.usu})
       : super(key: key);
   final DocumentSnapshot userDoc;
+  final FirebaseUser usu;
   
 
   @override
@@ -85,7 +87,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                      CloudFunctions.instance.call(
                       functionName: "crearPedidoUsu",
                       parameters: {
-                        "doc_id": widget.userDoc['nombres'],
+                        "doc_id": widget.userDoc.documentID,
                         "doc_numeroPedido" : formattedDate.toString(),
                         "nombre_pro": docPrepeConfir['nombre_pro'],
                         "descripcion_pro": docPrepeConfir['descripcion_pro'],
@@ -119,7 +121,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                 showToast("Completed, check fields.", context,
                 duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => ProductHomePage(usu: null,)
+                  builder: (context) => ProductHomePage(usu: widget.usu, )
                 ));              
               }
             });

@@ -1,12 +1,14 @@
 import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/confirmar_pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListViewPrePedidos extends StatefulWidget {
-  const ListViewPrePedidos({Key key, @required this.docUsu}) : super(key: key);
+  const ListViewPrePedidos({Key key, @required this.docUsu, this.usu}) : super(key: key);
   final DocumentSnapshot docUsu;
+  final FirebaseUser usu;
 
   @override
   _ListViewPrePedidosState createState() => new _ListViewPrePedidosState();
@@ -28,7 +30,7 @@ class _ListViewPrePedidosState extends State<ListViewPrePedidos> {
               context,
               MaterialPageRoute(
                   builder: (context) => ConfirmarDireccionYPedido(
-                        userDoc: widget.docUsu,
+                        userDoc: widget.docUsu, usu: widget.usu
                       )));
         },
         tooltip: 'Realizar pedido',

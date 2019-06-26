@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class ListaProveedoresYCartegoria extends StatefulWidget {
 const ListaProveedoresYCartegoria(
       {Key key, @required this.width, this.height, this.isLargeImg = false,
-       this.docProv, this.docCatGen, this.userDoc})
+       this.docProv, this.docCatGen, this.userDoc, this.usu})
       : super(key: key);
 
   final double height;
@@ -17,7 +17,7 @@ const ListaProveedoresYCartegoria(
   final DocumentSnapshot docProv;
   final DocumentSnapshot docCatGen;
   final DocumentSnapshot userDoc;
-
+  final FirebaseUser usu;
   _ListaProveedoresYCartegoriaState createState() => _ListaProveedoresYCartegoriaState();
 }
 
@@ -94,7 +94,7 @@ class _ListaProveedoresYCartegoriaState extends State<ListaProveedoresYCartegori
                                           print("${catProvDoc.data["nombre_cat"]}");
                                            Navigator.push(context, MaterialPageRoute(
                                                 builder: (context) => ListProductos(catGenDoc: widget.docCatGen, 
-                                                catProvDoc: catProvDoc , proveDoc: widget.docProv, userDoc: widget.userDoc,)
+                                                catProvDoc: catProvDoc , proveDoc: widget.docProv, userDoc: widget.userDoc, usu: widget.usu)
                                               ));
                                           /* _verProductoDialog(context, catProvDoc, user); */
                                         },
@@ -126,7 +126,7 @@ class _ListaProveedoresYCartegoriaState extends State<ListaProveedoresYCartegori
                                             print("soy un ${catProvDoc.data["nombre_cat"]}");
                                             Navigator.push(context, MaterialPageRoute(
                                                 builder: (context) => ListProductos(catGenDoc: widget.docCatGen, 
-                                                catProvDoc: catProvDoc , proveDoc: widget.docProv, userDoc: widget.userDoc,)
+                                                catProvDoc: catProvDoc , proveDoc: widget.docProv, userDoc: widget.userDoc, usu: widget.usu)
                                               ));
                                             /* _verProductoDialog(context, catProvDoc, user); */
                                           },

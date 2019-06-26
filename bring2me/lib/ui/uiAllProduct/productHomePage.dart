@@ -42,7 +42,7 @@ class _ProductHomePageState extends State<ProductHomePage>  {
     return StreamBuilder<DocumentSnapshot>(
            stream: Firestore.instance
                      .collection('usuarios')
-                      .document(widget.usu.displayName)
+                      .document(widget.usu.uid)
                       .snapshots(),
             builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                if (!snapshot.hasData || snapshot.data == null) {
@@ -336,7 +336,7 @@ class _ProductHomePageState extends State<ProductHomePage>  {
     return StreamBuilder<DocumentSnapshot>(
            stream: Firestore.instance
                      .collection('usuarios')
-                      .document(widget.usu.displayName)
+                      .document(widget.usu.uid)
                       .snapshots(),
             builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                       if (!snapshot.hasData || snapshot.data == null) {
@@ -376,7 +376,7 @@ class _ProductHomePageState extends State<ProductHomePage>  {
                                 iconSize: 30.0,
                                 onPressed: (){
                                   Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => ListViewPrePedidos(docUsu: snapshot.data,)
+                                        builder: (context) => ListViewPrePedidos(docUsu: snapshot.data, usu: widget.usu)
                                       ));
                                 },
                               ),
@@ -449,7 +449,7 @@ Widget _drawer() {
                           otherAccountsPictures: <Widget>[
                             GestureDetector(
                               child: CircleAvatar(
-                                backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logojpg.jpg?alt=media&token=bf5a8da1-ec3c-4780-9254-8d0b9470a0cc") , 
+                                backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/bring2me-e3467.appspot.com/o/logo.png?alt=media&token=99779350-8358-4ed5-84a7-f87658628590") , 
                               ),
                             )
                           ],

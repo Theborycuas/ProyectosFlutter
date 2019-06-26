@@ -2,6 +2,7 @@
 import 'package:bring2me/ui/uiAllProduct/pedidos/relizar_pedido/pre_pedidos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -14,13 +15,14 @@ class ListProductos extends StatefulWidget {
       @required this.catGenDoc,
       this.proveDoc,
       this.catProvDoc,
-      this.userDoc})
+      this.userDoc, this.usu})
       : super(key: key);
 
   final DocumentSnapshot catGenDoc;
   final DocumentSnapshot proveDoc;
   final DocumentSnapshot catProvDoc;
   final DocumentSnapshot userDoc;
+  final FirebaseUser usu;
   @override
   _ListProductosState createState() => new _ListProductosState();
 }
@@ -37,7 +39,7 @@ class _ListProductosState extends State<ListProductos> {
             icon: Icon(Icons.shopping_cart),
             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ListViewPrePedidos(docUsu: widget.userDoc,)
+                      builder: (context) => ListViewPrePedidos(docUsu: widget.userDoc, usu: widget.usu,)
                     ));
             },
           )
@@ -90,7 +92,7 @@ class _ListProductosState extends State<ListProductos> {
                               snapshot.data.documents[index].documentID),
                           onTap: () {
                             _verProductDialog(
-                                context, prodDoc, widget.userDoc);
+                                context, prodDoc, widget.userDoc, widget.usu);
                           },
                           child: Container(
                             width: double.infinity,
@@ -147,7 +149,7 @@ class _ListProductosState extends State<ListProductos> {
                                         color: Colors.red,
                                         onPressed: () {
                                           _verProductDialog(context, prodDoc,
-                                              widget.userDoc);
+                                              widget.userDoc, widget.usu);
                                         },
                                       )
                                     ],
@@ -164,7 +166,7 @@ class _ListProductosState extends State<ListProductos> {
   }
 
   Future<Null> _verProductDialog(BuildContext context, DocumentSnapshot prodDoc,
-       DocumentSnapshot userDoc) {
+       DocumentSnapshot userDoc, FirebaseUser usu) {
     TextEditingController _cantidad = TextEditingController(text: '1');
 
     return showDialog(

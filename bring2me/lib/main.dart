@@ -20,19 +20,12 @@ void main() async {
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder:  (BuildContext context, snapshot)  {
      
-          if (snapshot == null) {
-                if (snapshot.data.providerData.length == 1) { // logged in using email and password
-                  return snapshot.data.isEmailVerified
-                      ? ProductHomePage(usu: snapshot.data)
-                      : MyAppLoginPage();
-                } else { // logged in using other providers
-                  return  ProductHomePage(usu: snapshot.data);
-                }
+          if (snapshot.data != null) {
+              return ProductHomePage(usu: snapshot.data);
             } else {
                 return MyAppLoginPage();
               }        
-       /* DocumentSnapshot docUsu = await Firestore.instance.collection("usuarios").document(snapshot.data.displayName).get();          */
-                
+       /* DocumentSnapshot docUsu = await Firestore.instance.collection("usuarios").document(snapshot.data.displayName).get();          */         
     },
   );
 }  

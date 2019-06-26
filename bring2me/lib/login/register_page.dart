@@ -240,7 +240,6 @@ class _RegisterPageState extends State<RegisterPage> {
        CloudFunctions.instance.call(
           functionName: "actualizarUsuarioBring",
           parameters: {
-            "doc_id": user.uid,
             'uid': user.uid,
             'nombres' : _nombres.text,
             'telefono': _telefono.text,
