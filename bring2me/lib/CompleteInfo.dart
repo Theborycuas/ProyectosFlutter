@@ -85,7 +85,7 @@ class _CompleteInfoState extends State<CompleteInfo> {
                   onPressed: (){
                     updateUserDatabase(widget.usu, _telefonoController, _direccionController, _ubicacionController);
                    
-                    Firestore.instance.collection('usuarios').document(widget.usu.displayName).get().then((DocumentSnapshot usuarioDoc){
+                    Firestore.instance.collection('usuarios').document(widget.usu.uid).get().then((DocumentSnapshot usuarioDoc){
                           Navigator.push(context, MaterialPageRoute(
                               builder: (context) => ProductHomePage(usu:widget.usu,))); 
                           showToast("Bienvenido a BRING2ME ${usuarioDoc.data["nombres"]}", context, 

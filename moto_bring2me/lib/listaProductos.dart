@@ -1,34 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moto_bring2me/listaProductos.dart';
 
-class HomePageMoto extends StatefulWidget {
-  HomePageMoto({Key key, @required this.docUsu}) : super(key: key);
+class ListaProductosMoto extends StatefulWidget {
+  ListaProductosMoto({Key key, @required this.docUsu, this.docPed}) : super(key: key);
   final DocumentSnapshot docUsu;
+  final DocumentSnapshot docPed;
 
-  _HomePageMotoState createState() => _HomePageMotoState();
+  _ListaProductosMotoState createState() => _ListaProductosMotoState();
 }
 
-class _HomePageMotoState extends State<HomePageMoto> {
+class _ListaProductosMotoState extends State<ListaProductosMoto> {
   Color primaryColor = Colors.blueGrey;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Pedidos"),  
+        title: Text("Lista de Productos"),  
       ),
       bottomNavigationBar: _contruccionBottomBar(),
-      body: _recuperarPedios()
+      body: _recuperarProductos()
 
     );
   }
   
-  StreamBuilder<QuerySnapshot> _recuperarPedios() {
+  StreamBuilder<QuerySnapshot> _recuperarProductos() {
      
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('motoPedidos').snapshots(),      
+      stream: Firestore.instance.collection('motoPedidos').document(widget.docPed.documentID).collection("productos").snapshots(),      
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             //print(logger);
@@ -48,11 +48,11 @@ class _HomePageMotoState extends State<HomePageMoto> {
           return ListView.builder(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
-
-                  final pedDoc = snapshot.data.documents[index];
+                
+                  final proDoc = snapshot.data.documents[index];
                   return InkWell(
                        onTap:() { 
-                           _verProductoDialog(context, pedDoc);
+                           _verProductoDialog(context, proDoc);
                        },
                        child: Column(
                          children: <Widget>[
@@ -60,27 +60,21 @@ class _HomePageMotoState extends State<HomePageMoto> {
                              children: <Widget>[
                                Expanded(
                                  child: ListTile(
-                                      title: new Text(pedDoc['nombre_cliente_pedido']),
-                                      subtitle: new Text(pedDoc['fecha_hora_pedido']),
+                                      title: new Text(proDoc['nombre_pro']),
+                                      subtitle: new Text("\$ ${proDoc['precio_pro']} - ${proDoc['descripcion_pro']}"),
                                       leading: Column(
                                       children: <Widget>[
-                                        IconButton(
-                                          icon: Icon(Icons.location_on),
-                                          onPressed: (){
-
-                                          },
-                                        )
+                                        Image.network('${proDoc['imagen_pro']}', width: 40),
                                       ],
                                     ),
                                  ),
                                ),      
                                IconButton(
-                                  icon: Icon(Icons.list),
+                                  icon: Icon(Icons.check),
                                   color: Colors.blueAccent,
                                   onPressed: (){
-                                    Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => ListaProductosMoto(docUsu: widget.docUsu, docPed: pedDoc,) 
-                                    )); 
+                                    /* _actualizarProductoDialog(context, prodDoc, widget.ciu, 
+                                    widget.prove, widget.cat, widget.catGen); */
                                   },
                                 ),
                                 
@@ -147,10 +141,7 @@ class _HomePageMotoState extends State<HomePageMoto> {
             ),
             new FlatButton(
                 onPressed: () {
-                   Navigator.push(context, MaterialPageRoute(
-                             builder: (context) => ListaProductosMoto(docUsu: widget.docUsu, docPed: prodDoc,) 
-                   )); 
-                   
+                  /*  _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen); */
                 },
                 child: const Text("Ver Lista")
             )

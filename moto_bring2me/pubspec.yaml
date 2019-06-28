@@ -38,6 +38,7 @@ dependencies:
   firebase_dynamic_links: ^0.4.0
   #onesignal: ^1.1.0
   #firebase_messaging: ^5.0.2
+  carousel_pro: ^0.0.13
 
 
 dev_dependencies:
@@ -53,7 +54,7 @@ flutter:
   assets:
       - assets/images/correo.png
       - assets/images/naveespacial.gif
-      - assets/images/logo.png
+      - assets/images/logo.jpeg
       - assets/images/galeria.png
       - assets/images/alcohol.png
       - assets/images/all.png
@@ -63,3 +64,5 @@ flutter:
       - assets/images/regalo.png
       - assets/images/snacks.png
       - assets/images/supermercado.png
+      - assets/images/slider.jpg
+

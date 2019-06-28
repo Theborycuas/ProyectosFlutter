@@ -402,7 +402,7 @@ Widget _drawer() {
   return StreamBuilder<DocumentSnapshot>(
            stream: Firestore.instance
                      .collection('usuarios')
-                      .document(widget.usu.displayName)
+                      .document(widget.usu.uid)
                       .snapshots(),
             builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                if (!snapshot.hasData || snapshot.data == null) {
