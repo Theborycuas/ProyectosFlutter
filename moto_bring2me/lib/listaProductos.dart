@@ -18,6 +18,14 @@ class _ListaProductosMotoState extends State<ListaProductosMoto> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Lista de Productos"),  
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add_to_photos),
+            onPressed: (){
+
+            },
+          )
+        ],
       ),
       bottomNavigationBar: _contruccionBottomBar(),
       body: _recuperarProductos()
@@ -70,11 +78,10 @@ class _ListaProductosMotoState extends State<ListaProductosMoto> {
                                  ),
                                ),      
                                IconButton(
-                                  icon: Icon(Icons.check),
+                                  icon: Icon(Icons.info_outline),
                                   color: Colors.blueAccent,
                                   onPressed: (){
-                                    /* _actualizarProductoDialog(context, prodDoc, widget.ciu, 
-                                    widget.prove, widget.cat, widget.catGen); */
+                                    _verProductoDialog(context, proDoc);
                                   },
                                 ),
                                 
@@ -102,26 +109,24 @@ class _ListaProductosMotoState extends State<ListaProductosMoto> {
       context: context,
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: Text("${prodDoc['nombre_cliente_pedido']}"),
+          title: Text("${prodDoc['nombre_pro']}"),
           content: Container(
-            height: 300.0,
+            height: 400.0,
             width: 100.0,
             child: ListView(
               children: <Widget>[
-                Text("Fecha y Hora de Pedido:"),
-                Text("${prodDoc['fecha_hora_pedido']}", style: TextStyle(fontSize: 20.0)),
+                Image.network("${prodDoc.data["imagen_pro"]}", width: 250.0,),
                 Divider(height: 20,),
-                Text("Direccion:"),
-                Text("${prodDoc['direccion_cliente_pedido']}", style: TextStyle(fontSize: 20.0),),
+                SizedBox(height: 20,),
+                Text("Descripción:"),
+                Text("${prodDoc['descripcion_pro']}", style: TextStyle(fontSize: 20.0)),
                 Divider(height: 20,),
-                Text("Telefono:"),
-                Text("${prodDoc['telefono_cliente_pedido']}", style: TextStyle(fontSize: 20.0),),
-                Divider(height: 20,),                
                 Text("Precio:"),
-                Text("${prodDoc['estado_pedido']}", style: TextStyle(fontSize: 20.0)),
-                                             
-                
-
+                Text("${prodDoc['precio_pro']}", style: TextStyle(fontSize: 20.0),),
+                Divider(height: 20,),
+                Text("Cantidad:"),
+                Text("${prodDoc['cantidad_pro']}", style: TextStyle(fontSize: 20.0),),
+                Divider(height: 20,),     
               ],
             ),
           ),
@@ -130,21 +135,16 @@ class _ListaProductosMotoState extends State<ListaProductosMoto> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancelar")
+                child: const Text("OK")
             ),
             // This button results in adding the contact to the database
-            new FlatButton(
+           /*  new FlatButton(
                 onPressed: () {
                   /*  _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen); */
                 },
-                child: const Text("Aceptar Ped")
-            ),
-            new FlatButton(
-                onPressed: () {
-                  /*  _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen); */
-                },
-                child: const Text("Ver Lista")
-            )
+                child: const Text("Aceptar")
+            ), */
+   
           ],
 
         );

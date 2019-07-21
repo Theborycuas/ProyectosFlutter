@@ -48,7 +48,7 @@ class _SesionAdminState extends State<SesionAdmin> {
            child: ListView(
            children: <Widget>[
              
-           Image.asset("assets/images/logo.png"), 
+           Image.asset("assets/images/logo.jpeg"), 
            TextField(controller: _usuario,
               style: TextStyle(fontSize: 18.0, color: Colors.green),
               decoration: InputDecoration(

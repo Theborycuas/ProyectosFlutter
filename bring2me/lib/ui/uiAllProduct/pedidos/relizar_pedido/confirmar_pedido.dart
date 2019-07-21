@@ -85,16 +85,16 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
 
                   for (DocumentSnapshot docPrepeConfir in snapshot.documents){
                      CloudFunctions.instance.call(
-                      functionName: "crearPedidoUsu",
-                      parameters: {
-                        "doc_id": widget.userDoc.documentID,
-                        "doc_numeroPedido" : formattedDate.toString(),
-                        "nombre_pro": docPrepeConfir['nombre_pro'],
-                        "descripcion_pro": docPrepeConfir['descripcion_pro'],
-                        "precio_pro": docPrepeConfir['precio_pro'],
-                        "imagen_pro": docPrepeConfir['imagen_pro'],
-                        "cantidad_pro": docPrepeConfir['cantidad_pro'],
-                              }
+                        functionName: "crearPedidoUsu",
+                        parameters: {
+                          "doc_id": widget.userDoc.documentID,
+                          "doc_numeroPedido" : formattedDate.toString(),
+                          "nombre_pro": docPrepeConfir['nombre_pro'],
+                          "descripcion_pro": docPrepeConfir['descripcion_pro'],
+                          "precio_pro": docPrepeConfir['precio_pro'],
+                          "imagen_pro": docPrepeConfir['imagen_pro'],
+                          "cantidad_pro": docPrepeConfir['cantidad_pro'],
+                        }
                       );
                     CloudFunctions.instance.call(
                       functionName: "crearProductoPedidoMoto",
@@ -179,7 +179,7 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProductHomePage(
-                              usu: null,
+                              usu: widget.usu,
                             )));
               },
             ),
@@ -642,18 +642,18 @@ class _ConfirmarDireccionYPedidoState extends State<ConfirmarDireccionYPedido> {
 
       switch (_radioValue1) {
         case 0:
-          showToast("Correct !", context,
+          showToast("Paypal !", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
 
           correctScore++;
           break;
         case 1:
-          showToast("Try again !", context,
+          showToast("Tarjeta de Credito !", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
 
           break;
         case 2:
-          showToast("Try again !", context,
+          showToast("Efectivo !", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
 
           break;

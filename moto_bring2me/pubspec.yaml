@@ -39,7 +39,7 @@ dependencies:
   #onesignal: ^1.1.0
   #firebase_messaging: ^5.0.2
   carousel_pro: ^0.0.13
-
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:

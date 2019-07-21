@@ -6,7 +6,7 @@ import 'package:toast/toast.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 class LoginMotociclistas extends StatefulWidget {
-  LoginMotociclistas({Key key}) : super(key: key);
+  //LoginMotociclistas({Key key}) : super(key: key);
 
   _LoginMotociclistasState createState() => _LoginMotociclistasState();
 }
@@ -31,7 +31,7 @@ class _LoginMotociclistasState extends State<LoginMotociclistas> {
            child: ListView(
            children: <Widget>[
              
-           Image.asset("assets/images/logo.png"), 
+           Image.asset("assets/images/logo.jpeg",width: 20,), 
            TextField(controller: _usuario,
               style: TextStyle(fontSize: 18.0, color: Colors.green),
               decoration: InputDecoration(
@@ -39,7 +39,10 @@ class _LoginMotociclistasState extends State<LoginMotociclistas> {
                 labelText: 'Usuario'
            ),),
            SizedBox(height: 10,),
-           TextField(controller: _clave,
+           TextField(
+             keyboardType: TextInputType.emailAddress,
+             
+             controller: _clave,
               style: TextStyle(fontSize: 18.0, color: Colors.green),
               decoration: InputDecoration(
                 icon: Icon(Icons.vpn_key),

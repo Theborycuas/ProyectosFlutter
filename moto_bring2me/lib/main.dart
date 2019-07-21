@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moto_bring2me/LoginPage.dart';
 import 'package:moto_bring2me/homePageMoto.dart';
 
 void main() {
@@ -6,7 +8,7 @@ void main() {
      MaterialApp(
     debugShowCheckedModeBanner: false,
    home: FirstPage(),
-   title: "Bring2Me"
+   title: "Bring2Me - Motociclista"
   ));
 }
 
@@ -32,7 +34,7 @@ class _FirstPageState extends State<FirstPage> {
              child: Text('Iniciar Sesion'),
              onPressed: (){   
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => HomePageMoto(docUsu: null,) 
+                  builder: (context) => LoginMotociclistas() 
                )); 
              },
            ),

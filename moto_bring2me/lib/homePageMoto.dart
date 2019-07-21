@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moto_bring2me/listaProductos.dart';
-
+import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 class HomePageMoto extends StatefulWidget {
   HomePageMoto({Key key, @required this.docUsu}) : super(key: key);
   final DocumentSnapshot docUsu;
@@ -138,13 +140,6 @@ class _HomePageMotoState extends State<HomePageMoto> {
                 },
                 child: const Text("Cancelar")
             ),
-            // This button results in adding the contact to the database
-            new FlatButton(
-                onPressed: () {
-                  /*  _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen); */
-                },
-                child: const Text("Aceptar Ped")
-            ),
             new FlatButton(
                 onPressed: () {
                    Navigator.push(context, MaterialPageRoute(
@@ -152,16 +147,97 @@ class _HomePageMotoState extends State<HomePageMoto> {
                    )); 
                    
                 },
-                child: const Text("Ver Lista")
-            )
+                child: const Text("Lista")
+            ),
+            new FlatButton(
+                onPressed: () {
+                  /*  _actualizarProductoDialog(context, prodDoc, ciuDoc, provDoc, catDoc, catGen); */
+                },
+                child: const Text("ACEPTAR PEDI")
+            ),
+            
           ],
 
         );
       }
     );
   }
-  
+/* 
+void _aceptarPedido(DocumentSnapshot docUsu)  {
+      DateTime now = DateTime.now();              
+      String formattedDate = DateFormat('dd-MM-yyyy hh:mm a').format(now);
+      String fechaHoraPed = DateFormat('dd-MM-yyyy hh:mm:ss').format(now);
+      String estadoPedido = "Esperando Motociclista";
+              
+                CloudFunctions.instance.call(
+                    functionName: "crearNumeroPedido",
+                    parameters: {
+                      "doc_id": widget.userDoc.documentID,
+                      "numero_pedido" : formattedDate.toString(),
+                      "fecha_hora_pedido": fechaHoraPed.toString()
+                    }
+                );
+                 CloudFunctions.instance.call(
+                    functionName: "crearPedidoMoto",
+                    parameters: {
+                    "titulo_pedido": formattedDate.toString(),
+                    "nombre_cliente_pedido": widget.userDoc.data["nombres"],
+                    "direccion_cliente_pedido": widget.userDoc.data["direccion"],
+                    "telefono_cliente_pedido": widget.userDoc.data["telefono"],
+                    "correo_cliente_pedido": widget.userDoc.data["correo"],
+                    "fecha_hora_pedido": fechaHoraPed.toString(),
+                    "estado_pedido": estadoPedido.toString()
+                    }
+                );
+                Firestore.instance.collection('usuarios')
+                .document(widget.userDoc.documentID)
+                .collection('prePedidosUsu')
+                .getDocuments().then((snapshot){
+                  /* final cont = snapshot.documents.length; */
 
+                  for (DocumentSnapshot docPrepeConfir in snapshot.documents){
+                     CloudFunctions.instance.call(
+                      functionName: "crearPedidoUsu",
+                      parameters: {
+                        "doc_id": widget.userDoc.documentID,
+                        "doc_numeroPedido" : formattedDate.toString(),
+                        "nombre_pro": docPrepeConfir['nombre_pro'],
+                        "descripcion_pro": docPrepeConfir['descripcion_pro'],
+                        "precio_pro": docPrepeConfir['precio_pro'],
+                        "imagen_pro": docPrepeConfir['imagen_pro'],
+                        "cantidad_pro": docPrepeConfir['cantidad_pro'],
+                              }
+                      );
+                    CloudFunctions.instance.call(
+                      functionName: "crearProductoPedidoMoto",
+                      parameters: {
+                        "id_pedido": formattedDate.toString(),
+                        "nombre_pro": docPrepeConfir['nombre_pro'],
+                        "descripcion_pro": docPrepeConfir['descripcion_pro'],
+                        "precio_pro": docPrepeConfir['precio_pro'],
+                        "imagen_pro": docPrepeConfir['imagen_pro'],
+                        "cantidad_pro": docPrepeConfir['cantidad_pro'],
+                      }
+                    );
+                   }
+                }); 
+                Firestore.instance.collection('usuarios')
+                .document(widget.userDoc.documentID)
+                .collection('prePedidosUsu')
+                .getDocuments().then((snapshot){
+                  for (DocumentSnapshot docPrepeDel in snapshot.documents){
+                      docPrepeDel.reference.delete();
+                   }
+                });  
+                print('Completed, check fields.');
+                showToast("Completed, check fields.", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ProductHomePage(usu: widget.usu, )
+                ));       
+
+}
+ */
   Widget _contruccionBottomBar() {
     return BottomAppBar(
       child: Padding(
@@ -203,5 +279,9 @@ class _HomePageMotoState extends State<HomePageMoto> {
         ),
       ),
     );
+  }
+  void showToast(String msg, BuildContext context,
+      {int duration, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 }

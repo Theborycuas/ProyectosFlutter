@@ -66,9 +66,9 @@ Observable<Map<String, dynamic>> profile;
               _userID = user.uid;
               updateUserDatabase(user, context);
               loading.add(false);
-          
-                   /*  Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => CompleteInfo(usu:user,)));  */
+          /* 
+                     Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CompleteInfo(usu:user,)));   */
                 
               isLogIn = true;
      }

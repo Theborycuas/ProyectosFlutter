@@ -75,47 +75,12 @@ class _ListViewPedidosEnProcesoState extends State<ListViewPedidosEnProceso> {
                                  ),
                                ),  
                                 IconButton(
-                                icon: Icon(Icons.delete),
-                                color: Colors.red,
+                                icon: Icon(Icons.info),
+                                color: Colors.blueAccent,
                                 onPressed: () {
-                                  showDialog(
-                                          context: context,
-                                          builder: (BuildContext context){
-                                            return AlertDialog(
-                                              title: new Text("ELIMINAR EL PROVEEDOR"),
-                                              content: new Text("¿Realmente desea eliminar la categoria  ${numpedDoc.data['numero_pedido']}?"),
-                                              actions: <Widget>[
-                                                // usually buttons at the bottom of the dialog
-                                                new FlatButton(
-                                                  child: new Text("CANCELAR"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                FlatButton(
-                                                  child: Text("ACEPTAR"),
-                                                  onPressed: (){
-                                                   /*  Firestore.instance.collection('ciudad').document(widget.ciu.documentID).collection('categoriaGen').document(widget.catGen.documentID).collection('proveedor').document(provDoc.documentID).delete();
-                                                        Navigator.of(context).pop(); */
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          }
-                                        );
-                                     }
+                                }
                                     ),                                 
-                                IconButton(
-                                icon: Icon(Icons.arrow_forward),
-                                onPressed: () { 
-                                 /*  Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => ListViewCategoriasProv(ciu: widget.ciu, catGen: widget.catGen, prove: provDoc, )
-                                              ));   */    
-                                 }
-                                )                            
-                             ],
-                             
-                             
+                              ],
                            ),
 
                          ],

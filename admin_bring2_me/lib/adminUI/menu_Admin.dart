@@ -22,7 +22,7 @@ class _MenuState extends State<Menu> {
          child: Column(
            children: <Widget>[
              SizedBox(height: 5,),
-             Image.asset("assets/images/logo.png", width:300.0,), 
+             Image.asset("assets/images/logo.jpeg", width:250.0,), 
              SizedBox(height: 10,),
              Text('Crear:', style: TextStyle(fontSize: 20.0,)),
            

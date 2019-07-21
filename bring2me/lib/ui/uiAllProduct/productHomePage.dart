@@ -28,6 +28,11 @@ class _ProductHomePageState extends State<ProductHomePage>  {
       appBar: AppBar(
         title: Text("Bienvenido a BRING2ME"),
         backgroundColor: Colors.blueGrey,
+        /* actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logou),
+          )
+        ], */
       ),
       bottomNavigationBar: _contruccionBottomBar(),
          drawer: _drawer(), 
@@ -466,6 +471,16 @@ Widget _drawer() {
                           trailing: Icon(Icons.list),
                                             ),
                       ),
+                      InkWell(
+                        onTap: (){
+                          print("hi");
+                        },
+                          child:  ListTile(
+                          title: Text("Pedido Realizados", style: TextStyle(fontSize: 15.0),),
+                          trailing: Icon(Icons.list),
+                        
+                        ),
+                      ),  
                       InkWell(
                         onTap: (){
                           print("hi");
