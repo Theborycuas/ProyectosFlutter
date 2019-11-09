@@ -1,0 +1,264 @@
+from machine import Pin
+from utime import sleep
+import sharp
+import movimiento
+import motor
+
+class Car:
+    def __init__(self, move):
+      self.move = move
+      self.disMin = 6
+      self.disMax = 17
+      self.disFM = 20
+      
+  
+    def sensor(self, vector, conter):
+      rangoSensorMin = self.disMin
+      rangoSensorMax = self.disMax
+      rangoSensorCentro = self.disFM
+      
+      if conter == 0:
+        opci = 0
+      else:
+        opci = conter
+
+      # Adelante
+      if vector[0] > rangoSensorMax and vector[1] > rangoSensorCentro and vector[2] > rangoSensorMax:
+        #Opcion 1
+        
+        if opci == 8:
+          print("8 - 1 - ")
+        elif opci == 4:
+        #   print("4 - 1")
+          self.move.atras()
+        elif opci == 6:
+        #   print("6 - 1")
+          self.move.atras()
+        elif opci == 2:
+        #   print("2 - 1")
+          self.move.atras()
+        else:
+        #   print("1")
+          self.move.adelante()
+        return 1
+      # Adelante
+      elif vector[0] > rangoSensorMax and vector[1] > rangoSensorCentro and vector[2] > rangoSensorMin and vector[2] < rangoSensorMax:
+        #Opcion 2
+        if opci == 7:
+        #   print("7 - 2")
+          self.move.adelante(0.3)
+        elif opci == 6:
+        #   print("6 - 2")
+          self.move.adelante(0.3)
+        elif opci == 8:
+        #   print("8 - 2")
+          self.move.adelante(0.2)
+          self.move.izquierda(0.2)   
+        elif opci == 5:
+        #   print("5 - 2")
+          self.move.adelante(0.3)
+        elif opci == 3:
+        #   print("3 - 2")
+          self.move.adelante()
+        else:
+        #   print("2")
+          self.move.adelante()
+        return 2           
+      # Adelante 
+      elif vector[0] > rangoSensorMin and vector[0] < rangoSensorMax and vector[1] > rangoSensorCentro and vector[2] > rangoSensorMax:
+        #Opcion 3
+       
+        if opci == 7:
+        #   print("7 - 3")
+          self.move.adelante(0.3)
+          #self.move.izquierda(0.3)
+          #self.move.adelante(0.2)
+        elif opci == 6:
+        #   print("6 - 3")
+          self.move.adelante(0.3)
+        elif opci == 5:
+        #   print("5 - 3")
+          self.move.adelante(0.3)
+        else:
+        #   print("3")
+          self.move.adelante()
+        return 3
+      # Izquierda
+      elif vector[0] > rangoSensorMax and vector[1] > rangoSensorMin and vector[1] < rangoSensorCentro and vector[2] > rangoSensorMax:
+        #Opcion 4
+        if opci == 6:
+        #   print("6 - 4")
+          self.move.izquierda(0.3)
+        elif opci == 5:
+        #   print("5 - 4")
+          self.move.derecha()
+        elif opci == 3:
+        #   print("3 - 4")
+          self.move.izquierda()
+        else :
+        #   print("4")
+          self.move.atras()
+          self.move.izquierda()
+        return 4
+      # Derecha
+      elif vector[0] > rangoSensorMin and vector[0] < rangoSensorMax and vector[1] > rangoSensorMin and vector[1] < rangoSensorCentro and vector[2] > rangoSensorMax:
+        #Opcion 5
+      
+        if opci == 3:
+        #   print("3 - 5")
+          self.move.derecha()
+        elif opci == 7:
+        #   print("7 - 5")
+          #self.move.adelante(0.3)
+          self.move.derecha()
+        elif opci == 4:
+        #   print("4 - 5")
+          self.move.derecha()
+        elif opci == 7:
+        #   print("7 - 5")
+          #self.move.adelante(0.3)
+          self.move.derecha()  
+        elif opci == 6:
+        #   print("6 - 5")
+          self.move.adelante()
+          self.move.adelante()
+        else:
+        #   print("5")
+          self.move.derecha()
+        return 5
+      # Izquierda
+      elif vector[0] > rangoSensorMax and vector[1] > rangoSensorMin and vector[1] < rangoSensorCentro and vector[2] > rangoSensorMin and vector[2] < rangoSensorMax:
+        #Opcion 6
+        if opci == 2:
+        #   print("2 - 6")
+          self.move.parar()
+          self.move.izquierda()
+        elif opci == 5:
+        #   print("5 - 6")
+          self.move.adelante()
+          self.move.adelante()
+        elif opci == 7:
+        #   print("7 - 6")
+          self.move.izquierda()
+        elif opci == 8:
+        #   print("8 - 6")
+          self.move.izquierda() 
+        elif opci == 4:
+        #   print("4 - 6")
+          self.move.izquierda()
+        elif opci == 1:
+        #   print("1 - 6")
+          self.move.adelante()
+        elif opci == 3:
+        #   print("3 - 6")
+          self.move.parar()
+          self.move.izquierda()
+        else:      
+        #   print("6")
+          self.move.adelante(0.01)
+          self.move.izquierda()
+        return 6
+      # Adelante
+      elif vector[0] > rangoSensorMin and vector[0] < rangoSensorMax and vector[1] > rangoSensorCentro and vector[2] > rangoSensorMin and vector[2] < rangoSensorMax:
+        #Opcion 7
+        if opci == 1:
+        #   print("1 - 7")
+          self.move.adelante()
+        elif opci == 2:
+        #   print("2 - 7")
+          self.move.adelante()
+        elif opci == 3:
+        #   print("3 - 7")
+          self.move.adelante()
+        elif opci == 8:
+        #   print("8 - 7")
+          self.move.adelante()
+        elif opci == 5:
+        #   print("5 - 7")
+          self.move.adelante()
+        elif opci == 6:
+        #   print("6 - 7")
+          self.move.adelante()
+        else:
+        #   print("7")
+          self.move.adelante()
+        return 7
+      # Izquierda          
+      elif vector[0] > rangoSensorMin and vector[0] < rangoSensorMax and vector[1] > rangoSensorMin and vector[1] < rangoSensorCentro - 5 and vector[2] > rangoSensorMin and vector[2] < rangoSensorMax:
+        #Opcion 8
+        if opci == 7:
+        #   print("7 - 8")
+          self.move.izquierda()
+          self.move.izquierda()
+        elif opci == 2:
+        #   print("2 - 8")
+          self.move.izquierda()          
+        elif opci == 5:
+        #   print("5 - 8")
+          #self.move.adelante(0.3)
+          self.move.derecha()
+        elif opci == 6:
+        #   print("6 - 8")
+          self.move.izquierda()
+        else:
+        #   print("8")
+          self.move.izquierda()
+        return 8 
+      else:
+        if vector[0] < rangoSensorMin or vector[2] < rangoSensorMin:
+            # print("Alinear")
+            self.move.alinear(vector[0], vector[2])        
+        return opci
+
+sIzq = sharp.Sharp(35)
+sFre = sharp.Sharp(34)
+sDer = sharp.Sharp(32)
+led = Pin(2, Pin.OUT)
+motorIzq = motor.Motor(16, 17, 14)
+motorDer = motor.Motor(26, 27, 4)
+move = movimiento.Movimiento(motorIzq, motorDer)
+car = Car(move)
+
+cont = 0
+accion = 0
+salida = 0
+
+while True:
+    sleep(0.1)    
+    disIzq = sIzq.distancia()
+    disFre = sFre.distancia()
+    disDer = sDer.distancia()
+
+    #move.sensor([disIzq, disFre, disDer])
+    cont += 1
+    if(cont == 1):
+      accion = car.sensor([disIzq, disFre, disDer], cont)
+    else:
+      accion = car.sensor([disIzq, disFre, disDer], accion)
+
+    if accion == 1:
+        print("Adelante")
+    if accion == 2:
+        print("Adelante")
+    if accion == 3:
+        print("Adelante")
+    if accion == 4:
+        print("Izquierda")
+    if accion == 5:
+        print("Derecha")
+    if accion == 6:
+        print("Izquierda")
+    if accion == 7:
+        print("Adelante")
+    if accion == 8:
+        print("Izquierda")
+
+    
+    if (accion == 1):
+      salida += 1
+      move.bailar(salida)
+      print("")
+    else:
+      salida = 0
+    # break
+
