@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "629285055632",
+    "firebase_url": "https://orderrestaurant-e618d.firebaseio.com",
+    "project_id": "orderrestaurant-e618d",
+    "storage_bucket": "orderrestaurant-e618d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629285055632:android:ccadc57ffe6fc77b233c15",
+        "android_client_info": {
+          "package_name": "com.example.order_restaurant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629285055632-5lvmhg22dplbhbd7unud66bpn1918399.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.order_restaurant",
+            "certificate_hash": "8b0e84fe6b29ff5615f3901f1979aa849031b259"
+          }
+        },
+        {
+          "client_id": "629285055632-orm8pjek3ranqq1f8v8u5n38m8ul8e09.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT-0NfcO2EwR2b-o8Is5Jny1HeEszYquQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629285055632-orm8pjek3ranqq1f8v8u5n38m8ul8e09.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

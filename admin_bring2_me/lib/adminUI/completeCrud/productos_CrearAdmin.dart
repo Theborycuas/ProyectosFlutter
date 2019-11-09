@@ -82,6 +82,7 @@ Future<String> uploadImage ()async{
   var downUrl =await (await uploadTask.onComplete).ref.getDownloadURL();
   
   var url = downUrl.toString(); 
+  
     setState(() { 
         _imagen = TextEditingController(text: url);
         imagensubida = true;
